@@ -5,7 +5,7 @@
  *
  * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
  *
- * This library is covered by the LGPL, read LICENSE for details.
+ * This library is covered by the MIT License, read LICENSE for details.
  */
 
 #include "nifalcon.h"
