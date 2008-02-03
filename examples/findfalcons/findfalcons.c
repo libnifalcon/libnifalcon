@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	printf("Falcons found: %d\n", num_falcons);
 	
 	if(nifalcon_open(&dev, 0) != FT_OK) return 1;
-	if(nifalcon_init(dev) != FT_OK) return 1;
+	if(nifalcon_init(dev, "novint.bin") != FT_OK) return 1;
 	
 	if(nifalcon_send_raw(dev, &input) != FT_OK) return 1;
 	printf("Send Raw: %s\n", input);

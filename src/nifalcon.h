@@ -36,7 +36,7 @@ typedef struct falcon_packet
 
 int nifalcon_get_count();
 int nifalcon_open(falcon_device *dev, unsigned int device_index);
-int nifalcon_init(falcon_device dev);
+int nifalcon_init(falcon_device dev, const char* firmware_filename);
 int nifalcon_close(falcon_device dev);
 
 void nifalcon_init_packet(falcon_packet* packet);

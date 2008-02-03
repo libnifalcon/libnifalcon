@@ -125,12 +125,12 @@ int nifalcon_open(falcon_device *dev, unsigned int device_index)
 	return FT_OK;
 }
 
-int nifalcon_init(falcon_device dev)
+int nifalcon_init(falcon_device dev, const char* firmware_filename)
 {
 	unsigned int bytes_written, bytes_read;
 	char check_msg_1[3] = {0x0a, 0x43, 0x0d};
 	char check_buf[128];
-	FILE* key_file;
+	FILE* firmware_file;
 	FT_STATUS ftStatus;
 
 	if((ftStatus = FT_ResetDevice(dev)) != FT_OK) return ftStatus;
@@ -171,21 +171,21 @@ int nifalcon_init(falcon_device dev)
 	if((ftStatus = nifalcon_read_wait(dev, check_buf, 1)) != FT_OK) return ftStatus;	
 	printf("Got back %c\n", check_buf[0]);
 
-	printf("Writing novint.bin\n");
-	key_file = fopen("/Users/qdot/novint.bin", "rb");
+	printf("Writing %s\n", firmware_filename);
+	firmware_file = fopen(firmware_filename, "rb");
 
-	if(!key_file)
+	if(!firmware_file)
 	{
 		return -1;
 	}
-	while(!feof(key_file))
+	while(!feof(firmware_file))
 	{
-		bytes_read = fread(check_buf, 1, 128, key_file);
+		bytes_read = fread(check_buf, 1, 128, firmware_file);
 		if((ftStatus = FT_Write(dev, check_buf, bytes_read, &bytes_written)) != FT_OK) return ftStatus;
 		if((ftStatus = nifalcon_read_wait(dev, check_buf, bytes_read)) != FT_OK) return ftStatus;	
 		if(bytes_read < 128) break;
 	}
-	fclose(key_file);
+	fclose(firmware_file);
 
 	if((ftStatus = FT_SetBaudRate(dev, 1456312)) != FT_OK) return ftStatus;
 	return FT_OK;
