@@ -1,7 +1,7 @@
 /*
- * Implementation file for NovInt Falcon User Space Driver
+ * Implementation file for NovInt Falcon User Space Driver - Bootloader and Base Functionality
  *
- * Copyright (c) 2007 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
+ * Copyright (c) 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
  *
  * More info on Nonpolynomial Labs @ http://www.nonpolynomial.com
  *
@@ -17,6 +17,7 @@
 #include <string.h>
 #define MAX_DEVICES 128
 
+//Just wraps the FT_Read function in a QueueStatus call so we don't block on reads
 FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read)
 {
 	unsigned int o, bytes_rx, bytes_written;
@@ -48,6 +49,7 @@ int nifalcon_get_count()
 	for(i = 0; i < MAX_DEVICES; i++) {
 		pcBufLD[i] = cBufLD[i];
 	}
+	//If we're not using windows, we can set PID/VID to filter on. I have no idea why this isn't provided in the windows drivers.
 #ifndef WIN32
 	FT_SetVIDPID(0x0403, 0xCB48);
 #endif
@@ -64,7 +66,8 @@ int nifalcon_open(falcon_device *dev, unsigned int device_index)
 	char* pcBufLD[MAX_DEVICES + 1];
 	char cBufLD[MAX_DEVICES][64];
 	FT_STATUS ftStatus;
-	
+
+	//If we're not using windows, we can set PID/VID to filter on. I have no idea why this isn't provided in the windows drivers.
 #ifndef WIN32
 	FT_SetVIDPID(0x0403, 0xCB48);
 #endif
@@ -93,7 +96,7 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 	FT_STATUS ftStatus;
 	
 	if((ftStatus = FT_ResetDevice(dev)) != FT_OK) return ftStatus;
-	
+
 	//Set to:
 	// 9600 baud
 	// 8n1
