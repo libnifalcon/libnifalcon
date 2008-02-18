@@ -22,27 +22,11 @@ typedef FT_HANDLE falcon_device;
 #define NOVINT_FALCON_VENDOR_ID 0x0403
 #define NOVINT_FALCON_PRODUCT_ID 0xCB48
 
-#define NOVINT_LED_GREEN 0x2
-#define NOVINT_LED_BLUE 0x4
-#define NOVINT_LED_RED 0x8
-
-typedef struct falcon_packet
-{
-	//Is short guarenteed to be 2 bytes?
-	short motor[3]; 
-	unsigned char info;
-	unsigned char unknown;
-} falcon_packet;
-
+// Functions for connection handling and firmware sending
+// Functionality is specific to the bootloader on the falcon (outside of read_wait, which is just a wrapper for non-blocking ftdi driver reads)
 int nifalcon_get_count();
 int nifalcon_open(falcon_device *dev, unsigned int device_index);
 int nifalcon_init(falcon_device dev, const char* firmware_filename);
 int nifalcon_close(falcon_device dev);
-
-void nifalcon_init_packet(falcon_packet* packet);
-int nifalcon_send_struct(falcon_device dev, falcon_packet* input);
-int nifalcon_send_raw(falcon_device dev, char* input);
-int nifalcon_receive_struct(falcon_device dev, falcon_packet* output);
-int nifalcon_receive_raw(falcon_device dev, char* output);
-
+FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read);
 #endif

@@ -12,68 +12,27 @@
 
 #include "nifalcon.h"
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #define MAX_DEVICES 128
 
-//STRUCT FORMATTING FOR LITTLE-ENDIAN ARCHS ONLY (I'll fix this at some point)
-//Damn you PPC people, go buy an intel mac already.
-
-void nifalcon_format_output(char* output_stream, falcon_packet* output)
-{
-	//Turn motor values into system specific ints
-	int i;
-	for(i = 0; i < 3; ++i)
-	{
-
-		int idx = 1 + (i*4);
-		output->motor[i] =
-			(((*(output_stream+idx) - 0x41) & 0xf)) |
-			(((*(output_stream+idx+1) - 0x41) & 0xf) << 4) |
-			(((*(output_stream+idx+2) - 0x41) & 0xf) << 8) |
-			(((*(output_stream+idx+3) - 0x41) & 0xf) << 12);
-	}
-	output->info = output_stream[13] - 0x41;
-	output->unknown = output_stream[14] - 0x41;
-}
-
-void nifalcon_format_input(char* input_stream, falcon_packet* input)
-{
-	//Turn system-specific ints into motor values
-	int i;
-	input_stream[0] = '<';
-	input_stream[15] = '>';
-	for(i = 0; i < 3; ++i)
-	{
-		int idx = 1 + (i*4);
-		*(input_stream+idx) =   ((input->motor[i]) & 0xf000) >> 12;
-		*(input_stream+idx+1) = ((input->motor[i]) & 0x0f00) >> 8;
-		*(input_stream+idx+2) = ((input->motor[i]) & 0x00f0) >> 4;
-		*(input_stream+idx+3) = ((input->motor[i]) & 0x000f);
-	}
-	input_stream[13] = input->info;
-	input_stream[14] = input->unknown;
-	for(i = 1; i < 15; ++i)
-	{
-		input_stream[i] += 0x41;
-	}
-}
-
-FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size)
+FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read)
 {
 	unsigned int o, bytes_rx, bytes_written;
 	FT_STATUS ftStatus;
+	clock_t timeout = (((float)timeout_ms * .001) * (float)CLOCKS_PER_SEC) + clock();
+	*bytes_read = 0;
 
-	o = 0;
-
-	while(o < size)
+	while(*bytes_read < size)
 	{
 		if((ftStatus = FT_GetQueueStatus(dev, &bytes_rx)) != FT_OK) return ftStatus;
 		if(bytes_rx > 0)
 		{
 			FT_Read(dev, str, bytes_rx, &bytes_written);
-			o += bytes_rx;
+			*bytes_read += bytes_rx;
 		}
+		if (clock() > timeout) return FT_OK;
 	}
 	return FT_OK;
 }
@@ -132,7 +91,7 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 	char check_buf[128];
 	FILE* firmware_file;
 	FT_STATUS ftStatus;
-
+	
 	if((ftStatus = FT_ResetDevice(dev)) != FT_OK) return ftStatus;
 	
 	//Set to:
@@ -153,7 +112,7 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 	if((ftStatus = FT_Write(dev, check_msg_1, 3, &bytes_written)) != FT_OK) return ftStatus;
 	
 	//Expect 5 bytes back
-	if((ftStatus = nifalcon_read_wait(dev, check_buf, 4)) != FT_OK) return ftStatus;	
+	if((ftStatus = nifalcon_read_wait(dev, check_buf, 4, 1000, &bytes_read)) != FT_OK) return ftStatus;	
 	printf("Got back confirmation\n");
 
 	//Set to:
@@ -168,7 +127,7 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((ftStatus = nifalcon_read_wait(dev, check_buf, 1)) != FT_OK) return ftStatus;	
+	if((ftStatus = nifalcon_read_wait(dev, check_buf, 1, 1000, &bytes_read)) != FT_OK) return ftStatus;	
 	printf("Got back %c\n", check_buf[0]);
 
 	printf("Writing %s\n", firmware_filename);
@@ -180,10 +139,11 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 	}
 	while(!feof(firmware_file))
 	{
-		bytes_read = fread(check_buf, 1, 128, firmware_file);
-		if((ftStatus = FT_Write(dev, check_buf, bytes_read, &bytes_written)) != FT_OK) return ftStatus;
-		if((ftStatus = nifalcon_read_wait(dev, check_buf, bytes_read)) != FT_OK) return ftStatus;	
-		if(bytes_read < 128) break;
+		int firmware_bytes_read;
+		firmware_bytes_read = fread(check_buf, 1, 128, firmware_file);
+		if((ftStatus = FT_Write(dev, check_buf, firmware_bytes_read, &bytes_written)) != FT_OK) return ftStatus;
+		if((ftStatus = nifalcon_read_wait(dev, check_buf, firmware_bytes_read, 1000, &bytes_read)) != FT_OK) return ftStatus;	
+		if(firmware_bytes_read < 128) break;
 	}
 	fclose(firmware_file);
 
@@ -196,42 +156,4 @@ int nifalcon_close(falcon_device dev)
 	if(!dev) return -1;
 	FT_Close(dev);
 	return 0;
-}
-
-void nifalcon_init_packet(falcon_packet* packet)
-{
-	memset(packet, 0, sizeof(falcon_packet));
-}
-
-int nifalcon_send_struct(falcon_device dev, falcon_packet* input)
-{
-	FT_STATUS ftStatus;
-	char input_temp[16];
-	if(!dev) return -1;
-	nifalcon_format_input(&input_temp, input);
-	return nifalcon_send_raw(dev, input_temp);
-}
-
-int nifalcon_send_raw(falcon_device dev, char* input)
-{
-	FT_STATUS ftStatus;
-	unsigned int bytes_written;
-	if(!dev) return -1;
-	return FT_Write(dev, input, 16, &bytes_written);
-}
-
-int nifalcon_receive_struct(falcon_device dev, falcon_packet* output)
-{
-	FT_STATUS ftStatus;
-	char output_temp[16];
-	if(!dev) return -1;
-	if((ftStatus = nifalcon_receive_raw(dev, &output_temp)) != FT_OK) return ftStatus;	
-	nifalcon_format_output(&output_temp, output);
-	return ftStatus;
-}
-
-int nifalcon_receive_raw(falcon_device dev, char* output)
-{
-	if(!dev) return -1;
-	return nifalcon_read_wait(dev, output, 16); 
 }
