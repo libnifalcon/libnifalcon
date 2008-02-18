@@ -58,6 +58,7 @@ void nifalcon_test_fw_format_input(char* input_stream, falcon_packet* input)
 	}
 }
 
+
 void nifalcon_test_fw_init_packet(falcon_packet* packet)
 {
 	memset(packet, 0, sizeof(falcon_packet));

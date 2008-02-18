@@ -1,0 +1,5 @@
+libnifalcon ChangeLog
+=====================
+
+2008-02-17 Kyle Machulis <kyle@nonpolynomial.com>
+	* First release of libnifalcon project, includes source files and cmake build system
