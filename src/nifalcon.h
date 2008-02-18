@@ -36,7 +36,7 @@ int nifalcon_get_count();
 /** 
  * Opens the device
  * 
- * @param tv Pointer to store opened device handle
+ * @param dev Pointer to store opened device handle
  * @param device_index Index of the device to open (for multiple devices)
  * 
  * @return FT_OK on success, FTDI driver error on failure

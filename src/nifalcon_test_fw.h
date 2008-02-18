@@ -42,9 +42,12 @@
 /// Packet structure for the test firmware
 typedef struct falcon_packet
 {
-	short motor[3];  /// Array of motors. Input - Motor torque values. Output - Motor encoder values
-	unsigned char info; /// Misc Info. Input - LED Commands. Output - Button status and homing/calibration status.
-	unsigned char unknown; /// Not currently known or used?
+	/// Array of motors. Input - Motor torque values. Output - Motor encoder values
+	short motor[3];
+	/// Misc Info. Input - LED Commands. Output - Button status and homing/calibration status.
+	unsigned char info;
+	/// Not currently known or used?
+	unsigned char unknown; 
 } falcon_packet;
 
 /** 
