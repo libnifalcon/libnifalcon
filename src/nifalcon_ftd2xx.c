@@ -17,8 +17,13 @@
 #include <string.h>
 #define MAX_DEVICES 128
 
+int nifalcon_init(falcon_device* dev)
+{	
+	return 0;
+}
+
 //Just wraps the FT_Read function in a QueueStatus call so we don't block on reads
-FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read)
+int nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read)
 {
 	unsigned int o, bytes_rx, bytes_written;
 	FT_STATUS ftStatus;
@@ -38,7 +43,7 @@ FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, un
 	return FT_OK;
 }
 
-int nifalcon_get_count()
+int nifalcon_get_count(falcon_device dev)
 {
     unsigned int falcon_count;
 	char* pcBufLD[MAX_DEVICES + 1];
@@ -87,7 +92,7 @@ int nifalcon_open(falcon_device *dev, unsigned int device_index)
 	return FT_OK;
 }
 
-int nifalcon_init(falcon_device dev, const char* firmware_filename)
+int nifalcon_load_firmware(falcon_device dev, const char* firmware_filename)
 {
 	unsigned int bytes_written, bytes_read;
 	char check_msg_1[3] = {0x0a, 0x43, 0x0d};
@@ -156,7 +161,14 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename)
 
 int nifalcon_close(falcon_device dev)
 {
-	if(!dev) return -1;
-	FT_Close(dev);
+	if(!*dev) return -1;
+	FT_Close(*dev);
 	return 0;
+}
+
+int nifalcon_write(falcon_device dev, char* str, unsigned int size, unsigned int* bytes_written)
+{
+	FT_STATUS ftStatus;
+	if((ftStatus = FT_Write(dev, str, size, &bytes_written)) != FT_OK) return ftStatus;
+	return FT_OK;
 }

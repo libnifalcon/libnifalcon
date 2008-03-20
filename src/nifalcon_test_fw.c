@@ -66,7 +66,6 @@ void nifalcon_test_fw_init_packet(falcon_packet* packet)
 
 int nifalcon_test_fw_send_struct(falcon_device dev, falcon_packet* input, unsigned int* bytes_written)
 {
-	FT_STATUS ftStatus;
 	char input_temp[16];
 	if(!dev) return -1;
 	nifalcon_test_fw_format_input(&input_temp, input);
@@ -75,19 +74,18 @@ int nifalcon_test_fw_send_struct(falcon_device dev, falcon_packet* input, unsign
 
 int nifalcon_test_fw_send_raw(falcon_device dev, char* input, unsigned int* bytes_written)
 {
-	FT_STATUS ftStatus;
 	if(!dev) return -1;
-	return FT_Write(dev, input, 16, bytes_written);
+	return nifalcon_write(dev, input, 16, bytes_written);
 }
 
 int nifalcon_test_fw_receive_struct(falcon_device dev, falcon_packet* output, unsigned int timeout_ms, unsigned int* bytes_read)
 {
-	FT_STATUS ftStatus;
+	int status = 0;
 	char output_temp[16];
 	if(!dev) return -1;
-	if((ftStatus = nifalcon_test_fw_receive_raw(dev, &output_temp, timeout_ms, bytes_read)) != FT_OK) return ftStatus;	
+	if((status = nifalcon_test_fw_receive_raw(dev, &output_temp, timeout_ms, bytes_read)) != 0) return status;	
 	nifalcon_test_fw_format_output(&output_temp, output);
-	return ftStatus;
+	return status;
 }
 
 int nifalcon_test_fw_receive_raw(falcon_device dev, char* output, unsigned int timeout_ms, unsigned int* bytes_read)

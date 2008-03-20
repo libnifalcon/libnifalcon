@@ -16,22 +16,35 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+#ifdef LIBFTDI
+#include <ftdi.h>
+#else
 #include <ftd2xx.h>
+#endif
 
 /// Typedef over the FTDI driver handle
+#ifdef LIBFTDI
+typedef struct ftdi_context* falcon_device;
+#else
 typedef FT_HANDLE falcon_device;
+#endif
 
 /// VID for the Novint Falcon
 #define NOVINT_FALCON_VENDOR_ID 0x0403
 /// PID for the Novint Falcon
-#define NOVINT_FALCON_PRODUCT_ID 0xCB48
+#define NOVINT_FALCON_PRODUCT_ID 0xcb48
+
+
+int nifalcon_init(falcon_device* dev);
 
 /** 
  * Counts the number of devices connected to the system
+ *
+ * @param dev Pointer to device (can be null for ftd2xx)
  * 
  * @return Number of falcons connected, -1 on error
  */
-int nifalcon_get_count();
+int nifalcon_get_count(falcon_device dev);
 
 /** 
  * Opens the device
@@ -41,7 +54,7 @@ int nifalcon_get_count();
  * 
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_open(falcon_device *dev, unsigned int device_index);
+int nifalcon_open(falcon_device* dev, unsigned int device_index);
 
 /** 
  * Closes device passed to it
@@ -60,7 +73,7 @@ int nifalcon_close(falcon_device dev);
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_init(falcon_device dev, const char* firmware_filename);
+int nifalcon_load_firmware(falcon_device dev, const char* firmware_filename);
 
 /** 
  * Wrapper for FTDI read functions to do non-blocking, timeout capable read
@@ -73,5 +86,8 @@ int nifalcon_init(falcon_device dev, const char* firmware_filename);
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-FT_STATUS nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read);
+int nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned int timeout_ms, unsigned int* bytes_read);
+
+int nifalcon_write(falcon_device dev, char* str, unsigned int size, unsigned int* bytes_written);
+
 #endif
