@@ -50,6 +50,11 @@ typedef struct falcon_packet
 	unsigned char unknown; 
 } falcon_packet;
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** 
  * Zeros out the memory of a packet
  * 
@@ -101,5 +106,9 @@ int nifalcon_test_fw_receive_struct(falcon_device dev, falcon_packet* output, un
  * @return FT_OK on success, FTDI driver error on failure
  */
 int nifalcon_test_fw_receive_raw(falcon_device dev, char* output, unsigned int timeout_ms, unsigned int* bytes_read);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

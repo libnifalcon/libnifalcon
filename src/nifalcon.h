@@ -35,6 +35,10 @@ typedef FT_HANDLE falcon_device;
 #define NOVINT_FALCON_PRODUCT_ID 0xcb48
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int nifalcon_init(falcon_device* dev);
 
 /** 
@@ -90,4 +94,8 @@ int nifalcon_read_wait(falcon_device dev, char* str, unsigned int size, unsigned
 
 int nifalcon_write(falcon_device dev, char* str, unsigned int size, unsigned int* bytes_written);
 
+#ifdef __cplusplus
+}
+#endif
+	
 #endif
