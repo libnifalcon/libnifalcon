@@ -45,10 +45,10 @@ void nifalcon_test_fw_format_input(char* input_stream, falcon_packet* input)
 	for(i = 0; i < 3; ++i)
 	{
 		int idx = 1 + (i*4);
-		*(input_stream+idx) =   ((input->motor[i]) & 0xf000) >> 12;
-		*(input_stream+idx+1) = ((input->motor[i]) & 0x0f00) >> 8;
-		*(input_stream+idx+2) = ((input->motor[i]) & 0x00f0) >> 4;
-		*(input_stream+idx+3) = ((input->motor[i]) & 0x000f);
+		*(input_stream+idx) =   ((input->motor[i]) & 0x000f) ;
+		*(input_stream+idx+1) = ((input->motor[i]) & 0x00f0) >> 4;
+		*(input_stream+idx+2) = ((input->motor[i]) & 0x0f00) >> 8;
+		*(input_stream+idx+3) = ((input->motor[i]) & 0xf000) >> 12;
 	}
 	input_stream[13] = input->info;
 	input_stream[14] = input->unknown;
