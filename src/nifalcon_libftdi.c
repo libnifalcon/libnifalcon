@@ -58,6 +58,12 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 	struct ftdi_device_list *dev_list, *current;
 
 	count = ftdi_usb_find_all(*dev, &dev_list, NOVINT_FALCON_VENDOR_ID, NOVINT_FALCON_PRODUCT_ID);
+	if(count == 0)
+	{
+		ftdi_list_free(&dev_list);
+		fprintf(stderr, "no falcons available\n");
+		return EXIT_FAILURE;
+	}
 	for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);	
 	if((ret = ftdi_usb_open_dev(*dev, current->dev)) < 0) {
         fprintf(stderr, "unable to open ftdi device: %d (%s)\n", ret, ftdi_get_error_string(*dev));
