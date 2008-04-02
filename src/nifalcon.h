@@ -16,6 +16,7 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 #ifdef LIBFTDI
 #include <ftdi.h>
 #else
@@ -33,12 +34,15 @@ typedef FT_HANDLE falcon_handle;
 #define NOVINT_FALCON_VENDOR_ID 0x0403
 /// PID for the Novint Falcon
 #define NOVINT_FALCON_PRODUCT_ID 0xcb48
+/// FTDI Text Description for the Novint Falcon
+#define NOVINT_FALCON_DESCRIPTION "FALCON HAPTIC"
 
 enum {
 	NOVINT_DEVICE_NOT_FOUND_ERROR = 1000,
-	NOVINT_DEVICE_NOT_VALID_ERROR = 1001,
-	NOVINT_FIRMWARE_NOT_FOUND_ERROR = 1002,
-	NOVINT_WRITE_ERROR
+	NOVINT_DEVICE_NOT_VALID_ERROR,
+	NOVINT_FIRMWARE_NOT_FOUND_ERROR,
+	NOVINT_WRITE_ERROR,
+	NOVINT_READ_ERROR
 };
 
 #ifdef __cplusplus

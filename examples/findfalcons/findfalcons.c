@@ -8,7 +8,6 @@
  * This library is covered by the MIT License, read LICENSE for details.
  */
 
-#define LIBFTDI 
 #include "nifalcon_test_fw.h"
 #include <stdio.h>
 
@@ -39,11 +38,11 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	printf("Opened falcon\n");
-
 	printf("Loading firmware\n");
 	if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) < 0)
 	{
 		printf("Firmware not loaded! %d\n", status);
+		return 1;
 	}
 	printf("Firmware loaded\n");
 

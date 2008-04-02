@@ -17,7 +17,7 @@
 
 //Ripped from libftdi, so we can standardize how we return errors
 #define nifalcon_error_return(code, str) do {  \
-        ftdi->error_str = str;             \
+        dev->falcon_error_str = str;             \
         return code;                       \
    } while(0);
 
@@ -29,19 +29,20 @@ int nifalcon_init(falcon_device* dev)
 //Just wraps the FT_Read function in a QueueStatus call so we don't block on reads
 int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, unsigned int timeout_ms)
 {
-	unsigned long o, bytes_rx, bytes_read = 0;
+	unsigned long bytes_rx, bytes_read = 0;
 	FT_STATUS ftStatus;
-	clock_t timeout = (((float)timeout_ms * .001) * (float)CLOCKS_PER_SEC) + clock();	
+	clock_t timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();	
 
 	while(bytes_read < size)
 	{
 		if((ftStatus = FT_GetQueueStatus(dev->falcon, &bytes_rx)) != FT_OK) return ftStatus;
+		if(bytes_rx > size) bytes_rx = size - bytes_read;
 		if(bytes_rx > 0)
 		{
 			FT_Read(dev->falcon, str, bytes_rx, &bytes_read);
 			bytes_read += bytes_rx;
 		}
-		if (clock() > timeout) return FT_OK;
+		if (clock() > timeout) nifalcon_error_return(NOVINT_READ_ERROR, "timed out!");
 	}
 	return FT_OK;
 }
@@ -57,10 +58,9 @@ int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 
 int nifalcon_get_count(falcon_device* dev)
 {
-    unsigned int falcon_count;
+    unsigned int falcon_count = 0, device_count = 0, i = 0;
 	char* pcBufLD[MAX_DEVICES + 1];
 	char cBufLD[MAX_DEVICES][64];
-	int i;
 	FT_STATUS ftStatus;
 
 	for(i = 0; i < MAX_DEVICES; i++) {
@@ -70,15 +70,20 @@ int nifalcon_get_count(falcon_device* dev)
 #ifndef WIN32
 	FT_SetVIDPID(0x0403, 0xCB48);
 #endif
-	if((ftStatus = FT_ListDevices(pcBufLD, &falcon_count, FT_LIST_ALL | FT_OPEN_BY_SERIAL_NUMBER)) != FT_OK) return ftStatus;
+	if((ftStatus = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK) return ftStatus;
+	for(i = 0; i < device_count; ++i)
+	{
+		if(!strcmp(cBufLD[i], NOVINT_FALCON_DESCRIPTION)) ++falcon_count;
+	}
 	return falcon_count;
 }
 
 int nifalcon_open(falcon_device *dev, unsigned int device_index)
 {
-	unsigned int falcon_count, i;
+	unsigned int falcon_count = 0, device_count = 0, i = 0;
 	char* pcBufLD[MAX_DEVICES + 1];
 	char cBufLD[MAX_DEVICES][64];
+	char serial[64];
 	FT_STATUS ftStatus;
 
 	//If we're not using windows, we can set PID/VID to filter on. I have no idea why this isn't provided in the windows drivers.
@@ -89,19 +94,26 @@ int nifalcon_open(falcon_device *dev, unsigned int device_index)
 	for(i = 0; i < MAX_DEVICES; i++) {
 		pcBufLD[i] = cBufLD[i];
 	}
-	if((ftStatus = FT_ListDevices(pcBufLD, &falcon_count, FT_LIST_ALL | FT_OPEN_BY_SERIAL_NUMBER)) != FT_OK) return ftStatus;
+	if((ftStatus = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK) return ftStatus;
 	if(device_index > falcon_count)	return ftStatus;
-	for(i = 0; ( (i <MAX_DEVICES) && (i < falcon_count) ); i++);
+	for(i = 0; (i < device_count) && (falcon_count <= device_index); ++i)
+	{
+		if(!strcmp(cBufLD[i], NOVINT_FALCON_DESCRIPTION)) falcon_count++;
+	}
+	if(i == device_count && falcon_count == 0) return -NOVINT_DEVICE_NOT_FOUND_ERROR;
 
-	//Open and reset device
-	if((ftStatus = FT_OpenEx(cBufLD[0], FT_OPEN_BY_SERIAL_NUMBER, &(dev->falcon))) != FT_OK) return ftStatus;
+	//Now that we know the index, get the serial number
+	if((ftStatus = FT_ListDevices((PVOID)(i-1), serial, FT_LIST_BY_INDEX | FT_OPEN_BY_SERIAL_NUMBER))) return ftStatus;
+
+	//Open and reset device using serial number
+	if((ftStatus = FT_OpenEx(serial, FT_OPEN_BY_SERIAL_NUMBER, &(dev->falcon))) != FT_OK) return ftStatus;
 	
 	return FT_OK;
 }
 
 int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 {
-	unsigned long bytes_written, bytes_read;
+	unsigned long bytes_written;
 	unsigned char check_msg_1[3] = {0x0a, 0x43, 0x0d};
 	unsigned char check_buf[128];
 	FILE* firmware_file;
@@ -126,7 +138,7 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	if((ftStatus = nifalcon_write(dev, check_msg_1, 3)) != FT_OK) return ftStatus;
 	
 	//Expect 5 bytes back
-	if((ftStatus = nifalcon_read(dev, check_buf, 4, 1000)) != FT_OK) return ftStatus;	
+	if((ftStatus = nifalcon_read(dev, check_buf, 5, 1000)) != FT_OK) return ftStatus;	
 
 	//Set to:
 	// DTR Low
