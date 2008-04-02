@@ -16,9 +16,7 @@
 #include <string.h>
 
 //STRUCT FORMATTING FOR LITTLE-ENDIAN ARCHS ONLY (I'll fix this at some point)
-//Damn you PPC people, go buy an intel mac already.
-
-void nifalcon_test_fw_format_output(char* output_stream, falcon_packet* output)
+void nifalcon_test_fw_format_output(unsigned char* output_stream, falcon_packet* output)
 {
 	//Turn motor values into system specific ints
 	int i;
@@ -36,7 +34,7 @@ void nifalcon_test_fw_format_output(char* output_stream, falcon_packet* output)
 	output->unknown = output_stream[14] - 0x41;
 }
 
-void nifalcon_test_fw_format_input(char* input_stream, falcon_packet* input)
+void nifalcon_test_fw_format_input(unsigned char* input_stream, falcon_packet* input)
 {
 	//Turn system-specific ints into motor values
 	int i;
@@ -58,38 +56,37 @@ void nifalcon_test_fw_format_input(char* input_stream, falcon_packet* input)
 	}
 }
 
-
 void nifalcon_test_fw_init_packet(falcon_packet* packet)
 {
 	memset(packet, 0, sizeof(falcon_packet));
 }
 
-int nifalcon_test_fw_send_struct(falcon_device dev, falcon_packet* input, unsigned int* bytes_written)
+int nifalcon_test_fw_send_struct(falcon_device* dev, falcon_packet* input)
 {
-	char input_temp[16];
-	if(!dev) return -1;
-	nifalcon_test_fw_format_input(&input_temp, input);
-	return nifalcon_test_fw_send_raw(dev, input_temp, bytes_written);
+	unsigned char input_temp[16];
+	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	nifalcon_test_fw_format_input(input_temp, input);
+	return nifalcon_test_fw_send_raw(dev, input_temp);
 }
 
-int nifalcon_test_fw_send_raw(falcon_device dev, char* input, unsigned int* bytes_written)
+int nifalcon_test_fw_send_raw(falcon_device* dev, unsigned char* input)
 {
-	if(!dev) return -1;
-	return nifalcon_write(dev, input, 16, bytes_written);
+	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	return nifalcon_write(dev, input, 16);
 }
 
-int nifalcon_test_fw_receive_struct(falcon_device dev, falcon_packet* output, unsigned int timeout_ms, unsigned int* bytes_read)
+int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, unsigned int timeout_ms)
 {
-	int status = 0;
-	char output_temp[16];
-	if(!dev) return -1;
-	if((status = nifalcon_test_fw_receive_raw(dev, &output_temp, timeout_ms, bytes_read)) != 0) return status;	
-	nifalcon_test_fw_format_output(&output_temp, output);
-	return status;
+	int status = 0, bytes_read = 0;
+	unsigned char output_temp[16];
+	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	if((status = nifalcon_test_fw_receive_raw(dev, output_temp, timeout_ms)) < 0) return status;	
+	nifalcon_test_fw_format_output(output_temp, output);
+	return 0;
 }
 
-int nifalcon_test_fw_receive_raw(falcon_device dev, char* output, unsigned int timeout_ms, unsigned int* bytes_read)
+int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms)
 {
-	if(!dev) return -1;
-	return nifalcon_read_wait(dev, output, 16, timeout_ms, bytes_read); 
+	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	return nifalcon_read(dev, output, 16, timeout_ms); 
 }

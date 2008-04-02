@@ -70,7 +70,7 @@ void nifalcon_test_fw_init_packet(falcon_packet* packet);
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_test_fw_send_struct(falcon_device dev, falcon_packet* input, unsigned int* bytes_written);
+int nifalcon_test_fw_send_struct(falcon_device* dev, falcon_packet* input);
 
 /** 
  * Sends a raw string (presumed to be 16 bytes and formatted appropriately) to the falcon
@@ -81,7 +81,7 @@ int nifalcon_test_fw_send_struct(falcon_device dev, falcon_packet* input, unsign
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_test_fw_send_raw(falcon_device dev, char* input, unsigned int* bytes_written);
+int nifalcon_test_fw_send_raw(falcon_device* dev, unsigned char* input);
 
 /** 
  * Checks for data from the falcon, and returns it as a falcon_packet
@@ -93,7 +93,7 @@ int nifalcon_test_fw_send_raw(falcon_device dev, char* input, unsigned int* byte
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_test_fw_receive_struct(falcon_device dev, falcon_packet* output, unsigned int timeout_ms, unsigned int* bytes_read);
+int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, unsigned int timeout_ms);
 
 /** 
  * Checks for data from the falcon, and returns it as a raw string
@@ -105,7 +105,7 @@ int nifalcon_test_fw_receive_struct(falcon_device dev, falcon_packet* output, un
  *
  * @return FT_OK on success, FTDI driver error on failure
  */
-int nifalcon_test_fw_receive_raw(falcon_device dev, char* output, unsigned int timeout_ms, unsigned int* bytes_read);
+int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms);
 
 #ifdef __cplusplus
 }
