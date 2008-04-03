@@ -52,6 +52,7 @@ extern "C" {
 
 typedef struct falcon_device {
 	falcon_handle falcon;
+	char is_open;
 	char* falcon_error_str;	   
 } falcon_device ;
 	

@@ -24,6 +24,7 @@
 
 int nifalcon_init(falcon_device* dev)
 {
+	dev->is_open = 0;
 	(dev->falcon) = (falcon_handle)malloc(sizeof(falcon_handle));
 	return ftdi_init(dev->falcon);
 }
@@ -32,6 +33,8 @@ int nifalcon_init(falcon_device* dev)
 int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, unsigned int timeout_ms)
 {
 	int bytes_read;
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to read from an uninitialized device");
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to read from an unopened device");
 	(dev->falcon)->usb_read_timeout = timeout_ms;
 	
 	bytes_read = ftdi_read_data(dev->falcon, str, size);
@@ -42,6 +45,8 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 {
 	int bytes_written;
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to write to an uninitialized device");
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to write to an unopened device");
 	bytes_written = ftdi_write_data(dev->falcon, str, size);
 	if(bytes_written >= 0) return 0;
 	return bytes_written;
@@ -51,6 +56,7 @@ int nifalcon_get_count(falcon_device* dev)
 {
 	int count;
 	struct ftdi_device_list* dev_list[128];
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to get count on an uninitialized device");
 	count = ftdi_usb_find_all(dev->falcon, dev_list, NOVINT_FALCON_VENDOR_ID, NOVINT_FALCON_PRODUCT_ID);
 	ftdi_list_free(dev_list);
 	return count;
@@ -60,25 +66,28 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 {
 	unsigned int count, i, status, ret;
 	struct ftdi_device_list *dev_list, *current;
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to open an uninitialized device");
 
 	count = ftdi_usb_find_all(dev->falcon, &dev_list, NOVINT_FALCON_VENDOR_ID, NOVINT_FALCON_PRODUCT_ID);
 	if(count <= 0 || device_index > count)
 	{
 		ftdi_list_free(&dev_list);
-		if(count == 0) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "No devices connected to system");
+		if(count == 0) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "no devices connected to system");
 		return count;
 	}
 	for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);
 	ret = ftdi_usb_open_dev(dev->falcon, current->dev);
 	ftdi_list_free(&dev_list);
+	dev->is_open = 1;
 	return ret;
 }
 
 int nifalcon_close(falcon_device* dev)
 {
-	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to close an invalid falcon device");
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to close an uninitialized device");
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to close an unopened device");
 	ftdi_usb_close(dev->falcon);
-	ftdi_deinit(dev->falcon);
+	dev->is_open = 0;
 	return 0;
 }
 
@@ -90,6 +99,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	unsigned char check_buf[128];
 	int status;
 	FILE* firmware_file;
+	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to load firmware on an uninitialized device");
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to load firmware on an unopened device");
 	if((status = ftdi_usb_reset(dev->falcon)) < 0) return status;
 	//Set to:
 	// 9600 baud
