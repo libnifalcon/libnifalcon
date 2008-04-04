@@ -17,9 +17,10 @@
 #define MAX_DEVICES 128
 
 //Ripped from libftdi, so we can standardize how we return errors
-#define nifalcon_error_return(code, str) do {  \
-        dev->falcon_error_str = str;             \
-        return -code;                       \
+#define nifalcon_error_return(code, str) do {	   \
+		dev->falcon_error_str = str;			   \
+        dev->falcon_error_code = -code;			   \
+        return -code;							   \
    } while(0);
 
 int nifalcon_init(falcon_device* dev)
@@ -73,7 +74,7 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 	{
 		ftdi_list_free(&dev_list);
 		if(count == 0) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "no devices connected to system");
-		return count;
+		nifalcon_error_return(NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR, "device index out of range");
 	}
 	for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);
 	ret = ftdi_usb_open_dev(dev->falcon, current->dev);
@@ -157,3 +158,11 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	return 0;
 }
 
+char* nifalcon_get_error_string(falcon_device* dev)
+{
+	if(dev->falcon_error_code > NOVINT_DEVICE_NOT_FOUND_ERROR)
+	{
+		return dev->falcon->error_str;
+	}
+	return dev->falcon_error_str;	
+}

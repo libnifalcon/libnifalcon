@@ -34,14 +34,14 @@ int main(int argc, char** argv)
 	printf("Opening falcon\n");
 	if((status = nifalcon_open(&dev, 0)) < 0)
 	{
-		printf ("Cannot open falcon! %d\n", status);
+		printf ("Cannot open falcon! Error: %s\n", nifalcon_get_error_string(&dev));
 		return 1;
 	}
 	printf("Opened falcon\n");
 	printf("Loading firmware\n");
 	if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) < 0)
 	{
-		printf("Firmware not loaded! %d\n", status);
+		printf("Firmware not loaded! Error: %s\n", nifalcon_get_error_string(&dev));
 		return 1;
 	}
 	printf("Firmware loaded\n");

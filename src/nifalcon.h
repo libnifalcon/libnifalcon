@@ -40,6 +40,7 @@ typedef FT_HANDLE falcon_handle;
 enum {
 	NOVINT_DEVICE_NOT_FOUND_ERROR = 1000,
 	NOVINT_DEVICE_NOT_VALID_ERROR,
+	NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR,
 	NOVINT_FIRMWARE_NOT_FOUND_ERROR,
 	NOVINT_WRITE_ERROR,
 	NOVINT_READ_ERROR
@@ -52,7 +53,8 @@ extern "C" {
 
 typedef struct falcon_device {
 	falcon_handle falcon;
-	char is_open;
+	int falcon_error_code;
+	char is_open;	
 	char* falcon_error_str;	   
 } falcon_device ;
 	
@@ -128,7 +130,7 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
  */
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size);
 
-char* nifalcon_get_error_string(falcon_device dev);
+char* nifalcon_get_error_string(falcon_device* dev);
 	
 #ifdef __cplusplus
 }
