@@ -98,43 +98,39 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	unsigned char check_msg_1[3] = {0x0a, 0x43, 0x0d};
 	unsigned char check_msg_2[1] = "A";
 	unsigned char check_buf[128];
-	int status;
 	FILE* firmware_file;
 	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to load firmware on an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to load firmware on an unopened device");
-	if((status = ftdi_usb_reset(dev->falcon)) < 0) return status;
+	if((dev->falcon_error_code = ftdi_usb_reset(dev->falcon)) < 0) return dev->falcon_error_code;
 	//Set to:
 	// 9600 baud
 	// 8n1
 	// No Flow Control
 	// RTS Low
 	// DTR High	
-	if((status = ftdi_set_baudrate(dev->falcon, 9600)) < 0) return status;
-	if((status = ftdi_set_line_property(dev->falcon, BITS_8, STOP_BIT_1, NONE)) < 0) return status;
-	if((status = ftdi_setflowctrl(dev->falcon, SIO_DISABLE_FLOW_CTRL)) < 0) return status;
-	if((status = ftdi_setrts(dev->falcon, 0)) < 0) return status;
-	if((status = ftdi_setdtr(dev->falcon, 0)) < 0) return status;
-	if((status = ftdi_setdtr(dev->falcon, 1)) < 0) return status;
-
+	if((dev->falcon_error_code = ftdi_set_baudrate(dev->falcon, 9600)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_set_line_property(dev->falcon, BITS_8, STOP_BIT_1, NONE)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_setflowctrl(dev->falcon, SIO_DISABLE_FLOW_CTRL)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_setrts(dev->falcon, 0)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_setdtr(dev->falcon, 0)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_setdtr(dev->falcon, 1)) < 0) return dev->falcon_error_code;
 	//Send 3 bytes: 0x0a 0x43 0x0d
-	if((status = nifalcon_write(dev, check_msg_1, 3)) < 0) return status;
-
+	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1, 3)) < 0) return dev->falcon_error_code;
 	//Expect 5 bytes back
-	if((status = nifalcon_read(dev, check_buf, 4, 1000)) < 0) return status;	
-
+	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 5, 1000)) < 0) return dev->falcon_error_code;	
 	//Set to:
 	// DTR Low
 	// 140000 baud (0x15 clock ticks per signal)
-	if((status = ftdi_setdtr(dev->falcon,0)) < 0) return status;
-	if((status = ftdi_set_baudrate(dev->falcon, 140000)) < 0) return status;
-	if((status = ftdi_usb_purge_buffers(dev->falcon)) < 0) return status;
+	if((dev->falcon_error_code = ftdi_setdtr(dev->falcon,0)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_set_baudrate(dev->falcon, 140000)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = ftdi_usb_purge_buffers(dev->falcon)) < 0) return dev->falcon_error_code;
 
 	//Send "A" character
-	if((status = nifalcon_write(dev, check_msg_2, 1)) < 0) return status;
+	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_2, 1)) < 0) return dev->falcon_error_code;
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((status = nifalcon_read(dev, check_buf, 1, 1000)) < 0) return status;	
+	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 1, 1000)) < 0) return dev->falcon_error_code;	
 
 	firmware_file = fopen(firmware_filename, "rb");
 
@@ -147,20 +143,20 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	{
 		int firmware_bytes_read;
 		firmware_bytes_read = fread(check_buf, 1, 128, firmware_file);
-		if((status = nifalcon_write(dev, check_buf, firmware_bytes_read)) < 0) return status;
-		if((status = nifalcon_read(dev, check_buf, firmware_bytes_read, 1000)) < 0) return status;	
+		if((dev->falcon_error_code = nifalcon_write(dev, check_buf, firmware_bytes_read)) < 0) return dev->falcon_error_code;
+		if((dev->falcon_error_code = nifalcon_read(dev, check_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_error_code;	
 		if(firmware_bytes_read < 128) break;
 	}
 	fclose(firmware_file);
 
-	if((status = ftdi_set_baudrate(dev->falcon, 1456312)) < 0) return status;
+	if((dev->falcon_error_code = ftdi_set_baudrate(dev->falcon, 1456312)) < 0) return dev->falcon_error_code;
 
 	return 0;
 }
 
 char* nifalcon_get_error_string(falcon_device* dev)
 {
-	if(dev->falcon_error_code > NOVINT_DEVICE_NOT_FOUND_ERROR)
+	if(dev->falcon_error_code > -NOVINT_DEVICE_NOT_FOUND_ERROR)
 	{
 		return dev->falcon->error_str;
 	}

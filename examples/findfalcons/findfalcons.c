@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 	printf("Loading firmware\n");
 	if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) < 0)
 	{
-		printf("Firmware not loaded! Error: %s\n", nifalcon_get_error_string(&dev));
+		printf("Firmware not loaded! Error: %d %s\n", dev.falcon_error_code, nifalcon_get_error_string(&dev));
 		return 1;
 	}
 	printf("Firmware loaded\n");
