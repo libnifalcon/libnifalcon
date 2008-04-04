@@ -26,6 +26,8 @@
 int nifalcon_init(falcon_device* dev)
 {
 	dev->is_open = 0;
+	dev->falcon_error_str = "";
+	dev->falcon_error_code = 0;	   
 	(dev->falcon) = (falcon_handle)malloc(sizeof(falcon_handle));
 	return ftdi_init(dev->falcon);
 }
@@ -77,7 +79,7 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 		nifalcon_error_return(NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR, "device index out of range");
 	}
 	for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);
-	ret = ftdi_usb_open_dev(dev->falcon, current->dev);
+	if((dev->falcon_error_code = ftdi_usb_open_dev(dev->falcon, current->dev)) < 0) return dev->falcon_error_code;
 	ftdi_list_free(&dev_list);
 	dev->is_open = 1;
 	return ret;
