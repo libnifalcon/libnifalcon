@@ -46,18 +46,34 @@ int main(int argc, char** argv)
 	}
 	printf("Firmware loaded\n");
 
-	if(nifalcon_test_fw_send_raw(&dev, input) < 0) return 1;
 	printf("Send Raw: %s\n", input);
-	if(nifalcon_test_fw_receive_raw(&dev, output, PACKET_TIMEOUT) < 0) return 1;
+	if(nifalcon_test_fw_send_raw(&dev, input) < 0)
+	{
+		printf("Write error: %s\n", nifalcon_get_error_string(&dev));
+		return 1;
+	}
 	printf("Receive Raw: %s\n", output);
+	if(nifalcon_test_fw_receive_raw(&dev, output, PACKET_TIMEOUT) < 0)
+	{
+		printf("Read error: %s\n", nifalcon_get_error_string(&dev));
+		return 1;
+	}
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
 	while(1)
 	{
 		printf("Writing %d\n", count);
-		if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0) return 1;
+		if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
+		{
+			printf("Write error: %s\n", nifalcon_get_error_string(&dev));
+			return 1;
+		}
 		printf("reading %d\n", count);
-		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0) return 1;
+		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
+		{
+			printf("Read error: %s\n", nifalcon_get_error_string(&dev));
+			return 1;
+		}
 		printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
 		++count;
 	}
