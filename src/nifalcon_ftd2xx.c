@@ -73,9 +73,9 @@ int nifalcon_get_count(falcon_device* dev)
 		pcBufLD[i] = cBufLD[i];
 	}
 	//If we're not using windows, we can set PID/VID to filter on. I have no idea why this isn't provided in the windows drivers.
-#ifndef WIN32
-	FT_SetVIDPID(0x0403, 0xCB48);
-#endif
+//#ifndef WIN32
+//	FT_SetVIDPID(0x0403, 0xCB48);
+//#endif
 	if((dev->falcon_error_code = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK) return -dev->falcon_error_code;
 	for(i = 0; i < device_count; ++i)
 	{
@@ -190,7 +190,7 @@ int nifalcon_close(falcon_device* dev)
 
 char* nifalcon_get_error_string(falcon_device* dev)
 {
-	if(dev->falcon_error_code > NOVINT_DEVICE_NOT_FOUND_ERROR)
+	if(dev->falcon_error_code > -NOVINT_DEVICE_NOT_FOUND_ERROR)
 	{
 		switch (dev->falcon_error_code)
 		{

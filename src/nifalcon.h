@@ -31,9 +31,9 @@ typedef FT_HANDLE falcon_handle;
 #endif
 
 /// VID for the Novint Falcon
-#define NOVINT_FALCON_VENDOR_ID 0x0403
+#define NIFALCON_VENDOR_ID 0x0403
 /// PID for the Novint Falcon
-#define NOVINT_FALCON_PRODUCT_ID 0xcb48
+#define NIFALCON_PRODUCT_ID 0xcb48
 /// FTDI Text Description for the Novint Falcon
 #define NOVINT_FALCON_DESCRIPTION "FALCON HAPTIC"
 
