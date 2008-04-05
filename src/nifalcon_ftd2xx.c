@@ -23,7 +23,10 @@
    } while(0);
 
 int nifalcon_init(falcon_device* dev)
-{	
+{
+	dev->is_open = 0;
+	dev->falcon_error_str = "";
+	dev->falcon_error_code = 0;
 	return FT_OK;
 }
 
@@ -33,6 +36,8 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 	unsigned long bytes_rx, bytes_read = 0;
 	clock_t timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();	
 
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to read from an unopened device");
+	
 	while(bytes_read < size)
 	{
 		if((dev->falcon_error_code = FT_GetQueueStatus(dev->falcon, &bytes_rx)) != FT_OK) return -dev->falcon_error_code;
@@ -50,8 +55,11 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 {
 	unsigned long bytes_written;
+
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to write to an unopened device");
+
 	if((dev->falcon_error_code = FT_Write(dev->falcon, str, size, &bytes_written)) != FT_OK) return -dev->falcon_error_code;
-	if(bytes_written < size) return NOVINT_WRITE_ERROR;
+	if(bytes_written < size) nifalcon_error_return(NOVINT_WRITE_ERROR, "write error");
 	return FT_OK;
 }
 
@@ -60,7 +68,7 @@ int nifalcon_get_count(falcon_device* dev)
     unsigned int falcon_count = 0, device_count = 0, i = 0;
 	char* pcBufLD[MAX_DEVICES + 1];
 	char cBufLD[MAX_DEVICES][64];
-
+	
 	for(i = 0; i < MAX_DEVICES; i++) {
 		pcBufLD[i] = cBufLD[i];
 	}
@@ -92,20 +100,19 @@ int nifalcon_open(falcon_device *dev, unsigned int device_index)
 		pcBufLD[i] = cBufLD[i];
 	}
 	if((dev->falcon_error_code = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK) return -dev->falcon_error_code;
-	if(device_count == 0) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "no devices connected to system");
-	if(device_index > falcon_count)	nifalcon_error_return(NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR, "device index out of range");
 	for(i = 0; (i < device_count) && (falcon_count <= device_index); ++i)
 	{
 		if(!strcmp(cBufLD[i], NOVINT_FALCON_DESCRIPTION)) falcon_count++;
 	}
-	if(i == device_count && falcon_count == 0) return -NOVINT_DEVICE_NOT_FOUND_ERROR;
+	if(falcon_count == 0) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "no devices connected to system");
+	if(device_index > falcon_count)	nifalcon_error_return(NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR, "device index out of range");
 
 	//Now that we know the index, get the serial number
 	if((dev->falcon_error_code = FT_ListDevices((PVOID)(i-1), serial, FT_LIST_BY_INDEX | FT_OPEN_BY_SERIAL_NUMBER))) return -dev->falcon_error_code;
 
 	//Open and reset device using serial number
 	if((dev->falcon_error_code = FT_OpenEx(serial, FT_OPEN_BY_SERIAL_NUMBER, &(dev->falcon))) != FT_OK) return -dev->falcon_error_code;
-	
+	dev->is_open = 1;
 	return FT_OK;
 }
 
@@ -116,6 +123,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	unsigned char check_buf[128];
 	FILE* firmware_file;
 	
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried load firmware to an unopened device");
+
 	if((dev->falcon_error_code = FT_ResetDevice(dev->falcon)) != FT_OK) return -dev->falcon_error_code;
 
 	//Set to:
@@ -155,7 +164,7 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	if(!firmware_file)
 	{
-		return -1;
+		nifalcon_error_return(NOVINT_FIRMWARE_NOT_FOUND_ERROR, "cannot find falcon firmware file");
 	}
 	while(!feof(firmware_file))
 	{
@@ -173,7 +182,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 int nifalcon_close(falcon_device* dev)
 {
-	if(!dev->falcon) return -1;
+	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to close an unopened device");
+	dev->is_open = 0;
 	FT_Close(dev->falcon);
 	return 0;
 }
