@@ -89,7 +89,7 @@ int nifalcon_close(falcon_device* dev)
 {
 	if(!dev->falcon) nifalcon_error_return(NOVINT_DEVICE_NOT_VALID_ERROR, "tried to close an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NOVINT_DEVICE_NOT_FOUND_ERROR, "tried to close an unopened device");
-	ftdi_usb_close(dev->falcon);
+	if((dev->falcon_error_code = ftdi_usb_close(dev->falcon)) < 0) return dev->falcon_error_code;
 	dev->is_open = 0;
 	return 0;
 }
