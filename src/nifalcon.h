@@ -25,9 +25,9 @@
 
 /// Typedef for translation between libftdi and ftd2xx devices
 #ifdef LIBFTDI
-typedef struct ftdi_context* falcon_handle;
+typedef struct ftdi_context* falcon_handle; /*!< libftdi typedef for falcon access */
 #else
-typedef FT_HANDLE falcon_handle;
+typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
 #endif
 
 /// VID for the Novint Falcon
@@ -35,33 +35,35 @@ typedef FT_HANDLE falcon_handle;
 /// PID for the Novint Falcon
 #define NIFALCON_PRODUCT_ID 0xcb48
 /// FTDI Text Description for the Novint Falcon
-#define NOVINT_FALCON_DESCRIPTION "FALCON HAPTIC"
+#define NIFALCON_DESCRIPTION "FALCON HAPTIC"
 
 enum {
-	NOVINT_DEVICE_NOT_FOUND_ERROR = 1000,
-	NOVINT_DEVICE_NOT_VALID_ERROR,
-	NOVINT_DEVICE_INDEX_OUT_OF_RANGE_ERROR,
-	NOVINT_FIRMWARE_NOT_FOUND_ERROR,
-	NOVINT_WRITE_ERROR,
-	NOVINT_READ_ERROR
+	NIFALCON_DEVICE_NOT_FOUND_ERROR = 1000, /*!< No devices found on the system */
+	NIFALCON_DEVICE_NOT_VALID_ERROR, /*!< Device not initialized or opened */
+	NIFALCON_DEVICE_INDEX_OUT_OF_RANGE_ERROR, /*!< Device index for opening out of range of available devices */
+	NIFALCON_FIRMWARE_NOT_FOUND_ERROR, /*!< Firmware file not found */
+	NIFALCON_WRITE_ERROR, /*!< Write timeout hit, etc... */
+	NIFALCON_READ_ERROR /*!< Read timeout hit, etc... */
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
+/** Falcon Device Structure
+	Holds the device accessor, as well as state information about the device.
+ */
 typedef struct falcon_device {
-	falcon_handle falcon;
-	int falcon_error_code;
-	char is_open;	
-	char* falcon_error_str;	   
+	falcon_handle falcon; /*!< FTDI object to access falcon */
+	char is_open; /*!< Boolean set to true when device is opened successfully, false when closed/uninitialized */
+	int falcon_error_code; /*!< Error code returned from either libnifalcon or ftdi access library */
+	char* falcon_error_str;	 /*!< Error string for libnifalcon specific errors */   
 } falcon_device ;
 	
 /** 
  * Initializes the usb bus and device handle
  *
- * @param *dev Pointer to device (can be null for ftd2xx)
+ * @param dev Device structure
  * 
  * @return 0 on success, < 0 on error
  */
@@ -70,7 +72,7 @@ int nifalcon_init(falcon_device* dev);
 /** 
  * Counts the number of devices connected to the system
  *
- * @param dev Initialized device handle
+ * @param dev Initialized device structure
  * 
  * @return Number of falcons connected, < 0 on error
  */
@@ -79,7 +81,7 @@ int nifalcon_get_count(falcon_device* dev);
 /** 
  * Opens the device
  * 
- * @param dev Pointer to initialized device handle
+ * @param dev Initialized device structure
  * @param device_index < 0 for first available device, otherwise index of the device to open (for multiple devices)
  * 
  * @return 0 on success, < 0 on error
@@ -89,7 +91,7 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index);
 /** 
  * Closes device passed to it
  * 
- * @param dev Device handle to close
+ * @param dev Opened device structure to close
  *
  * @return 0 on success, < 0 on error
  */
@@ -98,7 +100,7 @@ int nifalcon_close(falcon_device* dev);
 /** 
  * Runs initialization sequence for the device, including loading the firmware onto the internal microcontroller
  *
- * @param dev Opened device handle to initialize
+ * @param dev Opened device structure to initialize
  * @param firmware_filename Filename of the firmware to load onto the device
  *
  * @return 0 on success, < 0 on error
@@ -108,7 +110,7 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename);
 /** 
  * Wrapper for read functions to do non-blocking, timeout capable read
  *
- * @param dev Initialized and opened device handle 
+ * @param dev Opened device structure 
  * @param str Buffer to store data received from device
  * @param size Size of data to expect from device
  * @param timeout_ms Read timeout, in milliseconds
@@ -121,15 +123,21 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 /** 
  * Wrapper for write functions
  *
- * @param dev Initialized and opened device handle
+ * @param dev Opened device structure
  * @param str Buffer to send to device
  * @param size Size of data to send to device
- * @param bytes_written Pointer to an int, stores the number of bytes written
  *
  * @return 0 on success, < 0 on error
  */
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size);
 
+/** 
+ * Returns error string
+ *
+ * @param dev Device structure
+ *
+ * @return error string from device structure
+ */
 char* nifalcon_get_error_string(falcon_device* dev);
 	
 #ifdef __cplusplus

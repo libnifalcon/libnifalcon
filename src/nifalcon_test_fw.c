@@ -64,14 +64,14 @@ void nifalcon_test_fw_init_packet(falcon_packet* packet)
 int nifalcon_test_fw_send_struct(falcon_device* dev, falcon_packet* input)
 {
 	unsigned char input_temp[16];
-	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	if(!dev->falcon) return NIFALCON_DEVICE_NOT_VALID_ERROR;
 	nifalcon_test_fw_format_input(input_temp, input);
 	return nifalcon_test_fw_send_raw(dev, input_temp);
 }
 
 int nifalcon_test_fw_send_raw(falcon_device* dev, unsigned char* input)
 {
-	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	if(!dev->falcon) return NIFALCON_DEVICE_NOT_VALID_ERROR;
 	return nifalcon_write(dev, input, 16);
 }
 
@@ -79,7 +79,7 @@ int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, u
 {
 	int status = 0, bytes_read = 0;
 	unsigned char output_temp[16];
-	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	if(!dev->falcon) return NIFALCON_DEVICE_NOT_VALID_ERROR;
 	if((status = nifalcon_test_fw_receive_raw(dev, output_temp, timeout_ms)) < 0) return status;	
 	nifalcon_test_fw_format_output(output_temp, output);
 	return 0;
@@ -87,6 +87,6 @@ int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, u
 
 int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms)
 {
-	if(!dev->falcon) return NOVINT_DEVICE_NOT_VALID_ERROR;
+	if(!dev->falcon) return NIFALCON_DEVICE_NOT_VALID_ERROR;
 	return nifalcon_read(dev, output, 16, timeout_ms); 
 }
