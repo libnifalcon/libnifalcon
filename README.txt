@@ -13,7 +13,7 @@ libnifalcon is a C-based development library for the NovInt Falcon, and is an op
 
 libnifalcon provides basic functionality to connect to the falcon and load firmware to the internal microcontroller. In addition, it comes with sample functionality made available through the firmware available in NovInt's drivers (the novint.bin file in TestUtilties and the nifalcon_test_fw files for the library source). This firmware is distributed in the firmware directory of the source distribution, and is required for the findfalcons utility to run.
 
-libnifalcon can use one of two libraries to access the falcon: ftd2xx, distributed by the FTDI company, or libftdi, an open source version of the FTDI drivers. See the Platform Specific Notes for more information on what to use on what platform.
+Compilation directions are included in the INSTALL.txt file
 
 =========================
 NovInt Falcon Information
@@ -49,6 +49,26 @@ libftdi
 
 http://www.intra2net.com/de/produkte/opensource/ftdi/
 
+=====================
+ftd2xx versus libftdi
+=====================
+
+libnifalcon can use one of two libraries to access the falcon: ftd2xx, distributed by the FTDI company, or libftdi, an open source version of the FTDI drivers. 
+
+FTD2XX:
+Windows: Fine
+Linux: Mostly Works?
+64-bit Linux: No 64-bit drivers available
+OS X: Locks up on write function after < 1000 loops
+
+libftdi:
+Windows: Untested (Recommended to use FTD2XX)
+Linux: Stable, but runs at quarter speed of windows FTD2XX
+64-bit Linux: Stable, but runs at quarter speed of windows FTD2XX 
+OS X: Stable, but runs at quarter speed of windows FTD2XX
+
+So, basically, ftd2xx is stable on windows, iffy everywhere else. libftdi is slow, but works everywhere. Just expect things to be choppy as you'll be lucky to get a ~300hz update rate.
+
 ==================
 Platform Specifics
 ==================
@@ -74,6 +94,5 @@ Linux
 OSX
 ---
 
-- libftdi is recommended for OS X, for stability reasons.
-- If you must use ftd2xx: OS X seems to block on writes after a very short period of time. This does not happen with libftdi. Stopping and restarting the program seems to clear up the issue. I have no idea what the problem is here, nor do I plan on trying to debug it since libftdi works fine.
+- If you use ftd2xx: OS X seems to block on writes after a very short period of time. This does not happen with libftdi. Stopping and restarting the program seems to clear up the issue. I have no idea what the problem is here. 
 - libnifalcon has been known to close the falcon incorrectly, at which point the USB cable must be unplugged and replugged for the falcon to start working again. If things tend to freeze up during initlization, this is probably the case.
