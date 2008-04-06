@@ -42,7 +42,8 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 	
 	bytes_read = ftdi_read_data(dev->falcon, str, size);
 	if(bytes_read >= 0) return 0;
-	return (bytes_read);	
+	dev->falcon_error_code = bytes_read;
+	return bytes_read;	
 }
 
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
@@ -52,6 +53,7 @@ int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to write to an unopened device");
 	bytes_written = ftdi_write_data(dev->falcon, str, size);
 	if(bytes_written >= 0) return 0;
+	dev->falcon_error_code = bytes_written;
 	return bytes_written;
 }
 
