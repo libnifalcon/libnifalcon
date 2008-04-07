@@ -25,7 +25,7 @@
 
 /// Typedef for translation between libftdi and ftd2xx devices
 #ifdef LIBFTDI
-typedef struct ftdi_context* falcon_handle; /*!< libftdi typedef for falcon access */
+typedef struct ftdi_context falcon_handle; /*!< libftdi typedef for falcon access */
 #else
 typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
 #endif
@@ -55,6 +55,7 @@ extern "C" {
  */
 typedef struct falcon_device {
 	falcon_handle falcon; /*!< FTDI object to access falcon */
+	char is_initialized;  /*!< Boolean set to true when device is opened successfully, false when closed/uninitialized */
 	char is_open; /*!< Boolean set to true when device is opened successfully, false when closed/uninitialized */
 	int falcon_error_code; /*!< Error code returned from either libnifalcon or ftdi access library */
 	char* falcon_error_str;	 /*!< Error string for libnifalcon specific errors */   

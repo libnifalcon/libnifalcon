@@ -24,6 +24,7 @@
 
 int nifalcon_init(falcon_device* dev)
 {
+	dev->is_initialized = 1;
 	dev->is_open = 0;
 	dev->falcon_error_str = "";
 	dev->falcon_error_code = 0;

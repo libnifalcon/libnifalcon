@@ -10,8 +10,19 @@
 
 #include "nifalcon_test_fw.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
 
 #define PACKET_TIMEOUT 1000
+
+falcon_device dev;
+
+void sigproc()
+{
+	printf("closing falcon and quitting\n");
+	nifalcon_close(&dev);
+	exit(0);
+}
 
 int main(int argc, char** argv)
 {
@@ -20,8 +31,10 @@ int main(int argc, char** argv)
 	unsigned char input[17] = "<AAAAAAAAAAAAAA>";
 	unsigned char output[17];	
 	falcon_packet input_packet, output_packet;
-	falcon_device dev;
 
+	signal(SIGINT, sigproc);
+	signal(SIGQUIT, sigproc);
+	
 	nifalcon_init(&dev);
 	
 	num_falcons = nifalcon_get_count(&dev);
@@ -58,6 +71,8 @@ int main(int argc, char** argv)
 		printf("Read error: %s\n", nifalcon_get_error_string(&dev));
 		return 1;
 	}
+	
+
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
 	while(1)
