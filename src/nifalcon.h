@@ -17,17 +17,15 @@
 #include <windows.h>
 #endif
 
-#ifdef LIBFTDI
+#if defined(LIBFTDI)
 #include <ftdi.h>
-#else
-#include <ftd2xx.h>
-#endif
-
-/// Typedef for translation between libftdi and ftd2xx devices
-#ifdef LIBFTDI
 typedef struct ftdi_context falcon_handle; /*!< libftdi typedef for falcon access */
-#else
+//#elifdef LIBFTD2XX
+#elif defined(LIBFTD2XX)
+#include <ftd2xx.h>
 typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
+#else
+#error "Either LIBFTDI or LIBFTD2XX (but not both) must be defined to compile libnifalcon"
 #endif
 
 /// VID for the Novint Falcon
