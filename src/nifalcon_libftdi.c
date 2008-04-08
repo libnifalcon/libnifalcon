@@ -72,6 +72,7 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 	unsigned int count, i, status;
 	struct ftdi_device_list *dev_list, *current;
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to open an uninitialized device");
+	if(dev->is_open) nifalcon_close(dev);
 
 	count = ftdi_usb_find_all(&(dev->falcon), &dev_list, NIFALCON_VENDOR_ID, NIFALCON_PRODUCT_ID);
 	if(count <= 0 || device_index > count)
