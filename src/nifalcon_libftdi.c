@@ -35,26 +35,20 @@ int nifalcon_init(falcon_device* dev)
 //Sets the USB timeout for reads then reads
 int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, unsigned int timeout_ms)
 {
-	int bytes_read;
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to read from an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to read from an unopened device");
 	(dev->falcon).usb_read_timeout = timeout_ms;
 	
-	bytes_read = ftdi_read_data(&(dev->falcon), str, size);
-	if(bytes_read >= 0) return 0;
-	dev->falcon_error_code = bytes_read;
-	return bytes_read;	
+	dev->falcon_error_code = ftdi_read_data(&(dev->falcon), str, size);
+	return dev->falcon_error_code;	
 }
 
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 {
-	int bytes_written;
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to write to an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to write to an unopened device");
-	bytes_written = ftdi_write_data(&(dev->falcon), str, size);
-	if(bytes_written >= 0) return 0;
-	dev->falcon_error_code = bytes_written;
-	return bytes_written;
+	dev->falcon_error_code = ftdi_write_data(&(dev->falcon), str, size);
+	return dev->falcon_error_code;
 }
 
 int nifalcon_get_count(falcon_device* dev)
@@ -100,13 +94,18 @@ int nifalcon_close(falcon_device* dev)
 int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 {
 	unsigned int bytes_written, bytes_read;
-	unsigned char check_msg_1[3] = {0x0a, 0x43, 0x0d};
-	unsigned char check_msg_2[1] = "A";
+	unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
+	unsigned char check_msg_1_recv[4] = {0x0a, 0x44, 0x2c, 0x0d};
+	unsigned char check_msg_2[1] = {0x41};
 	unsigned char send_buf[128], receive_buf[128];
 	FILE* firmware_file;
+	int k;
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to load firmware on an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to load firmware on an unopened device");
-
+  
+	//Clear out current buffers to make sure we have a fresh start
+	if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;	
+	
 	//Set to:
 	// 9600 baud
 	// 8n1
@@ -120,9 +119,21 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	if((dev->falcon_error_code = ftdi_setdtr(&(dev->falcon), 0)) < 0) return dev->falcon_error_code;
 	if((dev->falcon_error_code = ftdi_setdtr(&(dev->falcon), 1)) < 0) return dev->falcon_error_code;
 	//Send 3 bytes: 0x0a 0x43 0x0d
-	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1, 3)) < 0) return dev->falcon_error_code;
-	//Expect 5 bytes back
-	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 5, 1000)) < 0) return dev->falcon_error_code;
+
+	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1_send, 3)) < 0) return dev->falcon_error_code;
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 5, 100000)) < 0) return dev->falcon_error_code;
+	if(dev->falcon_error_code < 4) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, < 3 bytes receieved)");			
+	for(k = 0; k < 4; ++k)
+	{
+		//Sometimes, we get the buffer back with a 0 at the beginning. Sometimes we don't. I don't know why.
+		//Therefore, we run the check backwards.
+		if(check_msg_1_recv[4-k-1] != receive_buf[dev->falcon_error_code-k-1])
+		{
+			nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, wrong info receieved)");			
+		}
+	}
+	if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;
+	
 	//Set to:
 	// DTR Low
 	// 140000 baud (0x15 clock ticks per signal)
@@ -134,9 +145,10 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return dev->falcon_error_code;
-
-	//Is it possible I missed a byte here? We seem to get back more than I was expecting.
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 1, 100000)) < 0) return dev->falcon_error_code;
+	if(dev->falcon_error_code < 1) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, nothing receieved)");
+	if(receive_buf[0] != check_msg_2[0]) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, wrong character received)");
+	
 	if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;	
 
 	firmware_file = fopen(firmware_filename, "rb");
@@ -154,12 +166,15 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 		//Make sure we clear out anything else that could've happened, otherwise our send/receive buffers misalign
 		if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;	
 		if((dev->falcon_error_code = nifalcon_write(dev, send_buf, firmware_bytes_read)) < 0) return dev->falcon_error_code;
-		if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_error_code;
+		if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < firmware_bytes_read)
+		{			
+			nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (firmware send step, 128 byte reply not received)");
+		}
 		for(i = 0; i < firmware_bytes_read; ++i)
 		{
 			if(send_buf[i] != receive_buf[i])
 			{
-				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (are you connected to a hub? If so, connect directly to machine!)");
+				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (firmware send step, checksum does not match)");
 			}
 		}
 			
