@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 	falcon_packet input_packet, output_packet;
 
 	signal(SIGINT, sigproc);
-	signal(SIGQUIT, sigproc);
 
 	//Uncomment on mac/linux if you want a whole bunch of debugging messages
 	//for libftdi, you'll also have to compile against libusb
@@ -63,7 +62,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	printf("Firmware loaded\n");
-	sleep(2);
+	//sleep(2);
 	printf("Send Raw: %s\n", input);
 	if(nifalcon_test_fw_send_raw(&dev, input) < 0)
 	{

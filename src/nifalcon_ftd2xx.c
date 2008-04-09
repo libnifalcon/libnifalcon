@@ -170,17 +170,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 		int firmware_bytes_read;
 		int i;
 		firmware_bytes_read = fread(send_buf, 1, 128, firmware_file);
-		//Make sure we clear out anything else that could've happened, otherwise our send/receive buffers misalign
-		if((dev->falcon_status_code = FT_Purge(dev->falcon, FT_PURGE_RX)) != FT_OK) return -dev->falcon_status_code;
 		if((dev->falcon_status_code = nifalcon_write(dev, send_buf, firmware_bytes_read)) < 0) return dev->falcon_status_code;
 		if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_status_code;
-		for(i = 0; i < firmware_bytes_read; ++i)
-		{
-			if(send_buf[i] != receive_buf[i])
-			{
-				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (are you connected to a hub? If so, connect directly to machine!)");
-			}
-		}
 			
 		if(firmware_bytes_read < 128) break;
 	}
