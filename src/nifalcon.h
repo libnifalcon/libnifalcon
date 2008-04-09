@@ -56,8 +56,8 @@ typedef struct falcon_device {
 	falcon_handle falcon; /*!< FTDI object to access falcon */
 	char is_initialized;  /*!< Boolean set to true when device is opened successfully, false when closed/uninitialized */
 	char is_open; /*!< Boolean set to true when device is opened successfully, false when closed/uninitialized */
-	int falcon_error_code; /*!< Error code returned from either libnifalcon or ftdi access library */
-	char* falcon_error_str;	 /*!< Error string for libnifalcon specific errors */   
+	int falcon_status_code; /*!< Status code returned from either libnifalcon or ftdi access library (can also be bytes read/written, etc...) */
+	char* falcon_status_str;	 /*!< Status string for libnifalcon specific errors and messages */   
 } falcon_device ;
 	
 /** 

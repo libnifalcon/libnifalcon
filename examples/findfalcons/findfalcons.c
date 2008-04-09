@@ -34,6 +34,11 @@ int main(int argc, char** argv)
 
 	signal(SIGINT, sigproc);
 	signal(SIGQUIT, sigproc);
+
+	//Uncomment on mac/linux if you want a whole bunch of debugging messages
+	//for libftdi, you'll also have to compile against libusb
+	//it's static compiled in for windows
+	//usb_set_debug(4)
 	
 	nifalcon_init(&dev);
 	
@@ -54,11 +59,11 @@ int main(int argc, char** argv)
 	printf("Loading firmware\n");
 	if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) < 0)
 	{
-		printf("Firmware not loaded! Error: %d %s\n", dev.falcon_error_code, nifalcon_get_error_string(&dev));
+		printf("Firmware not loaded! Error: %d %s\n", dev.falcon_status_code, nifalcon_get_error_string(&dev));
 		return 1;
 	}
 	printf("Firmware loaded\n");
-
+	sleep(2);
 	printf("Send Raw: %s\n", input);
 	if(nifalcon_test_fw_send_raw(&dev, input) < 0)
 	{
@@ -84,7 +89,7 @@ int main(int argc, char** argv)
 			return 1;
 		}
 		printf("reading %d\n", count);
-		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
+		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, 0) < 0)
 		{
 			printf("Read error: %s\n", nifalcon_get_error_string(&dev));
 			return 1;
