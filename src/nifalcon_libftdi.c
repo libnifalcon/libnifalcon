@@ -102,7 +102,7 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	unsigned int bytes_written, bytes_read;
 	unsigned char check_msg_1[3] = {0x0a, 0x43, 0x0d};
 	unsigned char check_msg_2[1] = "A";
-	unsigned char check_buf[128];
+	unsigned char send_buf[128], receive_buf[128];
 	FILE* firmware_file;
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to load firmware on an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to load firmware on an unopened device");
@@ -122,7 +122,7 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	//Send 3 bytes: 0x0a 0x43 0x0d
 	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1, 3)) < 0) return dev->falcon_error_code;
 	//Expect 5 bytes back
-	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 5, 1000)) < 0) return dev->falcon_error_code;	
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 5, 1000)) < 0) return dev->falcon_error_code;
 	//Set to:
 	// DTR Low
 	// 140000 baud (0x15 clock ticks per signal)
@@ -134,7 +134,10 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 1, 1000)) < 0) return dev->falcon_error_code;	
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return dev->falcon_error_code;
+
+	//Is it possible I missed a byte here? We seem to get back more than I was expecting.
+	if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;	
 
 	firmware_file = fopen(firmware_filename, "rb");
 
@@ -146,9 +149,20 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	while(!feof(firmware_file))
 	{
 		int firmware_bytes_read;
-		firmware_bytes_read = fread(check_buf, 1, 128, firmware_file);
-		if((dev->falcon_error_code = nifalcon_write(dev, check_buf, firmware_bytes_read)) < 0) return dev->falcon_error_code;
-		if((dev->falcon_error_code = nifalcon_read(dev, check_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_error_code;	
+		int i;
+		firmware_bytes_read = fread(send_buf, 1, 128, firmware_file);
+		//Make sure we clear out anything else that could've happened, otherwise our send/receive buffers misalign
+		if((dev->falcon_error_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_error_code;	
+		if((dev->falcon_error_code = nifalcon_write(dev, send_buf, firmware_bytes_read)) < 0) return dev->falcon_error_code;
+		if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_error_code;
+		for(i = 0; i < firmware_bytes_read; ++i)
+		{
+			if(send_buf[i] != receive_buf[i])
+			{
+				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (are you connected to a hub? If so, connect directly to machine!)");
+			}
+		}
+			
 		if(firmware_bytes_read < 128) break;
 	}
 	fclose(firmware_file);

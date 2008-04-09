@@ -35,8 +35,8 @@ int nifalcon_init(falcon_device* dev)
 int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, unsigned int timeout_ms)
 {
 	unsigned long bytes_rx, bytes_read = 0;
-	clock_t timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();	
-
+	clock_t timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();		
+	
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to read from an unopened device");
 	
 	while(bytes_read < size)
@@ -45,12 +45,12 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 		if(bytes_rx > size) bytes_rx = size - bytes_read;
 		if(bytes_rx > 0)
 		{
-			FT_Read(dev->falcon, str, bytes_rx, &bytes_read);
+			if((dev->falcon_error_code = FT_Read(dev->falcon, str, bytes_rx, &bytes_read)) != FT_OK) return -dev->falcon_error_code;
 			bytes_read += bytes_rx;
 		}
-		if (clock() > timeout) nifalcon_error_return(NIFALCON_READ_ERROR, "read timed out");
+		if (clock() > timeout) return bytes_read;
 	}
-	return FT_OK;
+	return bytes_read;
 }
 
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
@@ -58,10 +58,8 @@ int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
 	unsigned long bytes_written;
 
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to write to an unopened device");
-
 	if((dev->falcon_error_code = FT_Write(dev->falcon, str, size, &bytes_written)) != FT_OK) return -dev->falcon_error_code;
-	if(bytes_written < size) nifalcon_error_return(NIFALCON_WRITE_ERROR, "write error");
-	return FT_OK;
+	return bytes_written;
 }
 
 int nifalcon_get_count(falcon_device* dev)
@@ -74,9 +72,9 @@ int nifalcon_get_count(falcon_device* dev)
 		pcBufLD[i] = cBufLD[i];
 	}
 	//If we're not using windows, we can set PID/VID to filter on. I have no idea why this isn't provided in the windows drivers.
-//#ifndef WIN32
-//	FT_SetVIDPID(0x0403, 0xCB48);
-//#endif
+#ifndef WIN32
+	FT_SetVIDPID(0x0403, 0xCB48);
+#endif
 	if((dev->falcon_error_code = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK) return -dev->falcon_error_code;
 	for(i = 0; i < device_count; ++i)
 	{
@@ -121,7 +119,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 {
 	unsigned long bytes_written;
 	unsigned char check_msg_1[3] = {0x0a, 0x43, 0x0d};
-	unsigned char check_buf[128];
+	unsigned char check_msg_2[1] = "A";
+	unsigned char send_buf[128], receive_buf[128];
 	FILE* firmware_file;
 	
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried load firmware to an unopened device");
@@ -142,24 +141,23 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	if((dev->falcon_error_code = FT_SetDtr(dev->falcon)) != FT_OK) return -dev->falcon_error_code;
 
 	//Send 3 bytes: 0x0a 0x43 0x0d
-	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1, 3)) != FT_OK) return -dev->falcon_error_code;
+	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_1, 3)) < 3) return -dev->falcon_error_code;
 	
 	//Expect 5 bytes back
-	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 5, 1000)) != FT_OK) return -dev->falcon_error_code;	
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 5, 1000)) < 5) return -dev->falcon_error_code;	
 
 	//Set to:
 	// DTR Low
 	// 140000 baud (0x15 clock ticks per signal)
 	if((dev->falcon_error_code = FT_ClrDtr(dev->falcon)) != FT_OK) return -dev->falcon_error_code;
 	if((dev->falcon_error_code = FT_SetBaudRate(dev->falcon, 140000)) != FT_OK) return -dev->falcon_error_code;
-	if((dev->falcon_error_code = FT_Purge(dev->falcon, FT_PURGE_RX)) != FT_OK) return -dev->falcon_error_code;
 
 	//Send "A" character
-	if((dev->falcon_error_code = FT_Write(dev->falcon, "A", 1, &bytes_written)) != FT_OK) return -dev->falcon_error_code;
+	if((dev->falcon_error_code = nifalcon_write(dev, check_msg_2, 1)) < 0) return -dev->falcon_error_code;
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((dev->falcon_error_code = nifalcon_read(dev, check_buf, 1, 1000)) != FT_OK) return -dev->falcon_error_code;	
+	if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return -dev->falcon_error_code;	
 
 	firmware_file = fopen(firmware_filename, "rb");
 
@@ -170,9 +168,20 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	while(!feof(firmware_file))
 	{
 		int firmware_bytes_read;
-		firmware_bytes_read = fread(check_buf, 1, 128, firmware_file);
-		if((dev->falcon_error_code = nifalcon_write(dev, check_buf, firmware_bytes_read)) != FT_OK) return -dev->falcon_error_code;
-		if((dev->falcon_error_code = nifalcon_read(dev, check_buf, firmware_bytes_read, 1000)) != FT_OK) return -dev->falcon_error_code;	
+		int i;
+		firmware_bytes_read = fread(send_buf, 1, 128, firmware_file);
+		//Make sure we clear out anything else that could've happened, otherwise our send/receive buffers misalign
+		if((dev->falcon_error_code = FT_Purge(dev->falcon, FT_PURGE_RX)) != FT_OK) return -dev->falcon_error_code;
+		if((dev->falcon_error_code = nifalcon_write(dev, send_buf, firmware_bytes_read)) < 0) return dev->falcon_error_code;
+		if((dev->falcon_error_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < 0) return dev->falcon_error_code;
+		for(i = 0; i < firmware_bytes_read; ++i)
+		{
+			if(send_buf[i] != receive_buf[i])
+			{
+				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (are you connected to a hub? If so, connect directly to machine!)");
+			}
+		}
+			
 		if(firmware_bytes_read < 128) break;
 	}
 	fclose(firmware_file);
