@@ -18,6 +18,8 @@
 /// Bit values for flags in the info portion of the packet
 /// All directions are as viewed from the front of the falcon
 
+/// Input - OR in info to turn on Homing Mode
+#define NOVINT_TEST_FW_HOMING_MODE 0x01
 /// Input - OR in info to turn Green LED On
 #define NOVINT_TEST_FW_LED_GREEN 0x02
 /// Input - OR in info to turn Blue LED On
