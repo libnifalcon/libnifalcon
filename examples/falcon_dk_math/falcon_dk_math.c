@@ -5,8 +5,8 @@
 #include <signal.h>
 #include <GLUT/glut.h>
 
-#define WINDOW_WIDTH 500
-#define WINDOW_HEIGHT 500
+#define WINDOW_WIDTH 700
+#define WINDOW_HEIGHT 700
 #define PACKET_TIMEOUT 1000
 
 falcon_device dev;
@@ -35,6 +35,7 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 	switch ( key )
 	{
     case 27:        // When Escape Is Pressed...
+		nifalcon_close(&dev);
 		exit ( 0 );   // Exit The Program
 		break;        // Ready For Next Case
     default:        // Now Wrap It Up
@@ -43,11 +44,12 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 }
 
 float angle = 0.0;
-	falcon_packet input_packet, output_packet;
+falcon_packet input_packet, output_packet;
+float view_z = 20.0f;
 
 GLvoid DrawGLScene(GLvoid)
 {	
-
+/*
 	//fixed foot length
 	float f = 16.0;
 	//End Effector length
@@ -56,17 +58,18 @@ GLvoid DrawGLScene(GLvoid)
 	float re = 10.3094;
 	//thigh length
 	float rf = 8.0;
-/*
+*/
+
 	//fixed foot length
 	float f = 3.0;
 	//End Effector length
 	float e = 3.0;
 	//shin length
-	float re = 4.0;
+	float re = 5.0;
 	//thigh length
 	float rf = 4.0;
-*/
-	//Thigh angles
+
+	//Default thigh angles
 	float t1 = 55.19;
 	float t2 = 30.5;
 	float t3 = 37.8;
@@ -80,14 +83,15 @@ GLvoid DrawGLScene(GLvoid)
 	GLUquadric* gluq = gluNewQuadric();
 
 
-	input_packet.info = NOVINT_TEST_FW_HOMING_MODE;
+	input_packet.info |= NOVINT_TEST_FW_HOMING_MODE;
 	if(!(output_packet.info & (NOVINT_TEST_FW_HOMED_AXIS1 | NOVINT_TEST_FW_HOMED_AXIS2 | NOVINT_TEST_FW_HOMED_AXIS3)))
 	{
+		input_packet.info &= ~NOVINT_TEST_FW_LED_GREEN;
 		input_packet.info |= NOVINT_TEST_FW_LED_RED;
-//		return;
 	}
 	else
 	{
+		input_packet.info &= ~NOVINT_TEST_FW_LED_RED;
 		input_packet.info |= NOVINT_TEST_FW_LED_GREEN;
 		t1 = (((float)output_packet.motor[0] + 2000.0f)/4000.0f) * 90.0f;
 		t2 = (((float)output_packet.motor[1] + 2000.0f)/4000.0f) * 90.0f;
@@ -98,15 +102,15 @@ GLvoid DrawGLScene(GLvoid)
 	if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
 	{
 		printf("Write error: %s\n", nifalcon_get_error_string(&dev));
-		return 1;
+		return;
 	}
-	if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
+	if(nifalcon_test_fw_receive_struct(&dev, &output_packet, 0) < 0)
 	{
 		printf("Read error: %s\n", nifalcon_get_error_string(&dev));
-		return 1;
+		return;
 	}
 
-	printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
+	//printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
 
 	dtr = 3.1415926/180.0;
 	r3 = sqrt(3.0);
@@ -115,16 +119,31 @@ GLvoid DrawGLScene(GLvoid)
 	tr2 = t2*dtr;
 	tr3 = t3*dtr;
 	tr = 2.0*r3;
-		
+	
 	ef = (e-f)/tr;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	//Camera 
-	gluLookAt(cos(angle*(3.1415926/180.0))*40.0f, 0, sin(angle*(3.1415926/180.0)) * 40.0f, 0, 0, 0, 0, 1, 0);
-//	gluLookAt(0, 0, 60.0f, 0, 0, 0, 0, 1, 0);
-	angle += 0.3;
+	//Camera
+	if(output_packet.info & NOVINT_TEST_FW_BUTTON4)
+	{
+		angle += 1.0;
+	}
+	if(output_packet.info & NOVINT_TEST_FW_BUTTON1)
+	{
+		angle -= 1.0;
+	}
+	if(output_packet.info & NOVINT_TEST_FW_BUTTON3)
+	{
+		view_z += 0.75;
+	}
+	if(output_packet.info & NOVINT_TEST_FW_BUTTON2)
+	{
+		view_z -= 0.75;
+	}   		
+
+	gluLookAt(cos(angle*(3.1415926/180.0))*view_z, 0, sin(angle*(3.1415926/180.0)) * view_z, 0, 0, 0, 0, 1, 0);
 
 	glRotatef(180.0f, 0,0,1);
 	
@@ -134,7 +153,7 @@ GLvoid DrawGLScene(GLvoid)
 	glBegin(GL_TRIANGLES);
 		glVertex3f( -f*.5,  -ff_ir, 0.0f);
 		glVertex3f(  f*.5,  -ff_ir, 0.0f);
-		glVertex3f(    0.0f, ff_ccr, 0.0f);
+		glVertex3f(   0.0f, ff_ccr, 0.0f);
 	glEnd();
 
 	//Fixed Frame Endpoint Check
@@ -313,7 +332,7 @@ GLvoid ReSizeGLScene(int width, int height)
 int main(int argc, char** argv)
 {
 
-	int num_falcons, status;
+	int num_falcons, status, i;
 	unsigned int count;
 	unsigned char input[17] = "<AAAAAAAAAAAAAA>";
 	unsigned char output[17];	
@@ -343,9 +362,17 @@ int main(int argc, char** argv)
 	}
 	printf("Opened falcon\n");
 	printf("Loading firmware\n");
-	if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) < 0)
+	for(i = 0; i < 10; ++i)
 	{
-		printf("Firmware not loaded! Error: %d %s\n", dev.falcon_error_code, nifalcon_get_error_string(&dev));
+		if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) == 0)
+		{
+			break;
+		}
+		printf("Firmware not loaded! Error: %d %s\n", dev.falcon_status_code, nifalcon_get_error_string(&dev));
+	}
+	if(i==10)
+	{
+		printf("Cannot load firmware, bailing...");
 		return 1;
 	}
 	printf("Firmware loaded\n");

@@ -43,12 +43,12 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 	(dev->falcon).usb_read_timeout = timeout_ms;
 
 	//If we're reading as fast as possible, just read and return
-	if(timeout_ms == 0)
-	{
+//	if(timeout_ms == 0)
+//	{
 		dev->falcon_status_code = ftdi_read_data(&(dev->falcon), str, size);
 		return dev->falcon_status_code;
-	}
-	
+//	}
+/*	
 	//libusb's ideas of timeouts seem iffy (or, on OS X, completely non-existant)
 	//So, wrap them. We should usually only need this for firmware sending.
 	timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();		
@@ -59,7 +59,8 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 		bytes_read += dev->falcon_status_code;
 		if (timeout_ms > 0 && clock() > timeout) return bytes_read;
 	}
-	return bytes_read;	
+	return bytes_read;
+*/
 }
 
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)

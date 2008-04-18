@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	for(i = 0; i < 5; ++i)
 	{
 		if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) == 0) break;
-		printf("Firmware not loaded! Error: %d %s\nRetrying...\n", dev.falcon_error_code, nifalcon_get_error_string(&dev));
+		printf("Firmware not loaded! Error: %d %s\nRetrying...\n", dev.falcon_status_code, nifalcon_get_error_string(&dev));
 	}
 	if(i == 5)
 	{
