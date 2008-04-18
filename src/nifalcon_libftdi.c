@@ -143,10 +143,10 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	//Send 3 bytes: 0x0a 0x43 0x0d
 
 	if((dev->falcon_status_code = nifalcon_write(dev, check_msg_1_send, 3)) < 0) return dev->falcon_status_code;
-	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 5, 100000)) < 0) return dev->falcon_status_code;
-	while(dev->falcon_status_code < 4)
+	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 4, 1000)) < 0) return dev->falcon_status_code;
+/*
+	if(dev->falcon_status_code < 4)
 	{
-		if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 5, 100000)) < 0) return dev->falcon_status_code;
 		nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, < 3 bytes receieved)");
 	}
 	for(k = 0; k < 4; ++k)
@@ -158,7 +158,8 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 			nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, wrong info receieved)");			
 		}
 	}
-	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;
+*/
+//	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;
 	
 	//Set to:
 	// DTR Low
@@ -171,9 +172,9 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	//Expect back 1 byte:
 	// 0x41 ("A")
-	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 1, 100000)) < 0) return dev->falcon_status_code;
-	if(dev->falcon_status_code < 1) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, nothing receieved)");
-	if(receive_buf[0] != check_msg_2[0]) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, wrong character received)");
+	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return dev->falcon_status_code;
+//	if(dev->falcon_status_code < 1) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, nothing receieved)");
+//	if(receive_buf[0] != check_msg_2[0]) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, wrong character received)");
 	
 	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;	
 
@@ -203,7 +204,6 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 				nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (firmware send step, checksum does not match)");
 			}
 		}
-			
 		if(firmware_bytes_read < 128) break;
 	}
 	fclose(firmware_file);
