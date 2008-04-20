@@ -59,7 +59,7 @@ GLvoid DrawGLScene(GLvoid)
 	//thigh length
 	float rf = 8.0;
 */
-
+	int i;
 	//fixed foot length
 	float f = 3.0;
 	//End Effector length
@@ -260,21 +260,79 @@ GLvoid DrawGLScene(GLvoid)
 
 	}
 
+	//Sphere collision circle midpoints
+	glPushMatrix();
+	glTranslatef((e1x+e2x)/2,(e1y+e2y)/2,(e1z+e2z)/2);
+	gluSphere(gluq, 0.5, 100, 100);
+	glPopMatrix();
+	//Sphere collision circle midpoints
+	glPushMatrix();
+	glTranslatef((e2x+e3x)/2,(e2y+e3y)/2,(e2z+e3z)/2);
+	gluSphere(gluq, 0.5, 100, 100);
+	glPopMatrix();
+	//Sphere collision circle midpoints
+	glPushMatrix();
+	glTranslatef((e1x+e3x)/2,(e1y+e3y)/2,(e1z+e3z)/2);
+	gluSphere(gluq, 0.5, 100, 100);
+	glPopMatrix();
+
+
+	printf("e1 %f %f %f\ne2 %f %f %f\ne3 %f %f %f\n", e1x, e1y, e1z, e2x, e2y, e2z, e3x, e3y, e3z);
 	while(1)
 	{		
-		float w1,x1,y1,z1,w2,x2,y2,z2,ar, b1, b2, d;
-		float x,y,z,a,b,c,p01,p02,p03,p23,p31,p12,p2;
+		float w1,x1,y1,z1,w2,x2,y2,z2,w3,x3,y3,z3, ar, b1, b2, d;
+		float x,y,z,a,b,c,p01,p02,p03,p23,p31,p12,p2,xa,ya,za,xb,yb,zb;
 
 		w1=((e1y*e1y)-(e2x*e2x)-(e2y*e2y)+(e1z*e1z)-(e2z*e2z))/2.0;
 		x1=e2x;
 		y1=e2y-e1y;
 		z1=e2z-e1z;
+
+		glLineWidth(4.0f);
+		glColor4f(1,1,1,1);
+		glPushMatrix();
+		glTranslatef((e1x+e2x)/2,(e1y+e2y)/2,(e1z+e2z)/2);
+		glBegin(GL_LINES);
+		glVertex3d(x1*-25, y1*-25, z1*-25);
+		glVertex3d(x1*25, y1*25, z1*25);		
+		glEnd();
+		glPopMatrix();
+
 		
 		w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
 		x2=e3x-e2x;
 		y2=e3y-e2y;
 		z2=e3z-e2z;
-		
+
+		glLineWidth(4.0f);
+		glColor4f(1,1,1,1);
+		glPushMatrix();
+		glTranslatef((e2x+e3x)/2,(e2y+e3y)/2,(e2z+e3z)/2);
+		glBegin(GL_LINES);
+		glVertex3d(x2*-25, y2*-25, z2*-25);
+		glVertex3d(x2*25, y2*25, z2*25);		
+		glEnd();
+		glPopMatrix();
+
+		w3=((e1y*e1y)-(e3x*e3x)-(e3y*e3y)+(e1z*e1z)-(e3z*e3z))/2.0;
+		x3=e3x;
+		y3=e3y-e1y;
+		z3=e3z-e1z;
+
+		glLineWidth(4.0f);
+		glColor4f(1,1,1,1);
+		glPushMatrix();
+		glTranslatef((e1x+e3x)/2,(e1y+e3y)/2,(e1z+e3z)/2);
+		glBegin(GL_LINES);
+		glVertex3d(x3*-25, y3*-25, z3*-25);
+		glVertex3d(x3*25, y3*25, z3*25);		
+		glEnd();
+		glPopMatrix();
+
+
+		printf("1 %f %f %f %f\n", w1, x1, y1, z1);
+		printf("2 %f %f %f %f\n", w2, x2, y2, z2);
+
 		p01=y1*z2-y2*z1;
 		if(!p01)
 		{
@@ -287,6 +345,9 @@ GLvoid DrawGLScene(GLvoid)
 		p23=w1*x2-w2*x1;
 		p31=w1*y2-w2*y1;
 		p12=w1*z2-w2*z1;
+
+		printf("p %f %f %f %f\n", p01, p02, p03, p23, p31, p12);
+		
 		p2=p01*p01;
 		
 		a=p2+(p02*p02)+(p03*p03);
@@ -296,20 +357,36 @@ GLvoid DrawGLScene(GLvoid)
 		
 		c=(b1*b1)+(b2*b2)-(p2*(re*re));
 		ar=(b*b)-(a*c);
-		if(ar < 0)
+		if(ar < 0)	
 		{
 			printf("ar < 0\n");
 			break;
 		}
 		
 		d=sqrt(ar);
+		printf("quad %f %f %f %f\n", a, b, c, d);
 		x=(b+d)/a;
 		y=(p02*x-p12)/p01;
 		z=(p03*x+p31)/p01;
-		printf("SOLUTION: %f %f %f\n", x, y, z);
+
+		printf("SOLUTION 1: %f %f %f\n", x, y, z);
+		glPushMatrix();
 		glTranslatef(x, y, z);
 		glColor3f(1.0, 1.0, 1.0);
 		gluSphere(gluq, 1, 100, 100);
+		glPopMatrix();
+
+		xa=((-b+d)/a);
+		ya=-((p02*xa-p12)/p01);
+		za=-((p03*xa+p31)/p01);
+		xa=-xa;
+		printf("SOLUTION 2: %f %f %f\n", x, y, z);
+		glPushMatrix();
+		glTranslatef(xa, ya, za);
+		glColor3f(1.0, 1.0, 1.0);
+		gluSphere(gluq, 1, 100, 100);
+		glPopMatrix();
+
 		break;
 	}
 	
