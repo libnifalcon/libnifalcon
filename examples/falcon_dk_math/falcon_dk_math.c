@@ -61,6 +61,29 @@ float angle = 0.0;
 falcon_packet input_packet, output_packet;
 float view_z = 20.0f;
 
+typedef struct point3f {
+	float x;
+	float y;
+	float z;
+} point3f;
+
+typedef struct point4f {
+	float w;
+	float x;
+	float y;
+	float z;
+} point4f;
+
+GLvoid ComputeDirectKinematics(GLVoid)
+{
+}
+
+GLvoid RenderTimer(GLint arg)
+{
+	glutPostRedisplay();
+	glutTimerFunc(30, RenderTimer, 0);
+}
+
 GLvoid DrawGLScene(GLvoid)
 {	
 
@@ -353,7 +376,8 @@ GLvoid DrawGLScene(GLvoid)
 	{		
 		float w1,x1,y1,z1,w2,x2,y2,z2,w3,x3,y3,z3, ar, b1, b2, d;
 		float x,y,z,a,b,c,p01,p02,p03,p23,p31,p12,p2,xa,ya,za,xb,yb,zb;
-
+		float rot1, ve1x, ve1y, ve1z, ve1, rx, ry, rz;
+		
 		//Compute the homogenenous coordinates of the intersection plane
 		//of the constraint spheres of knee e1 and e2, and e2 and e3
 		//The original equation for this looks like
@@ -366,14 +390,7 @@ GLvoid DrawGLScene(GLvoid)
 		x1=e2x;
 		y1=e2y-e1y;
 		z1=e2z-e1z;
-
-		
-		w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
-		x2=e3x-e2x;
-		y2=e3y-e2y;
-		z2=e3z-e2z;
-
-
+	
 		glLineWidth(4.0f);
 		glColor4f(1,1,1,1);
 		glPushMatrix();
@@ -383,6 +400,11 @@ GLvoid DrawGLScene(GLvoid)
 		glVertex3d(x1*25, y1*25, z1*25);		
 		glEnd();
 		glPopMatrix();
+		
+		w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
+		x2=e3x-e2x;
+		y2=e3y-e2y;
+		z2=e3z-e2z;
 
 		glLineWidth(4.0f);
 		glColor4f(1,1,1,1);
@@ -480,9 +502,7 @@ GLvoid DrawGLScene(GLvoid)
 		break;
 	}
 	
-
 	glutSwapBuffers();
-	glutPostRedisplay();
 }
 
 GLvoid ReSizeGLScene(int width, int height)
@@ -553,6 +573,8 @@ int main(int argc, char** argv)
 	glutKeyboardFunc    ( keyboard );
 	glutDisplayFunc(DrawGLScene);
 	glutReshapeFunc(ReSizeGLScene);
+	glutIdleFunc(ComputeDirectKinematics);
+	glutTimerFunc(0, RenderTimer, 0);
 	glutMainLoop();
 
 	/*
