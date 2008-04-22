@@ -49,6 +49,11 @@ float view_z = 20.0f;
 
 GLvoid DrawGLScene(GLvoid)
 {	
+
+
+
+	/******** Parallel bot unit input section ********/
+	/******** Units are assumed to be inches ********/
 /*
 	//fixed foot length
 	float f = 16.0;
@@ -59,29 +64,47 @@ GLvoid DrawGLScene(GLvoid)
 	//thigh length
 	float rf = 8.0;
 */
-	int i;
-	//fixed foot length
+
+	//Units for the novint falcon
+
+	//fixed frame length
+	//I don't have a damn /clue/ what this really is
+	//That's part of why I wrote this simulator, so I can just throw numbers until something seems right.
+	//It's probably derivable from the measuring the closest distance between the fixed frame origin and
+	//the innermost workspace point, but really, do I care?
 	float f = 3.0;
+
 	//End Effector length
+	//Measured with a ruler!
 	float e = 3.0;
+	
 	//shin length
+	//Measued with a ruler! Includes the thigh/shin and shin/effector jointy thingy length
 	float re = 5.0;
+	
 	//thigh length
+	//It's bent, so it's funky. Let's just say 4.
 	float rf = 4.0;
 
 	//Default thigh angles
 	float t1 = 55.19;
 	float t2 = 30.5;
 	float t3 = 37.8;
+
+	/******** Rendery goodness initialization ********/
 	
-	//Circumradius and inradius of FF equilateral triangle
+	//Circumradius and inradius of FF equilateral triangle (Needed for rendering fixed frame)
 	float ff_ccr = (1.0/3.0)*(sqrt(3.0))*f;
 	float ff_ir = (1.0/6.0)*(sqrt(3.0))*f;
+
+	GLUquadric* gluq = gluNewQuadric();
+	
+	/******** Silly extra variable initialization section ********/
 	
 	float dtr, tr, tr1, tr2, tr3, r3, ef, e1x, e1y, e1z, e2x, e2y, e2z, e3x, e3y, e3z;
-	
-	GLUquadric* gluq = gluNewQuadric();
+	int i;
 
+	/******** Falcon I/O section ********/
 
 	input_packet.info |= NOVINT_TEST_FW_HOMING_MODE;
 	if(!(output_packet.info & (NOVINT_TEST_FW_HOMED_AXIS1 | NOVINT_TEST_FW_HOMED_AXIS2 | NOVINT_TEST_FW_HOMED_AXIS3)))
@@ -93,10 +116,17 @@ GLvoid DrawGLScene(GLvoid)
 	{
 		input_packet.info &= ~NOVINT_TEST_FW_LED_RED;
 		input_packet.info |= NOVINT_TEST_FW_LED_GREEN;
+
+		// Lots of assumptions being made here.
+		// First off, I have no idea what the actual encoder min/max for the falcon is.
+		// However, in practice it seems to be around -/+1750. This puts us close to but
+		// not exactly at 90 degrees from the center of the fixed frame on either side.
+		// Therefore, the encoder values are buffered around 250 ticks in to account for
+		// this.
+
 		t1 = (((float)output_packet.motor[0] + 2000.0f)/4000.0f) * 90.0f;
 		t2 = (((float)output_packet.motor[1] + 2000.0f)/4000.0f) * 90.0f;
 		t3 = (((float)output_packet.motor[2] + 2000.0f)/4000.0f) * 90.0f;
-		printf("ANGLES %f %f %f\n", t1, t2, t3);
 	}
 
 	if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
@@ -110,7 +140,9 @@ GLvoid DrawGLScene(GLvoid)
 		return;
 	}
 
-	//printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
+	/******** Camera/Viewpoint Setup ********/
+
+	//Convert all input angles to radians since that's what the c math funcs eat
 
 	dtr = 3.1415926/180.0;
 	r3 = sqrt(3.0);
@@ -145,8 +177,13 @@ GLvoid DrawGLScene(GLvoid)
 
 	gluLookAt(cos(angle*(3.1415926/180.0))*view_z, 0, sin(angle*(3.1415926/180.0)) * view_z, 0, 0, 0, 0, 1, 0);
 
+	//This was originally written to look like the drawings in the paper
+	//To make it look like the falcon, just rotate everything 180 on the z.
+
 	glRotatef(180.0f, 0,0,1);
-	
+
+	/******** Fixed Frame Rendering ********/
+
 	glPushMatrix();
 	//Fixed Frame Marker
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
@@ -176,37 +213,47 @@ GLvoid DrawGLScene(GLvoid)
 	//Origin Marker
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	gluSphere(gluq,.25, 100, 100);
-   
+
+	/******** Hip/Hip Restraint/Knee Calculation and Rendering ********/
+
+	// All of our calculations here use rf (thigh length, also the radius of the straint sphere
+	// of the thigh) as a scalar.
+	// Pseudocode: 
+	// for N[1:3]	
+	// eNy = (rf*cos(trN)-ef)/2.0)
+	// eNx = (eNy * sqrt(3))
+	// eNz = -rf*(sin(tr1));
+	
 	//D1
 	{
 		glPushMatrix();	
 		glColor4f(1.0f, 1.0f, 0.0f, 0.2f);
-		//Hip 
+		//Hip Placement Sphere
 		glTranslatef(0.0f, -ff_ir/2, 0.0f);
 		gluSphere(gluq, 1, 100, 100);
 		
 		//Hip Restraint Sphere
 		glColor4f(1.0f, 1.0f, 0.0f, 0.1f);
 		gluSphere(gluq, rf, 100, 100);
-		glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
-		gluSphere(gluq, 1, 100, 100);
 
 		glPopMatrix();
 
+		//No e1x because it's always 0. Yay physical constraints!
 		e1y=ef-rf*cos(tr1);
 		e1z=-rf*sin(tr1);
-
 		
 		glPushMatrix();
 		glTranslatef(0, e1y, e1z);
+		//Knee Placement Sphere
 		glColor3f(1.0, 1.0, 1.0);
 		gluSphere(gluq, 1, 100, 100);
+		//Knee Restraint Sphere
 		glColor4f(0.0, 0.0, 1.0, 0.1);
 		gluSphere(gluq, re, 100, 100);
 		glPopMatrix();
 	}
 
-	//D2
+	//D2 - See comments of D1
 	if(1)
 	{
 		glPushMatrix();
@@ -233,7 +280,7 @@ GLvoid DrawGLScene(GLvoid)
 
 	}
 
-	//D3
+	//D3 - See comments of D1
 	if(1)
 	{
 		glPushMatrix();
@@ -277,16 +324,42 @@ GLvoid DrawGLScene(GLvoid)
 	glPopMatrix();
 
 
-	printf("e1 %f %f %f\ne2 %f %f %f\ne3 %f %f %f\n", e1x, e1y, e1z, e2x, e2y, e2z, e3x, e3y, e3z);
+	//printf("e1 %f %f %f\ne2 %f %f %f\ne3 %f %f %f\n", e1x, e1y, e1z, e2x, e2y, e2z, e3x, e3y, e3z);
+
+	/******** Shin/Effector Position Calculation and Rendering ********/
+
+	//Basically, we're finding the two intersection points of the 3 constraint spheres
+	//with centers at the knee positions and radii of the knee constraint length (re).
+	//This is done by finding the intersection of two of the constraint spheres, then
+	//testing the third against the resulting circle to find the 2 intersection points.
+	//We then need to figure out which point is valid. This choice is made by the location
+	//of knees 2 and 3, as can be seen in the code below.
+	
+	//How not to do flow control... :)
 	while(1)
 	{		
 		float w1,x1,y1,z1,w2,x2,y2,z2,w3,x3,y3,z3, ar, b1, b2, d;
 		float x,y,z,a,b,c,p01,p02,p03,p23,p31,p12,p2,xa,ya,za,xb,yb,zb;
 
+		//Compute the homogenenous coordinates of the intersection plane
+		//of the constraint spheres of knee e1 and e2, and e2 and e3
+		//The original equation for this looks like
+		// {w:x:y:z} =
+		// { (rf^2 - re^2 + eNx^2 - e(N+1)x^2 + eNy^2 - e(N+1)y^2 + eNz^2 - e(N+1)z^2) / 2 : e(N+1)x - eNx : e(N+1)y - eNy : e(N+1)z - eNz }
+		
+		//Coords for e1/e2
+		//w1 looks funky because e1x is 0, so a few things get shifted for readability
 		w1=((e1y*e1y)-(e2x*e2x)-(e2y*e2y)+(e1z*e1z)-(e2z*e2z))/2.0;
 		x1=e2x;
 		y1=e2y-e1y;
 		z1=e2z-e1z;
+
+		
+		w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
+		x2=e3x-e2x;
+		y2=e3y-e2y;
+		z2=e3z-e2z;
+
 
 		glLineWidth(4.0f);
 		glColor4f(1,1,1,1);
@@ -297,12 +370,6 @@ GLvoid DrawGLScene(GLvoid)
 		glVertex3d(x1*25, y1*25, z1*25);		
 		glEnd();
 		glPopMatrix();
-
-		
-		w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
-		x2=e3x-e2x;
-		y2=e3y-e2y;
-		z2=e3z-e2z;
 
 		glLineWidth(4.0f);
 		glColor4f(1,1,1,1);
@@ -330,8 +397,11 @@ GLvoid DrawGLScene(GLvoid)
 		glPopMatrix();
 
 
-		printf("1 %f %f %f %f\n", w1, x1, y1, z1);
-		printf("2 %f %f %f %f\n", w2, x2, y2, z2);
+//		printf("1 %f %f %f %f\n", w1, x1, y1, z1);
+//		printf("2 %f %f %f %f\n", w2, x2, y2, z2);
+
+		//Plucker coordinate derivation for intersection of the collision circles
+		//Explanation at http://en.wikipedia.org/wiki/Line_geometry - Check the Dual Coordinates section
 
 		p01=y1*z2-y2*z1;
 		if(!p01)
@@ -346,8 +416,10 @@ GLvoid DrawGLScene(GLvoid)
 		p31=w1*y2-w2*y1;
 		p12=w1*z2-w2*z1;
 
-		printf("p %f %f %f %f\n", p01, p02, p03, p23, p31, p12);
-		
+//		printf("p %f %f %f %f\n", p01, p02, p03, p23, p31, p12);
+
+		//Now that we've got the Plucker coords, start building the quadratic equation as
+		//laid out in the paper		
 		p2=p01*p01;
 		
 		a=p2+(p02*p02)+(p03*p03);
@@ -361,26 +433,31 @@ GLvoid DrawGLScene(GLvoid)
 		{
 			printf("ar < 0\n");
 			break;
-		}
-		
+		}		
 		d=sqrt(ar);
-		printf("quad %f %f %f %f\n", a, b, c, d);
+		
+//		printf("quad %f %f %f %f\n", a, b, c, d);
+
+		//Solve for X, then use the univariate X to find y and z
 		x=(b+d)/a;
 		y=(p02*x-p12)/p01;
 		z=(p03*x+p31)/p01;
 
-		printf("SOLUTION 1: %f %f %f\n", x, y, z);
+		//Remember, a quadratic gives you back two solutions.
+		xa=((-b+d)/a);
+		ya=-((p02*xa-p12)/p01);
+		za=-((p03*xa+p31)/p01);
+		xa=-xa;
+
+		//Plot the solutions.		
+//		printf("SOLUTION 1: %f %f %f\n", x, y, z);
 		glPushMatrix();
 		glTranslatef(x, y, z);
 		glColor3f(1.0, 1.0, 1.0);
 		gluSphere(gluq, 1, 100, 100);
 		glPopMatrix();
 
-		xa=((-b+d)/a);
-		ya=-((p02*xa-p12)/p01);
-		za=-((p03*xa+p31)/p01);
-		xa=-xa;
-		printf("SOLUTION 2: %f %f %f\n", x, y, z);
+//		printf("SOLUTION 2: %f %f %f\n", x, y, z);
 		glPushMatrix();
 		glTranslatef(xa, ya, za);
 		glColor3f(1.0, 1.0, 1.0);
@@ -454,20 +531,19 @@ int main(int argc, char** argv)
 	}
 	printf("Firmware loaded\n");
 	
-	if(1)
-	{	
-		glutInit(&argc, argv);	
-		glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB );
-		glutInitWindowSize (WINDOW_WIDTH, WINDOW_HEIGHT);
-		glutInitWindowPosition (100, 100);
-		glutCreateWindow (argv[0]);
-		InitGL();
-		glutKeyboardFunc    ( keyboard );
-		glutDisplayFunc(DrawGLScene);
-		glutReshapeFunc(ReSizeGLScene);
-		glutMainLoop();
-	}
+	glutInit(&argc, argv);	
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB );
+	glutInitWindowSize (WINDOW_WIDTH, WINDOW_HEIGHT);
+	glutInitWindowPosition (100, 100);
+	glutCreateWindow (argv[0]);
+	InitGL();
+	glutKeyboardFunc    ( keyboard );
+	glutDisplayFunc(DrawGLScene);
+	glutReshapeFunc(ReSizeGLScene);
+	glutMainLoop();
 
+	/*
+	// Leaving the original version of the code from the paper here.
 	dtr = 3.1415926/180.0;
 	r3 = sqrt(3.0);
 
@@ -535,9 +611,6 @@ int main(int argc, char** argv)
 
 	printf("%f %f %f %f\n%f %f %f\n%f %f %f\n", e, f, re, rf, t1, t2, t3, x, y, z);
 		
-/*	
-	
-
 */	
 	return 0;	
 }
