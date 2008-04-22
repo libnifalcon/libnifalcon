@@ -16,8 +16,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#ifdef APPLE
 #include <GLUT/glut.h>
-
+#else
+#include <GL/glut.h>
+#endif
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 #define PACKET_TIMEOUT 1000
