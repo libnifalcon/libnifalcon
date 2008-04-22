@@ -1,3 +1,16 @@
+/*
+ * Implementation file for NovInt Falcon FindFalcon Example Program
+ *
+ * Copyright (c) 2008 Kyle Machulis <kyle@nonpolynomial.com> http://www.nonpolynomial.com
+ *
+ * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
+ *
+ * This library is covered by the MIT License, read LICENSE for details.
+ *
+ * Various piece of code ripped from NeHe, 'cause it's been a while since I've played with OpenGL
+ * http://nehe.gamedev.net/
+ */
+
 #include "nifalcon_test_fw.h"
 #include <math.h>
 #include <stdio.h>
@@ -20,13 +33,11 @@ void sigproc()
 
 GLvoid InitGL(GLvoid)
 {
-//	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClearDepth(1.0f);
 	glEnable(GL_BLEND);
 	glEnable ( GL_COLOR_MATERIAL );
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);	
-//	glDepthFunc(GL_LEQUAL);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
 
@@ -50,11 +61,10 @@ float view_z = 20.0f;
 GLvoid DrawGLScene(GLvoid)
 {	
 
-
-
 	/******** Parallel bot unit input section ********/
 	/******** Units are assumed to be inches ********/
 /*
+    //The original coordinates. Left here just in case you want to check things.
 	//fixed foot length
 	float f = 16.0;
 	//End Effector length
