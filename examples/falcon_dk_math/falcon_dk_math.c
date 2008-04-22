@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#ifdef APPLE
+#ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
