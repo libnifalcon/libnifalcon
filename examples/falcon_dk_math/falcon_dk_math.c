@@ -122,18 +122,6 @@ typedef struct falcon_kinematics {
 	
 	float f, e, re, rf;
 
-	/*
-    //The original coordinates. Left here just in case you want to check things.
-	//fixed foot length
-	float f = 16.0;
-	//End Effector length
-	float e = 8.0;
-	//shin length
-	float re = 10.3094;
-	//thigh length
-	float rf = 8.0;
-	*/
-
 	//thigh angles 
 	float thigh_angle[3];
 	//knees e1, e2, e3
@@ -155,6 +143,47 @@ void sigproc()
 	printf("closing falcon and quitting\n");
 	nifalcon_close(&dev);
 	exit(0);
+}
+
+GLvoid InitSimulationValues()
+{
+	/******** Parallel bot unit input section ********/
+	/******** Units are assumed to be inches ********/
+
+	/*
+    //The original coordinates. Left here just in case you want to check things.
+	//fixed foot length
+	float f = 16.0;
+	//End Effector length
+	float e = 8.0;
+	//shin length
+	float re = 10.3094;
+	//thigh length
+	float rf = 8.0;
+	*/
+
+	//Units for the novint falcon
+
+	//fixed frame length
+	//I don't have a damn /clue/ what this really is
+	//That's part of why I wrote this simulator, so I can just throw numbers until something seems right.
+	//It's probably derivable from the measuring the closest distance between the fixed frame origin and
+	//the innermost workspace point, but really, do I care?
+	
+	dk.f = 3.0;
+
+	//End Effector length
+	//Measured with a ruler!
+	dk.e = 3.0;
+	
+	//shin length
+	//Measued with a ruler! Includes the thigh/shin and shin/effector jointy thingy length
+	dk.re = 5.0;
+	
+	//thigh length
+	//It's bent, so it's funky. Let's just say 4.
+	dk.rf = 4.0;
+
 }
 
 GLvoid InitGL(GLvoid)
@@ -347,8 +376,8 @@ GLvoid ComputeDirectKinematics(GLvoid)
 
 GLvoid IdleLoop()
 {
-	if(!RunFalconIO()) return;
-	ComputeDirectKinematics();
+//	if(!RunFalconIO()) return;
+//	ComputeDirectKinematics();
 }
 
 GLvoid RenderTimer(GLint arg)
@@ -356,7 +385,7 @@ GLvoid RenderTimer(GLint arg)
 	RunFalconIO();
 	ComputeDirectKinematics();
 	glutPostRedisplay();
-	glutTimerFunc(20, RenderTimer, 0);
+	glutTimerFunc(10, RenderTimer, 0);
 }
 
 GLvoid DrawGLScene(GLvoid)
@@ -542,40 +571,19 @@ int main(int argc, char** argv)
 	nifalcon_test_fw_init_packet(&output_packet);
 
 	InitFalcon();
+	InitSimulationValues();
+
 	glutInit(&argc, argv);	
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB );
 	glutInitWindowSize (WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutInitWindowPosition (100, 100);
 	glutCreateWindow (argv[0]);
 	InitGL();
-	/******** Parallel bot unit input section ********/
-	/******** Units are assumed to be inches ********/
-	//Units for the novint falcon
-
-	//fixed frame length
-	//I don't have a damn /clue/ what this really is
-	//That's part of why I wrote this simulator, so I can just throw numbers until something seems right.
-	//It's probably derivable from the measuring the closest distance between the fixed frame origin and
-	//the innermost workspace point, but really, do I care?
-	
-	dk.f = 3.0;
-
-	//End Effector length
-	//Measured with a ruler!
-	dk.e = 3.0;
-	
-	//shin length
-	//Measued with a ruler! Includes the thigh/shin and shin/effector jointy thingy length
-	dk.re = 5.0;
-	
-	//thigh length
-	//It's bent, so it's funky. Let's just say 4.
-	dk.rf = 4.0;
 	
 	glutKeyboardFunc    ( keyboard );
 	glutDisplayFunc(DrawGLScene);
 	glutReshapeFunc(ReSizeGLScene);
-	//glutIdleFunc(IdleLoop);
+	glutIdleFunc(IdleLoop);
 	glutTimerFunc(0, RenderTimer, 0);
 	glutTimerFunc(1000, StatTimer, 0);
 	glutMainLoop();

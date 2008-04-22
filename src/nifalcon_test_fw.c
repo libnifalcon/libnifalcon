@@ -79,7 +79,7 @@ int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, u
 	unsigned char output_temp[16];
 	if((status = nifalcon_test_fw_receive_raw(dev, output_temp, timeout_ms)) < 0) return status;	
 	nifalcon_test_fw_format_output(output_temp, output);
-	return 0;
+	return status;
 }
 
 int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms)
