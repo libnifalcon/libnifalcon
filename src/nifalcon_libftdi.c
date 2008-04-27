@@ -128,6 +128,9 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	//Reset the device
 	if((dev->falcon_status_code = ftdi_usb_reset(&(dev->falcon))) < 0) return dev->falcon_status_code;
+
+	//Make sure our latency timer is at 16ms, otherwise firmware checks tend to always fail
+	if((dev->falcon_status_code = ftdi_set_latency_timer(&(dev->falcon), 16)) < 0) return dev->falcon_status_code;
 	
 	//Set to:
 	// 9600 baud
@@ -209,6 +212,12 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	}
 	fclose(firmware_file);
 
+	//VERY IMPORTANT
+	//If we do not reset latency to 1ms, then we either have to fill the FTDI butter (64bytes) or wait 16ms
+	//to get any data back. This is what was causing massive slowness in pre-1.0 releases
+	if((dev->falcon_status_code = ftdi_set_latency_timer(&(dev->falcon), 1)) < 0) return dev->falcon_status_code;
+
+	//Shift to full speed
 	if((dev->falcon_status_code = ftdi_set_baudrate(&(dev->falcon), 1456312)) < 0) return dev->falcon_status_code;
 
 	return 0;
