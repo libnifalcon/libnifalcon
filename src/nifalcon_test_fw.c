@@ -15,6 +15,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Ripped from libftdi, so we can standardize how we return errors
+#define nifalcon_error_return(code, str) do {	   \
+		dev->falcon_status_str = str;			   \
+        dev->falcon_status_code = -code;			   \
+        return -code;							   \
+   } while(0);
+
+//Double buffering for message receiving
+char recv_buffer[2][16];
+char recv_buffer_ready = 0;
+char recv_buffer_current = 0;
+char recv_buffer_pos = 0;
+
 //STRUCT FORMATTING FOR LITTLE-ENDIAN ARCHS ONLY (I'll fix this at some point)
 void nifalcon_test_fw_format_output(unsigned char* output_stream, falcon_packet* output)
 {
@@ -76,13 +89,35 @@ int nifalcon_test_fw_send_raw(falcon_device* dev, unsigned char* input)
 int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, unsigned int timeout_ms)
 {
 	int status = 0, bytes_read = 0;
-	unsigned char output_temp[16];
-	if((status = nifalcon_test_fw_receive_raw(dev, output_temp, timeout_ms)) < 0) return status;	
-	nifalcon_test_fw_format_output(output_temp, output);
-	return status;
+	unsigned char output_temp[64];
+	if((status = nifalcon_test_fw_receive_raw(dev, output_temp, timeout_ms)) < 0) return status;
+
+	if(recv_buffer_ready)
+	{
+		recv_buffer_ready = 0;
+		if(recv_buffer_current) nifalcon_test_fw_format_output(recv_buffer[0], output);
+		else nifalcon_test_fw_format_output(recv_buffer[1], output);
+		return 0;
+	}	
+	nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_STRUCT_ERROR, "No struct buffer available for read yet");
 }
 
 int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms)
 {
-	return nifalcon_read(dev, output, 16, timeout_ms); 
+	int status, i;
+	if((status = nifalcon_read(dev, output, 16, timeout_ms)) < 0) return status;
+	for(i = 0; i < status; ++i)
+	{		
+		recv_buffer[recv_buffer_current][recv_buffer_pos] = output[i];
+		++recv_buffer_pos;
+		if(output[i] == '>')
+		{
+			if(recv_buffer_pos == 16) recv_buffer_ready = 1;
+			recv_buffer_pos = 0;
+			if(recv_buffer_current) recv_buffer_current = 0;
+			else recv_buffer_current = 1;
+		}
+	}
+	//if(status != 16 || output[0] != '<' || output[15] != '>') nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_ERROR, "Received packet either not full or not aligned correctly");
+	return 0;
 }

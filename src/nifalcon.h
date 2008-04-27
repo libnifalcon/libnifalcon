@@ -42,7 +42,8 @@ enum {
 	NIFALCON_FIRMWARE_NOT_FOUND_ERROR, /*!< Firmware file not found */
 	NIFALCON_WRITE_ERROR, /*!< Write timeout hit, etc... */
 	NIFALCON_READ_ERROR, /*!< Read timeout hit, etc... */
-	NIFALCON_FIRMWARE_CHECKSUM_ERROR /*!< Error thrown when library does not get back exact copy of firmware as it sent. Usually happens on slow hubs. */
+	NIFALCON_FIRMWARE_CHECKSUM_ERROR, /*!< Error thrown when library does not get back exact copy of firmware as it sent. Usually happens on slow hubs. */
+	NIFALCON_NUM_ERRORS
 };
 
 #ifdef __cplusplus

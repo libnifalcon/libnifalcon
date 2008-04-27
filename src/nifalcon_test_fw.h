@@ -52,6 +52,10 @@ typedef struct falcon_packet
 	unsigned char unknown; 
 } falcon_packet;
 
+enum {
+	NOVINT_TEST_FW_RECEIVE_ERROR = 2000,
+	NOVINT_TEST_FW_RECEIVE_STRUCT_ERROR
+};
 
 #ifdef __cplusplus
 extern "C" {
