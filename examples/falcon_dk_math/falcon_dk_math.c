@@ -103,7 +103,7 @@
 #define WINDOW_HEIGHT 700
 #define PACKET_TIMEOUT 1000
 
-int fps, lps, iops;
+int fps, lps, iops, errps, current_error;
 
 typedef struct point3f {
 	float x;
@@ -229,16 +229,20 @@ GLint RunFalconIO(GLvoid)
 
 	if((status = nifalcon_test_fw_send_struct(&dev, &input_packet)) < 0)
 	{
+		++errps;
+		current_error = 1;
 		return 0;
 	}
-	if((status = nifalcon_test_fw_receive_struct(&dev, &output_packet, 0)) <= 0)
+	if((status = nifalcon_test_fw_receive_struct(&dev, &output_packet, 0)) < 0)
 	{
+		++errps;
+		current_error = 1;
 		return 0;
 	}
 	return 1;
 }
 
-GLvoid ComputeDirectKinematics(GLvoid)
+GLint ComputeDirectKinematics(GLvoid)
 {
 	float tr, tr1, tr2, tr3, p01, p02, p03, p12, p23, p31, p2, a, b, c, d, b1, b2, ar;
 	float ef;
@@ -330,8 +334,9 @@ GLvoid ComputeDirectKinematics(GLvoid)
 	p01 = dk.col[0].y * dk.col[1].z - dk.col[1].y * dk.col[0].z;
 	if(!p01)
 	{
-		printf("p01 == 0\n");
-		return;
+//		printf("p01 == 0\n");
+		current_error = 1;
+		return 0;
 	}
 	p02 = dk.col[0].z * dk.col[1].x - dk.col[1].z * dk.col[0].x;
 	p03 = dk.col[0].x * dk.col[1].y - dk.col[1].x * dk.col[0].y;	
@@ -354,8 +359,9 @@ GLvoid ComputeDirectKinematics(GLvoid)
 	ar = (b * b) - (a * c);
 	if(ar < 0) 
 	{
-		printf("ar < 0\n");
-		return;
+//		printf("ar < 0\n");
+		current_error = 1;
+		return 0;
 	}		
 	d = sqrt(ar);
 	
@@ -376,16 +382,15 @@ GLvoid ComputeDirectKinematics(GLvoid)
 
 GLvoid IdleLoop()
 {
-//	if(!RunFalconIO()) return;
-//	ComputeDirectKinematics();
+	current_error = 0;
+	if(!RunFalconIO()) return;
+	if(!current_error) ComputeDirectKinematics();
 }
 
 GLvoid RenderTimer(GLint arg)
 {
-	RunFalconIO();
-	ComputeDirectKinematics();
 	glutPostRedisplay();
-	glutTimerFunc(10, RenderTimer, 0);
+	glutTimerFunc(40, RenderTimer, 0);
 }
 
 GLvoid DrawGLScene(GLvoid)
@@ -556,8 +561,8 @@ int InitFalcon()
 
 void StatTimer(int arg)
 {
-	printf("fps %d lps %d iops %d\n", fps, lps, iops);
-	fps = lps = iops = 0;
+	printf("fps %d lps %d iops %d errors %d\n", fps, lps, iops, errps);
+	fps = lps = iops = errps = 0;
 	glutTimerFunc(1000, StatTimer, 0);
 }
 
@@ -566,7 +571,7 @@ int main(int argc, char** argv)
 
 	int num_falcons, status, i;
 	unsigned int count;
-
+	fps = lps = iops = errps = 0;
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
 
