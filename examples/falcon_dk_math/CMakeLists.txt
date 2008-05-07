@@ -33,7 +33,7 @@ IF(LIBFTD2XX_FOUND)
 	SET_TARGET_PROPERTIES (falcon_dk_math_ftd2xx PROPERTIES LINK_FLAGS "-framework GLUT -framework OpenGL -framework IOKit -framework Carbon")
   ENDIF(APPLE)
   IF(NOT WIN32)
-	INSTALL(TARGETS falcon_dk_math_libftdi RUNTIME DESTINATION "/usr/local/bin")
+	INSTALL(TARGETS falcon_dk_math_ftd2xx RUNTIME DESTINATION "/usr/local/bin")
   ENDIF(NOT WIN32)
 ENDIF(LIBFTD2XX_FOUND)
 

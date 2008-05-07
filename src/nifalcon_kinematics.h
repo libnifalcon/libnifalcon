@@ -7,6 +7,9 @@
  *
  * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
  *
+ * Kinematics algorithms from "Descriptive Geometric Kinematic Analysis of Clavel's Delta Robot", P.J. Zsombor-Murray, McGill University
+ * Paper available at http://www.nonpolynomial.com/pdf/claveldelta.pdf
+ *
  * This library is covered by the MIT License, read LICENSE for details.
  */
 
@@ -44,9 +47,10 @@ typedef struct falcon_kinematics {
 extern "C" {
 #endif
 
-void nifalcon_init_kinematics(falcon_kinematics* dk);
-int nifalcon_direct_kinematics(falcon_kinematics* dk, int encoder1, int encoder2, int encoder3);
-int nifalcon_inverse_kinematics(falcon_kinematics* dk, int effector_x, int effector_y, int effector_z);
+	void nifalcon_init_kinematics(falcon_kinematics* dk);
+	int nifalcon_direct_kinematics_encoder(falcon_kinematics* dk, int encoder1, int encoder2, int encoder3);
+	int nifalcon_direct_kinematics_angle(falcon_kinematics* dk, float angle1, float angle2, float angle3);
+	int nifalcon_inverse_kinematics(falcon_kinematics* dk, float effector_x, float effector_y, float effector_z);
 	
 #ifdef __cplusplus
 }

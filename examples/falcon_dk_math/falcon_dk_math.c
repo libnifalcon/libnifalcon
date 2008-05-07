@@ -26,7 +26,6 @@
 #define DEGREES_TO_RADIANS 3.1415926/180.0
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
-#define PACKET_TIMEOUT 1000
 
 int fps, lps, iops, errps, current_error;
 
@@ -141,9 +140,23 @@ GLvoid IdleLoop()
 {
 	current_error = 0;
 	if(!RunFalconIO()) return;
-	if(!current_error) nifalcon_direct_kinematics(&dk, output_packet.motor[0], output_packet.motor[1], output_packet.motor[2]);
-//	if(dk.solution[0].z < 0) printf("0: %f %f %f\n", dk.solution[0].x, dk.solution[0].y, dk.solution[0].z);
-//	else printf("1: %f %f %f\n", dk.solution[1].x, dk.solution[1].y, dk.solution[1].z);
+	if(!current_error) nifalcon_direct_kinematics_encoder(&dk, output_packet.motor[0], output_packet.motor[1], output_packet.motor[2]);
+/*
+	if(dk.solution[0].z < 0)
+	{
+		printf("Angles: %f %f %f\n", dk.thigh_angle[0], dk.thigh_angle[1], dk.thigh_angle[2]);
+		printf("Solution: %f %f %f\n", dk.solution[0].x, dk.solution[0].y, dk.solution[0].z);
+		nifalcon_inverse_kinematics(&dk, dk.solution[0].x, dk.solution[0].y, dk.solution[0].z);
+		printf("IK: %f %f %f\n", dk.thigh_angle[0], dk.thigh_angle[1], dk.thigh_angle[2]);
+	}
+	else
+	{
+		printf("Angles: %f %f %f\n", dk.thigh_angle[0], dk.thigh_angle[1], dk.thigh_angle[2]);
+		printf("Solution: %f %f %f\n", dk.solution[1].x, dk.solution[1].y, dk.solution[1].z);
+		nifalcon_inverse_kinematics(&dk, dk.solution[1].x, dk.solution[1].y, dk.solution[1].z);
+		printf("IK: %f %f %f\n", dk.thigh_angle[0], dk.thigh_angle[1], dk.thigh_angle[2]);
+	}
+*/
 }
 
 GLvoid RenderTimer(GLint arg)
