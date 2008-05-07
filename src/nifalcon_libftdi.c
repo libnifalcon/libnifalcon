@@ -41,26 +41,8 @@ int nifalcon_read(falcon_device* dev, unsigned char* str, unsigned int size, uns
 	if(!dev->is_initialized) nifalcon_error_return(NIFALCON_DEVICE_NOT_VALID_ERROR, "tried to read from an uninitialized device");
 	if(!dev->is_open) nifalcon_error_return(NIFALCON_DEVICE_NOT_FOUND_ERROR, "tried to read from an unopened device");
 	(dev->falcon).usb_read_timeout = timeout_ms;
-
-	//If we're reading as fast as possible, just read and return
-//	if(timeout_ms == 0)
-//	{
-		dev->falcon_status_code = ftdi_read_data(&(dev->falcon), str, size);
-		return dev->falcon_status_code;
-//	}
-/*	
-	//libusb's ideas of timeouts seem iffy (or, on OS X, completely non-existant)
-	//So, wrap them. We should usually only need this for firmware sending.
-	timeout = (clock_t)(((double)timeout_ms * .001) * (double)CLOCKS_PER_SEC) + clock();		
-	
-	while(bytes_read < size)
-	{		
-		if((dev->falcon_status_code = ftdi_read_data(&(dev->falcon), str, size - bytes_read)) < 0) return dev->falcon_status_code;
-		bytes_read += dev->falcon_status_code;
-		if (timeout_ms > 0 && clock() > timeout) return bytes_read;
-	}
-	return bytes_read;
-*/
+	dev->falcon_status_code = ftdi_read_data(&(dev->falcon), str, size);
+	return dev->falcon_status_code;
 }
 
 int nifalcon_write(falcon_device* dev, unsigned char* str, unsigned int size)
@@ -148,22 +130,6 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 
 	if((dev->falcon_status_code = nifalcon_write(dev, check_msg_1_send, 3)) < 0) return dev->falcon_status_code;
 	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 4, 1000)) < 0) return dev->falcon_status_code;
-/*
-	if(dev->falcon_status_code < 4)
-	{
-		nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, < 3 bytes receieved)");
-	}
-	for(k = 0; k < 4; ++k)
-	{
-		//Sometimes, we get the buffer back with a 0 at the beginning. Sometimes we don't. I don't know why.
-		//Therefore, we run the check backwards.
-		if(check_msg_1_recv[4-k-1] != receive_buf[dev->falcon_status_code-k-1])
-		{
-			nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (3/5 byte initialize step, wrong info receieved)");			
-		}
-	}
-*/
-//	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;
 	
 	//Set to:
 	// DTR Low
@@ -177,8 +143,6 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	//Expect back 1 byte:
 	// 0x41 ("A")
 	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return dev->falcon_status_code;
-//	if(dev->falcon_status_code < 1) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, nothing receieved)");
-//	if(receive_buf[0] != check_msg_2[0]) nifalcon_error_return(NIFALCON_FIRMWARE_CHECKSUM_ERROR, "error sending firmware (1 byte initialize step, wrong character received)");
 	
 	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;	
 

@@ -1,5 +1,5 @@
-SET(LIBRARY_SRCS nifalcon_test_fw.c)
-INSTALL(FILES nifalcon.h nifalcon_test_fw.h DESTINATION "/usr/local/include")
+SET(LIBRARY_SRCS nifalcon_test_fw.c nifalcon_kinematics.c)
+INSTALL(FILES nifalcon.h nifalcon_test_fw.h nifalcon_kinematics.h DESTINATION "/usr/local/include")
 
 IF(LIBFTD2XX_FOUND)
   SET(FTD2XX_SRCS nifalcon_ftd2xx.c ${LIBRARY_SRCS})

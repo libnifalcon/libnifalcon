@@ -53,12 +53,12 @@ int main(int argc, char** argv)
 	}
 	printf("Opened falcon\n");
 	printf("Loading firmware\n");
-	for(i = 0; i < 5; ++i)
+	for(i = 0; i < 10; ++i)
 	{
 		if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) == 0) break;
 		printf("Firmware not loaded! Error: %d %s\nRetrying...\n", dev.falcon_status_code, nifalcon_get_error_string(&dev));
 	}
-	if(i == 5)
+	if(i == 10)
 	{
 		printf("Cannot load firmware! Bailing...\n");
 		return 1;
@@ -96,13 +96,13 @@ int main(int argc, char** argv)
 		if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
 		{
 			printf("Write error: %s\n", nifalcon_get_error_string(&dev));
-			return 1;
+			continue;
 		}
 		printf("reading %d\n", count);
 		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
 		{
 			printf("Read error: %s\n", nifalcon_get_error_string(&dev));
-			return 1;
+			continue;
 		}
 		printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
 		++count;
