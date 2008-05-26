@@ -9,86 +9,9 @@
  *
  */
 
-/*
-
-  //Kinematics algorithms from "Descriptive Geometric Kinematic Analysis of Clavel's Delta Robot", P.J. Zsombor-Murray, McGill University
-  //Paper available at http://www.nonpolynomial.com/pdf/claveldelta.pdf
-  //Below is the direct translation of the example basic code in the paper to C
-  //Left commented here just in case someone decides to change something in the actual code and can't figure out
-  //what they've messed up.
-
-  float e = 8, f = 16, re = 10.3094, rf = 8, t1=55.19, t2=9.5, t3=37.8;
-  float w1,x1,y1,z1,w2,x2,y2,z2,ar, b1, b2, d;
-  float x,y,z,a,b,c,p01,p02,p03,p23,p31,p12,p2,tr1,tr2,tr3,tr,dtr,r3,ef,e1x,e1y,e1z,e2x,e2y,e2z,e3x,e3y,e3z;
-  
-  dtr = 3.1415926/180.0;
-  r3 = sqrt(3.0);
-  
-  tr1 = t1*dtr;
-  tr2 = t2*dtr;
-  tr3 = t3*dtr;
-  tr = 2.0*r3;
-
-  ef = (e-f)/tr;
-  e1y=ef-rf*cos(tr1);
-  e1z=-rf*sin(tr1);
-  printf("e1 %f %f\n", e1y, e1z);
-  
-  e2y=(rf*cos(tr2)-ef)/2.0;
-  e2x=e2y*r3;
-  e2z=-rf*sin(tr2);
-  printf("e2 %f %f %f\n", e2x, e2y, e2z);
-  
-  e3y=(rf*cos(tr3)-ef)/2.0;
-  e3x=-e3y*r3;
-  e3z=-rf*sin(tr3);
-  printf("e3 %f %f %f\n", e3x, e3y, e3z);
-  
-  w1=((e1y*e1y)-(e2x*e2x)-(e2y*e2y)+(e1z*e1z)-(e2z*e2z))/2.0;
-  x1=e2x;
-  y1=e2y-e1y;
-  z1=e2z-e1z;
-  
-  w2=((e2x*e2x)-(e3x*e3x)+(e2y*e2y)-(e3y*e3y)+(e2z*e2z)-(e3z*e3z))/2.0;
-  x2=e3x-e2x;
-  y2=e3y-e2y;
-  z2=e3z-e2z;
-	
-  p01=y1*z2-y2*z1;
-  if(!p01)
-  {
-  printf("p01 == 0 : %f %f %f %f %f\n", y1, y2, z1, z2, sin(tr1));
-  return 1;
-  }
-  p02=z1*x2-z2*x1;
-  p03=x1*y2-x2*y1;
-  
-  p23=w1*x2-w2*x1;
-  p31=w1*y2-w2*y1;
-  p12=w1*z2-w2*z1;
-  p2=p01*p01;
-  
-  a=p2+(p02*p02)+(p03*p03);
-  b1=p12+p01*e1y;
-  b2=p31-p01*e1z;
-  b=p02*b1-p03*b2;
-  
-  c=(b1*b1)+(b2*b2)-(p2*(re*re));
-  ar=(b*b)-(a*c);
-  if(ar < 0)
-  {
-  printf("ar < 0\n");
-  return 1;
-  }
-
-  d=sqrt(ar);
-  x=(b+d)/a;
-  y=(p02*x-p12)/p01;
-  z=(p03*x+p31)/p01;
-  
-  printf("%f %f %f %f\n%f %f %f\n%f %f %f\n", e, f, re, rf, t1, t2, t3, x, y, z);
-		
-*/	
+//Kinematics algorithms from "Descriptive Geometric Kinematic Analysis of Clavel's Delta Robot", P.J. Zsombor-Murray, McGill University
+//Paper available at http://www.nonpolynomial.com/pdf/claveldelta.pdf
+//BASIC Code available at http://libnifalcon.wiki.sourceforge.net/Kinematics
 
 #include "nifalcon_kinematics.h"
 #include "math.h"
@@ -139,7 +62,6 @@ int nifalcon_direct_kinematics_encoder(falcon_kinematics* dk, int encoder1, int 
 	return nifalcon_direct_kinematics_angle(dk, dk->thigh_angle[0], dk->thigh_angle[1], dk->thigh_angle[2]);
 }
 
-	
 int nifalcon_direct_kinematics_angle(falcon_kinematics* dk, float angle1, float angle2, float angle3)
 {
 	float tr, tr1, tr2, tr3, p01, p02, p03, p12, p23, p31, p2, a, b, c, d, b1, b2, ar;
@@ -274,7 +196,16 @@ int nifalcon_direct_kinematics_angle(falcon_kinematics* dk, float angle1, float 
 	return 0;
 }
 
-int nifalcon_inverse_kinematics(falcon_kinematics* dk, float effector_x, float effector_y, float effector_z)
+int nifalcon_inverse_kinematics_encoder(falcon_kinematics* dk, float effector_x, float effector_y, float effector_z)
+{
+	nifalcon_inverse_kinematics_angle(dk, effector_x, effector_y, effector_z);
+
+	dk->thigh_encoder[0] = ((dk->thigh_angle[0] / 90.0f) * 4000.0f) - 2000.0f;
+	dk->thigh_encoder[0] = ((dk->thigh_angle[1] / 90.0f) * 4000.0f) - 2000.0f;
+	dk->thigh_encoder[0] = ((dk->thigh_angle[2] / 90.0f) * 4000.0f) - 2000.0f;	
+}
+
+int nifalcon_inverse_kinematics_angle(falcon_kinematics* dk, float effector_x, float effector_y, float effector_z)
 {
 	float e2 = dk->e / 2.0, f2 = dk->f / 2.0, e4 = dk->e / 4.0, f4 = dk->f / 4.0;
 	float r3 = sqrt(3), rf2 = dk->rf * dk->rf;

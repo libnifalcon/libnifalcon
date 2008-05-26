@@ -35,6 +35,9 @@ typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
 /// FTDI Text Description for the Novint Falcon
 #define NIFALCON_DESCRIPTION "FALCON HAPTIC"
 
+/** Falcon Bootloader Error Enumeration
+	Lists all errors that can happen in the bootloader functions
+ */
 enum {
 	NIFALCON_DEVICE_NOT_FOUND_ERROR = 1000, /*!< No devices found on the system */
 	NIFALCON_DEVICE_NOT_VALID_ERROR, /*!< Device not initialized or opened */

@@ -1,13 +1,16 @@
 libnifalcon ChangeLog
 =====================
 
+2008-05-26 Kyle Machulis <kyle@nonpolynomial.com>
+	* Fixed libftdi latency timer sets, library now runs much faster on Linux and OS X
+	* Added basic kinematics algorithms to do IK/DK placement calculations for the end effector
+	* Added OpenGL kinematics simulation for visualization
 2008-04-05 Kyle Machulis <kyle@nonpolynomial.com>
 	* Fixed input packet motor bit shifting error (Thanks to Michael Huang and Jared Allen)
-	* Added libftdi support for platforms where FTDI drivers are not available (64-bit Linux) or do not work properly (OS X, Linux)	
+	* Added libftdi support for platforms where FTDI drivers are not available (64-bit Linux) or do not work properly (OS X, Linux)
 	* Added library checks for CMake to figure out what can and cannot be built
 	* Changed base device to a struct for extensibility
 	* Added non-printf error checking to clean up library
 	* Added lots of other stuff I'm probably forgetting here
-	
 2008-02-17 Kyle Machulis <kyle@nonpolynomial.com>
 	* First release of libnifalcon project, includes source files and cmake build system

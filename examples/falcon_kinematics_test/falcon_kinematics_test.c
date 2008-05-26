@@ -121,7 +121,7 @@ int main(int argc, char** argv)
 	dk.rf = 8;
 
 	//Let's start with inverse kinematics
-    nifalcon_inverse_kinematics(&dk, 2.0, 3.0, -8.7488);
+    nifalcon_inverse_kinematics_angle(&dk, 2.0, 3.0, -8.7488);
 	printf("Inverse: %f %f %f resolves to %f %f %f\n", 2.0, 3.0, -8.7488, dk.thigh_angle[0], dk.thigh_angle[1], dk.thigh_angle[2]);
 	
 	//Then undo those back to direct

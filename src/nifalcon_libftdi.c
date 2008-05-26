@@ -1,5 +1,6 @@
 /*
  * Implementation file for NovInt Falcon User Space Driver - Bootloader and Base Functionality
+ * LibFTDI based
  *
  * Copyright (c) 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
  *
@@ -7,6 +8,8 @@
  *
  * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
  *
+ * LibFTDI available at http://www.intra2net.com/de/produkte/opensource/ftdi/
+ *  
  * This library is covered by the MIT License, read LICENSE for details.
  */
 
