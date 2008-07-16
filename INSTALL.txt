@@ -31,7 +31,7 @@ cmake
 
 with no . or options to list the generators available for your platform.
 
-cmake will search for any required libraries on *nix platforms, since we have a reasonable set of directories to look through (/usr/*, /usr/local/*, etc...). On Windows (Visual Studio specifically), these checks are bypassed and all available projects are created (since there is no dedicated place to check for library code). 
+cmake will search for any required libraries on *nix platforms, since we have a reasonable set of directories to look through (/usr/*, /usr/local/*, etc...). On Windows (Visual Studio specifically), these checks are bypassed and all available projects are created (since there is no dedicated place to check for library code). You will need to prune whatever libraries you don't want to build out of the generated Visual Studio projects.
 
 After cmake generates the files, you may use them to compile as normal.
 
