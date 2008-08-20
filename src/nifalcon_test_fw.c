@@ -108,7 +108,6 @@ int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsi
 	if((status = nifalcon_read(dev, output, 16, timeout_ms)) < 16)
 	{
 		if(status < 0) return status;
-		printf("received %d\n", status);
 		nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_AMOUNT_ERROR, "Less than 16 bytes received from firmware query");
 	}
 	
