@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <time.h>
 
 #define PACKET_TIMEOUT 1000
 
@@ -23,26 +22,6 @@ void sigproc()
 	printf("\nclosing falcon and quitting\n");
 	nifalcon_close(&dev);
 	exit(0);
-}
-
-int __nsleep(const struct timespec *req, struct timespec *rem)  
-{  
-    struct timespec temp_rem;  
-    if(nanosleep(req,rem)==-1)  
-		__nsleep(rem,&temp_rem);  
-	else  
-		return 1;
-}  
-   
-int msleep(unsigned long ms)  
-{  
-	struct timespec req={0},rem={0};  
-	time_t sec=(int)(ms/1000);  
-	ms=ms-(sec*1000);
-	req.tv_sec=sec;  
-	req.tv_nsec=ms*1000000L;  
-	__nsleep(&req,&rem);  
-	return 1;  
 }
 
 int main(int argc, char** argv)
@@ -115,7 +94,6 @@ int main(int argc, char** argv)
 		}
 
 		printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d | Info: 0x%2x | Errors: %d\n", loop_count,  output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info, error_count);
-		//msleep(50);
 		++count;
 	}
 	printf("\n");
