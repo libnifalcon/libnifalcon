@@ -23,10 +23,10 @@
    } while(0);
 
 //Double buffering for message receiving
-char recv_buffer[2][16];
-char recv_buffer_ready = 0;
-char recv_buffer_current = 0;
-char recv_buffer_pos = 0;
+unsigned char recv_buffer[2][16];
+unsigned char recv_buffer_ready = 0;
+unsigned char recv_buffer_current = 0;
+unsigned char recv_buffer_pos = 0;
 
 //STRUCT FORMATTING FOR LITTLE-ENDIAN ARCHS ONLY (I'll fix this at some point)
 void nifalcon_test_fw_format_output(unsigned char* output_stream, falcon_packet* output)
@@ -108,6 +108,7 @@ int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsi
 	if((status = nifalcon_read(dev, output, 16, timeout_ms)) < 16)
 	{
 		if(status < 0) return status;
+		printf("received %d\n", status);
 		nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_AMOUNT_ERROR, "Less than 16 bytes received from firmware query");
 	}
 	

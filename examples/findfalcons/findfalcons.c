@@ -49,6 +49,8 @@ int main(int argc, char** argv)
 {
 	int num_falcons, status, i;
 	unsigned int count;
+	unsigned int error_count = 0;
+	unsigned int loop_count = 0;
 	unsigned char input[17] = "<AAAAAAAAAAAAAA>";	
 	unsigned char output[17];
 	char* clear_str = "\r                                                 \r";
@@ -87,23 +89,11 @@ int main(int argc, char** argv)
 	}
 	printf("Firmware loaded\n");
 
-	printf("Send Raw: %s\n", input);
-	if(nifalcon_test_fw_send_raw(&dev, input) < 0)
-	{
-		printf("Write error: %s\n", nifalcon_get_error_string(&dev));
-		return 1;
-	}
-	if(nifalcon_test_fw_receive_raw(&dev, output, PACKET_TIMEOUT) < 0)
-	{
-		printf("Read error: %s\n", nifalcon_get_error_string(&dev));
-		return 1;
-	}
-	printf("Receive Raw: %s\n", output);
-	
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
-	while(1)
+	while(1)		
 	{
+		++loop_count;
 		input_packet.info = NOVINT_TEST_FW_HOMING_MODE;
 		if(!(output_packet.info & (NOVINT_TEST_FW_HOMED_AXIS1 | NOVINT_TEST_FW_HOMED_AXIS2 | NOVINT_TEST_FW_HOMED_AXIS3)))
 		{
@@ -115,17 +105,17 @@ int main(int argc, char** argv)
 		}
 		if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
 		{
-			//printf("Write error: %s\n", nifalcon_get_error_string(&dev));
+			++error_count;
 			continue;
 		}
 		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
 		{
-			//printf("Read error: %s\n", nifalcon_get_error_string(&dev));
+			++error_count;
 			continue;
 		}
 
-		printf("Motor 1: %5d - Motor 2: %5d - Motor 3: %5d - Info: 0x%8x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
-		msleep(50);
+		printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d | Info: 0x%2x | Errors: %d\n", loop_count,  output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info, error_count);
+		//msleep(50);
 		++count;
 	}
 	printf("\n");
