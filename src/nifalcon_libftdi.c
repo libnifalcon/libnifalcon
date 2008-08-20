@@ -83,6 +83,14 @@ int nifalcon_open(falcon_device* dev, unsigned int device_index)
 	for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);
 	if((dev->falcon_status_code = ftdi_usb_open_dev(&(dev->falcon), current->dev)) < 0) return dev->falcon_status_code;
 	ftdi_list_free(&dev_list);
+	//VERY IMPORTANT
+	//If we do not reset latency to 1ms, then we either have to fill the FTDI butter (64bytes) or wait 16ms
+	//to get any data back. This is what was causing massive slowness in pre-1.0 releases
+	if((dev->falcon_status_code = ftdi_set_latency_timer(&(dev->falcon), 1)) < 0) return dev->falcon_status_code;
+
+	//Shift to full speed
+	if((dev->falcon_status_code = ftdi_set_baudrate(&(dev->falcon), 1456312)) < 0) return dev->falcon_status_code;
+
 	dev->is_open = 1;
 	return 0;
 }

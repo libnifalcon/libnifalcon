@@ -32,7 +32,6 @@ int main(int argc, char** argv)
 	unsigned int loop_count = 0;
 	unsigned char input[17] = "<AAAAAAAAAAAAAA>";	
 	unsigned char output[17];
-	char* clear_str = "\r                                                 \r";
 	falcon_packet input_packet, output_packet;
 
 	
@@ -46,6 +45,9 @@ int main(int argc, char** argv)
 	count = 0;
 	input[16] = output[16] = 0;
 
+	nifalcon_test_fw_init_packet(&input_packet);
+	nifalcon_test_fw_init_packet(&output_packet);
+
 	printf("Falcons found: %d\n", num_falcons);
 
 	printf("Opening falcon\n");
@@ -55,8 +57,17 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	printf("Opened falcon\n");
+			if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
+		{
+			++error_count;
+		}
+		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
+		{
+			++error_count;
+		}
+
 	printf("Loading firmware\n");
-	for(i = 0; i < 10; ++i)
+	for(i = 0; i < 10 && error_count > 0; ++i)
 	{
 		if((status = nifalcon_load_firmware(&dev, "test_firmware.bin")) == 0) break;
 		printf("Firmware not loaded! Error: %d %s\nRetrying...\n", dev.falcon_status_code, nifalcon_get_error_string(&dev));
@@ -68,8 +79,6 @@ int main(int argc, char** argv)
 	}
 	printf("Firmware loaded\n");
 
-	nifalcon_test_fw_init_packet(&input_packet);
-	nifalcon_test_fw_init_packet(&output_packet);
 	while(1)		
 	{
 		++loop_count;
