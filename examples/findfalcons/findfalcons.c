@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 
 #define PACKET_TIMEOUT 1000
 
@@ -19,17 +20,38 @@ falcon_device dev;
 
 void sigproc()
 {
-	printf("closing falcon and quitting\n");
+	printf("\nclosing falcon and quitting\n");
 	nifalcon_close(&dev);
 	exit(0);
+}
+
+int __nsleep(const struct timespec *req, struct timespec *rem)  
+{  
+    struct timespec temp_rem;  
+    if(nanosleep(req,rem)==-1)  
+		__nsleep(rem,&temp_rem);  
+	else  
+		return 1;
+}  
+   
+int msleep(unsigned long ms)  
+{  
+	struct timespec req={0},rem={0};  
+	time_t sec=(int)(ms/1000);  
+	ms=ms-(sec*1000);
+	req.tv_sec=sec;  
+	req.tv_nsec=ms*1000000L;  
+	__nsleep(&req,&rem);  
+	return 1;  
 }
 
 int main(int argc, char** argv)
 {
 	int num_falcons, status, i;
 	unsigned int count;
-	unsigned char input[17] = "<AAAAAAAAAAAAAA>";
-	unsigned char output[17];	
+	unsigned char input[17] = "<AAAAAAAAAAAAAA>";	
+	unsigned char output[17];
+	char* clear_str = "\r                                                 \r";
 	falcon_packet input_packet, output_packet;
 
 	
@@ -71,14 +93,13 @@ int main(int argc, char** argv)
 		printf("Write error: %s\n", nifalcon_get_error_string(&dev));
 		return 1;
 	}
-	printf("Receive Raw: %s\n", output);
 	if(nifalcon_test_fw_receive_raw(&dev, output, PACKET_TIMEOUT) < 0)
 	{
 		printf("Read error: %s\n", nifalcon_get_error_string(&dev));
 		return 1;
 	}
+	printf("Receive Raw: %s\n", output);
 	
-
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
 	while(1)
@@ -92,22 +113,22 @@ int main(int argc, char** argv)
 		{
 			input_packet.info |= NOVINT_TEST_FW_LED_GREEN;
 		}
-		printf("Writing %d\n", count);
 		if(nifalcon_test_fw_send_struct(&dev, &input_packet) < 0)
 		{
-			printf("Write error: %s\n", nifalcon_get_error_string(&dev));
+			//printf("Write error: %s\n", nifalcon_get_error_string(&dev));
 			continue;
 		}
-		printf("reading %d\n", count);
 		if(nifalcon_test_fw_receive_struct(&dev, &output_packet, PACKET_TIMEOUT) < 0)
 		{
-			printf("Read error: %s\n", nifalcon_get_error_string(&dev));
+			//printf("Read error: %s\n", nifalcon_get_error_string(&dev));
 			continue;
 		}
-		printf("%x %x %x %x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
+
+		printf("Motor 1: %5d - Motor 2: %5d - Motor 3: %5d - Info: 0x%8x\n", output_packet.motor[0], output_packet.motor[1], output_packet.motor[2], output_packet.info);
+		msleep(50);
 		++count;
 	}
-
+	printf("\n");
 	nifalcon_close(&dev);
 	return 0;
 }

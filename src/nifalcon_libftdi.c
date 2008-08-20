@@ -143,12 +143,10 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 	//Send "A" character
 	if((dev->falcon_status_code = nifalcon_write(dev, check_msg_2, 1)) < 0) return dev->falcon_status_code;
 
-	//Expect back 1 byte:
-	// 0x41 ("A")
-	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 1, 1000)) < 0) return dev->falcon_status_code;
+	//Expect back 2 bytes:
+	// 0x13 0x41
+	if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, 2, 1000)) < 0) return dev->falcon_status_code;
 	
-	if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;	
-
 	firmware_file = fopen(firmware_filename, "rb");
 
 	if(!firmware_file)
@@ -161,8 +159,6 @@ int nifalcon_load_firmware(falcon_device* dev, const char* firmware_filename)
 		int firmware_bytes_read;
 		int i;
 		firmware_bytes_read = fread(send_buf, 1, 128, firmware_file);
-		//Make sure we clear out anything else that could've happened, otherwise our send/receive buffers misalign
-		if((dev->falcon_status_code = ftdi_usb_purge_buffers(&(dev->falcon))) < 0) return dev->falcon_status_code;	
 		if((dev->falcon_status_code = nifalcon_write(dev, send_buf, firmware_bytes_read)) < 0) return dev->falcon_status_code;
 		if((dev->falcon_status_code = nifalcon_read(dev, receive_buf, firmware_bytes_read, 1000)) < firmware_bytes_read)
 		{			

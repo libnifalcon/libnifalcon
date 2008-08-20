@@ -105,7 +105,12 @@ int nifalcon_test_fw_receive_struct(falcon_device* dev, falcon_packet* output, u
 int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsigned int timeout_ms)
 {
 	int status, i;
-	if((status = nifalcon_read(dev, output, 16, timeout_ms)) < 0) return status;
+	if((status = nifalcon_read(dev, output, 16, timeout_ms)) < 16)
+	{
+		if(status < 0) return status;
+		nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_AMOUNT_ERROR, "Less than 16 bytes received from firmware query");
+	}
+	
 	for(i = 0; i < status; ++i)
 	{		
 		recv_buffer[recv_buffer_current][recv_buffer_pos] = output[i];
@@ -118,6 +123,6 @@ int nifalcon_test_fw_receive_raw(falcon_device* dev, unsigned char* output, unsi
 			else recv_buffer_current = 1;
 		}
 	}
-	//if(status != 16 || output[0] != '<' || output[15] != '>') nifalcon_error_return(NOVINT_TEST_FW_RECEIVE_ERROR, "Received packet either not full or not aligned correctly");
+
 	return 0;
 }
