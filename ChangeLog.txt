@@ -1,6 +1,13 @@
 libnifalcon ChangeLog
 =====================
 
+2008-08-20 Kyle Machulis <kyle@nonpolynomial.com>
+	* Fixed firmware initialization race condition that caused various loading issues
+	* Added check to see if firmware is already on the falcon
+	* Changed findfalcons output to make it slightly more usable
+	* Added more error reporting to test firmware
+2008-07-15 Kyle Machulis <kyle@nonpolynomial.com>
+	* Removed stray "_s" extensions in CMake files
 2008-05-26 Kyle Machulis <kyle@nonpolynomial.com>
 	* Fixed libftdi latency timer sets, library now runs much faster on Linux and OS X
 	* Added basic kinematics algorithms to do IK/DK placement calculations for the end effector
