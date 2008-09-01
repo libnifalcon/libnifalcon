@@ -309,13 +309,13 @@ int main(int argc, char** argv)
 	fps = lps = iops = errps = 0;
 	nifalcon_test_fw_init_packet(&input_packet);
 	nifalcon_test_fw_init_packet(&output_packet);
-
+/*
 	if(InitFalcon() != 0)
 	{
 		printf("Cannot initialize falcon, returning...\n");
 		return 1;
 	}
-
+*/
 	nifalcon_init_kinematics(&dk);
 
 	glutInit(&argc, argv);	
