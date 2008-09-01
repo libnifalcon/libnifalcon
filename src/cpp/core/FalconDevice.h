@@ -24,8 +24,8 @@ namespace libnifalcon
 		void setForce();
 		void getPosition();
 		
-		FalconCommBase* getFalconCommBase() { return m_falconComm; }
-		void setFalconComm(FalconCommBase* b) { m_falconComm = b; }
+		FalconComm* getFalconComm() { return m_falconComm; }
+		void setFalconComm(FalconComm* b) { m_falconComm = b; }
 
 		//void setFalconFirmware(FalconFirmwareBase* b);
 		//FalconFirmwareBase getFalconFirmware() { return m_falconFirmware; }
@@ -36,7 +36,7 @@ namespace libnifalcon
 	protected:
 		std::string m_firmwareFilename;
 		int32_t m_errorCode;
-		FalconCommBase* m_falconComm;
+		FalconComm* m_falconComm;
 		//FalconKinematicBase* m_falconKinematic;
 		//FalconFirmwareBase* m_falconFirmware;
 		//FalconGripBase* m_falconGrip;

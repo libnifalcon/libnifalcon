@@ -6,7 +6,7 @@
 
 namespace libnifalcon
 {
-	class FalconLibFTDIComm : public FalconCommBase
+	class FalconLibFTDIComm : public FalconComm
 	{
 	public:
 		FalconLibFTDIComm();

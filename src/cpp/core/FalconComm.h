@@ -5,7 +5,7 @@
 
 namespace libnifalcon
 {
-	class FalconCommBase
+	class FalconComm
 	{		
 	public:
 		enum {
@@ -19,8 +19,8 @@ namespace libnifalcon
 			NIFALCON_NUM_ERRORS
 		};
 
-		FalconCommBase() : m_isCommOpen(false), m_errorCode(0) {}
-		virtual ~FalconCommBase() {}
+		FalconComm() : m_isCommOpen(false), m_errorCode(0) {}
+		virtual ~FalconComm() {}
 		virtual bool getDeviceCount(int8_t& count) = 0;
 		virtual bool open(u_int8_t index) = 0;
 		virtual bool close() = 0;

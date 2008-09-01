@@ -6,7 +6,7 @@
 
 namespace libnifalcon
 {
-	class FalconFTD2XXComm : public FalconCommBase
+	class FalconFTD2XXComm : public FalconComm
 	{
 	public:
 		virtual bool getDeviceCount(int8_t& );
