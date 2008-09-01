@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "FalconCommBase.h"
+#include "FalconComm.h"
 
 namespace libnifalcon
 {

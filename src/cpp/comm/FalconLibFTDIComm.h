@@ -1,7 +1,7 @@
 #ifndef FALCONLIBFTDICOMM_H
 #define FALCONLIBFTDICOMM_H
 
-#include "core/FalconCommBase.h"
+#include "core/FalconComm.h"
 #include "ftdi.h"
 
 namespace libnifalcon
