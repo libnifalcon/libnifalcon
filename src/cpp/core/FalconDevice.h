@@ -5,6 +5,9 @@
 #include <fstream>
 #include <iostream>
 #include "FalconComm.h"
+#include "FalconFirmware.h"
+#include "FalconKinematic.h"
+#include "FalconGrip.h"
 
 namespace libnifalcon
 {
@@ -19,27 +22,25 @@ namespace libnifalcon
 		bool open(u_int8_t index);
 		void close();
 
-		void runIOLoop();
+		bool runIOLoop();
 		
-		void setForce();
-		void getPosition();
-		
-		FalconComm* getFalconComm() { return m_falconComm; }
-		void setFalconComm(FalconComm* b) { m_falconComm = b; }
+		void setFalconComm(FalconComm* f);
+		void setFalconFirmware(FalconFirmware* f);
+		void setFalconGrip(FalconGrip* f);
+		void setFalconKinematic(FalconKinematic* f);
 
-		//void setFalconFirmware(FalconFirmwareBase* b);
-		//FalconFirmwareBase getFalconFirmware() { return m_falconFirmware; }
-		//void setFalconGrip(FalconGripBase* b);
-		//FalconFirmwareBase getFalconGrip() { return m_falconGrip; }
-		//void setFalconKinematic(FalconKinematicBase* b);
-		//FalconKinematicBase getFalconKinematic() { return m_falconKinematic; }
+		FalconComm* getFalconComm() { return m_falconComm; }
+		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
+		FalconGrip* getFalconGrip() { return m_falconGrip; }
+		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
+
 	protected:
 		std::string m_firmwareFilename;
 		int32_t m_errorCode;
 		FalconComm* m_falconComm;
-		//FalconKinematicBase* m_falconKinematic;
-		//FalconFirmwareBase* m_falconFirmware;
-		//FalconGripBase* m_falconGrip;
+		FalconKinematic* m_falconKinematic;
+		FalconFirmware* m_falconFirmware;
+		FalconGrip* m_falconGrip;
 	};
 
 }

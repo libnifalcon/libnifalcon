@@ -15,6 +15,7 @@
 #ifdef LIBFTDI
 #include "comm/FalconLibFTDIComm.h"
 #endif
+#include "firmware/FalconNovintFirmware.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -35,12 +36,15 @@ void sigproc(int i)
 
 void runFalconTest(FalconDevice d)
 {
+	FalconNovintFirmware f;
 	int8_t num_falcons;
 	int status, i;
 	u_int8_t count;
 	u_int32_t error_count = 0;
 	u_int32_t loop_count = 0;
 
+	dev.setFalconFirmware(&f);
+	
 	if(!dev.getDeviceCount(num_falcons))
 	{
 		std::cout << "Cannot get device_libftdi count" << std::endl;
@@ -74,7 +78,21 @@ void runFalconTest(FalconDevice d)
 			std::cout <<"Firmware loaded" << std::endl;
 			break;
 		}
-	}	
+	}
+
+	for(int j = 0; j < 3; ++j)
+	{
+		f.setLEDStatus(2 << j);
+		
+		for(int i = 0; i < 1000; ++i)
+		{
+			dev.runIOLoop();
+			std::cout << f.getEncoderValues()[0] << " " << f.getEncoderValues()[1] << " " << f.getEncoderValues()[2] << std::endl;
+		}
+	}
+	f.setLEDStatus(0);
+	dev.runIOLoop();
+	
 	dev.close();
 }
 
