@@ -41,6 +41,7 @@ namespace libnifalcon
 		FalconKinematic* m_falconKinematic;
 		FalconFirmware* m_falconFirmware;
 		FalconGrip* m_falconGrip;
+		double m_position[3];
 	};
 
 }

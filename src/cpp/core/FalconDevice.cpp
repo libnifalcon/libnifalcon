@@ -1,5 +1,7 @@
 #include "FalconDevice.h"
 
+#include <iostream>
+
 namespace libnifalcon
 {
 
@@ -102,7 +104,16 @@ namespace libnifalcon
 	bool FalconDevice::runIOLoop()
 	{
 		if(m_falconFirmware == NULL) return false;
-		return m_falconFirmware->runIOLoop();
+		
+		if(!m_falconFirmware->runIOLoop())
+		{
+			return false;
+		}
+		if(m_falconKinematic != NULL)
+		{
+			m_falconKinematic->getPosition(m_falconFirmware->getEncoderValues(), m_position);
+			std::cout << m_position[0] << " " << m_position[1] << " " << m_position[2] << std::endl;
+		}
 	}
 
 	void FalconDevice::setFalconComm(FalconComm* f)

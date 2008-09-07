@@ -4,7 +4,7 @@ SET(SRCS findfalcons.cpp)
 
 ADD_EXECUTABLE(findfalcons_cpp ${SRCS})
 SET_COMPILE_FLAGS(findfalcons_cpp ${CPP_DEFINES})
-TARGET_LINK_LIBRARIES(findfalcons_cpp ${CPP_LINK_LIBS})
+TARGET_LINK_LIBRARIES(findfalcons_cpp ${CPP_LINK_LIBS} nifalcon_kinematic_stamper)
 IF(NOT WIN32)
   INSTALL(TARGETS findfalcons_cpp RUNTIME DESTINATION "/usr/local/bin")
 ENDIF(NOT WIN32)

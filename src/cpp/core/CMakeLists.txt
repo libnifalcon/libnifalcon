@@ -1,4 +1,4 @@
-SET(LIBRARY_SRCS FalconDevice.cpp FalconFirmware.cpp)
+SET(LIBRARY_SRCS FalconDevice.cpp)
 INSTALL(FILES FalconDevice.h FalconComm.h FalconFirmware.h FalconGrip.h FalconKinematic.h DESTINATION "/usr/local/include/falcon")
 
 ADD_LIBRARY (nifalcon_cpp_static STATIC ${LIBRARY_SRCS})
