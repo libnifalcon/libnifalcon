@@ -1,7 +1,7 @@
 #ifndef TOOLBOX_H_
 #define TOOLBOX_H_
 
-#include <glui.h>
+#include <GL/glui.h>
 #include <string>
 
 namespace view

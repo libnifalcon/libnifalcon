@@ -1,4 +1,4 @@
-SET(LIBRARY_SRCS nifalcon_test_fw.c)
+SET(LIBRARY_SRCS nifalcon_test_fw.c nifalcon_kinematics.c)
 INSTALL(FILES nifalcon.h nifalcon_test_fw.h DESTINATION "/usr/local/include")
 
 IF(LIBFTD2XX_FOUND)

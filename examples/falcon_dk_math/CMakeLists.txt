@@ -1,4 +1,4 @@
-INCLUDE_DIRECTORIES(../../src ${INC_DIRS})
+INCLUDE_DIRECTORIES(../../src/c ${INC_DIRS})
 LINK_DIRECTORIES(../../lib ${LINK_DIRS})
 SET(SRCS falcon_dk_math.c)
 

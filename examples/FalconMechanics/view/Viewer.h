@@ -6,7 +6,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osg/Group>
 
-#include <glui.h>
+#include <GL/glui.h>
 
 namespace view
 {

@@ -26,7 +26,7 @@ namespace controller
 		std::cout << count << std::endl;
 		std::cout << falconModel->open(0) << std::endl;
 
-		std::cout << falconModel->setFirmwareFile("/home/qdot/test_firmware.bin") << std::endl;
+		std::cout << falconModel->setFirmwareFile("test_firmware.bin") << std::endl;
 		falconComm.setNormalMode();
 		for(int i = 0; i < 10; ++i)
 		{			
