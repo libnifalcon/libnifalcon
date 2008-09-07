@@ -15,7 +15,7 @@
 #ifdef LIBFTDI
 #include "comm/FalconCommLibFTDI.h"
 #endif
-#include "firmware/FalconNovintFirmware.h"
+#include "firmware/FalconFirmwareNovintSDK.h"
 #include "kinematic/FalconKinematicStamper.h"
 #include <iostream>
 #include <cstdio>
@@ -37,7 +37,7 @@ void sigproc(int i)
 
 void runFalconTest(FalconDevice d)
 {
-	FalconNovintFirmware f;
+	FalconFirmwareNovintSDK f;
 	FalconKinematicStamper k(true);
 	double position[3];
 	int8_t num_falcons;

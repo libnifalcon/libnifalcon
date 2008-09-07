@@ -1,15 +1,15 @@
-#include "FalconNovintFirmware.h"
+#include "FalconFirmwareNovintSDK.h"
 #include <cstdlib>
 
 namespace libnifalcon
 {
 
-	FalconNovintFirmware::FalconNovintFirmware() :
+	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
 		m_hasWritten(false)
 	{
 	}
 	
-	void FalconNovintFirmware::formatOutput()
+	void FalconFirmwareNovintSDK::formatOutput()
 	{
 		//Turn motor values into system specific ints
 		int i;
@@ -27,7 +27,7 @@ namespace libnifalcon
 		//Give bottom nibble to grip?
 	}
 
-	void FalconNovintFirmware::formatInput()
+	void FalconFirmwareNovintSDK::formatInput()
 	{
 		//Turn system-specific ints into motor values
 		int i;
@@ -53,7 +53,7 @@ namespace libnifalcon
 		}
 	}
 
-	bool FalconNovintFirmware::runIOLoop()
+	bool FalconFirmwareNovintSDK::runIOLoop()
 	{
 		u_int32_t bytes_read, bytes_written;
 		if(m_falconComm == NULL) return false;

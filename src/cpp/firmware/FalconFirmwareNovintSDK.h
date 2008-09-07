@@ -5,15 +5,15 @@
 
 namespace libnifalcon
 {
-	class FalconNovintFirmware : public FalconFirmware
+	class FalconFirmwareNovintSDK : public FalconFirmware
 	{
 	public:
 		const static u_int8_t RED_LED = 0x2;
 		const static u_int8_t GREEN_LED = 0x4;
 		const static u_int8_t BLUE_LED = 0x8;
 
-		FalconNovintFirmware();
-		~FalconNovintFirmware() {}
+		FalconFirmwareNovintSDK();
+		~FalconFirmwareNovintSDK() {}
 		bool runIOLoop();
 	protected:
 	
