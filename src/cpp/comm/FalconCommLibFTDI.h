@@ -1,14 +1,16 @@
-#ifndef FALCONFTD2XXCOMM_H
-#define FALCONFTD2XXCOMM_H
+#ifndef FALCONLIBFTDICOMM_H
+#define FALCONLIBFTDICOMM_H
 
 #include "core/FalconComm.h"
-#include "ftd2xx.h"
+#include "ftdi.h"
 
 namespace libnifalcon
 {
-	class FalconFTD2XXComm : public FalconComm
+	class FalconCommLibFTDI : public FalconComm
 	{
 	public:
+		FalconCommLibFTDI();
+		~FalconCommLibFTDI();
 		virtual bool getDeviceCount(int8_t& );
 		virtual bool open(u_int8_t );
 		virtual bool close();
@@ -17,9 +19,10 @@ namespace libnifalcon
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:
-		const static char* FALCON_DESCRIPTION;
-		int8_t openDeviceFTD2XX(u_int8_t , bool );
-		FT_HANDLE m_falconDevice;
+//		int8_t openDeviceFTD2XX(u_int8_t , bool );
+		bool initLibFTDI();
+		ftdi_context m_falconDevice;
+		bool m_isInitialized;
 	};
 };
 

@@ -1,23 +1,23 @@
-#include "FalconFTD2XXComm.h"
+#include "FalconCommFTD2XX.h"
 #include <iostream>
 #include <cstring>
 
 namespace libnifalcon
 {
- 	const char* FalconFTD2XXComm::FALCON_DESCRIPTION = "FALCON HAPTIC";
+ 	const char* FalconCommFTD2XX::FALCON_DESCRIPTION = "FALCON HAPTIC";
 	
-	bool FalconFTD2XXComm::getDeviceCount(int8_t& device_count)
+	bool FalconCommFTD2XX::getDeviceCount(int8_t& device_count)
 	{
 		device_count = openDeviceFTD2XX(0, true);
 		return device_count >= 0;
 	}
 
-	bool FalconFTD2XXComm::open(u_int8_t index)
+	bool FalconCommFTD2XX::open(u_int8_t index)
 	{
 		return openDeviceFTD2XX(index, false) >= 0;
 	}
 
-	int8_t FalconFTD2XXComm::openDeviceFTD2XX(u_int8_t device_index, bool stop_at_count)
+	int8_t FalconCommFTD2XX::openDeviceFTD2XX(u_int8_t device_index, bool stop_at_count)
 	{
 		unsigned int falcon_count = 0, device_count = 0, i = 0;
 		char* pcBufLD[MAX_DEVICES + 1];
@@ -58,7 +58,7 @@ namespace libnifalcon
 		return 0;
 	}
 
-	bool FalconFTD2XXComm::close()
+	bool FalconCommFTD2XX::close()
 	{
 		if(!m_isCommOpen) return false;
 		m_isCommOpen = false;
@@ -66,7 +66,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconFTD2XXComm::read(u_int8_t* str, u_int32_t size, u_int32_t& bytes_read)
+	bool FalconCommFTD2XX::read(u_int8_t* str, u_int32_t size, u_int32_t& bytes_read)
 	{
 		unsigned long bytes_rx, b_read;
 		bytes_read = 0;
@@ -93,7 +93,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconFTD2XXComm::write(u_int8_t* str, u_int32_t size, u_int32_t& bytes_written)
+	bool FalconCommFTD2XX::write(u_int8_t* str, u_int32_t size, u_int32_t& bytes_written)
 	{
 		if(!m_isCommOpen)
 		{
@@ -107,7 +107,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconFTD2XXComm::setFirmwareMode()
+	bool FalconCommFTD2XX::setFirmwareMode()
 	{
 		u_int32_t bytes_written, bytes_read;
 		u_int8_t check_msg_1[3] = {0x0a, 0x43, 0x0d};
@@ -148,7 +148,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconFTD2XXComm::setNormalMode()
+	bool FalconCommFTD2XX::setNormalMode()
 	{
 		if((m_errorCode = FT_SetBaudRate(m_falconDevice, 1456312)) != FT_OK) return false;
 		return true;

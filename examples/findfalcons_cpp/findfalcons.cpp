@@ -10,10 +10,10 @@
 
 #include "core/FalconDevice.h"
 #ifdef LIBFTD2XX
-#include "comm/FalconFTD2XXComm.h"
+#include "comm/FalconCommFTD2XX.h"
 #endif
 #ifdef LIBFTDI
-#include "comm/FalconLibFTDIComm.h"
+#include "comm/FalconCommLibFTDI.h"
 #endif
 #include "firmware/FalconNovintFirmware.h"
 #include "kinematic/FalconKinematicStamper.h"
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 	signal(SIGQUIT, sigproc);
 #ifdef LIBFTDI
 	std::cout << "Running libftdi test" << std::endl;
-	dev.setFalconComm(new FalconLibFTDIComm());
+	dev.setFalconComm(new FalconCommLibFTDI());
 	runFalconTest(dev);
 #endif
 	return 0;

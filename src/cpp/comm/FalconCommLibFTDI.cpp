@@ -1,26 +1,26 @@
-#include "FalconLibFTDIComm.h"
+#include "FalconCommLibFTDI.h"
 
 namespace libnifalcon {
 
-	FalconLibFTDIComm::FalconLibFTDIComm() :
+	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false)
 	{
 	}
 
-	FalconLibFTDIComm::~FalconLibFTDIComm() 
+	FalconCommLibFTDI::~FalconCommLibFTDI() 
 	{
 		close();
 	}
 		
 	
-	bool FalconLibFTDIComm::initLibFTDI()
+	bool FalconCommLibFTDI::initLibFTDI()
 	{
 		if((m_errorCode = ftdi_init(&(m_falconDevice))) < 0) return false;
 		m_isInitialized = true;
 		return true;
 	}
 
-	bool FalconLibFTDIComm::getDeviceCount(int8_t& device_count)
+	bool FalconCommLibFTDI::getDeviceCount(int8_t& device_count)
 	{
 		if(!m_isInitialized)
 			if(!initLibFTDI())
@@ -32,7 +32,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::open(u_int8_t device_index)
+	bool FalconCommLibFTDI::open(u_int8_t device_index)
 	{
 		unsigned int count, i, status;
 		struct ftdi_device_list *dev_list, *current;
@@ -62,7 +62,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::close()
+	bool FalconCommLibFTDI::close()
 	{
 		if(!m_isCommOpen)
 		{
@@ -74,7 +74,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::read(u_int8_t* str, u_int32_t size, u_int32_t& bytes_read)
+	bool FalconCommLibFTDI::read(u_int8_t* str, u_int32_t size, u_int32_t& bytes_read)
 	{
 		unsigned long bytes_rx;
 		clock_t timeout;
@@ -94,7 +94,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::write(u_int8_t* str, u_int32_t size, u_int32_t& bytes_written)
+	bool FalconCommLibFTDI::write(u_int8_t* str, u_int32_t size, u_int32_t& bytes_written)
 	{
 		if(!m_isCommOpen)
 		{
@@ -112,7 +112,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::setFirmwareMode()
+	bool FalconCommLibFTDI::setFirmwareMode()
 	{
 		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
@@ -168,7 +168,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconLibFTDIComm::setNormalMode()
+	bool FalconCommLibFTDI::setNormalMode()
 	{
 		if(!m_isCommOpen)
 		{
