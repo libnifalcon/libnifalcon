@@ -64,18 +64,27 @@ namespace libnifalcon
 	{
 		if(m_falconComm == NULL)
 		{
+			std::cout << "No comm!" << std::endl;
 			return false;
 		}
 		if(!m_falconComm->isCommOpen())
 		{
+			std::cout << "Not open!" << std::endl;
 			return false;			
 		}
 		if(m_firmwareFilename.length() == 0)
 		{
+			std::cout << "No firmware!" << std::endl;
 			return false;
 		}
+		std::cout << "Loading firmware" << std::endl;
 		std::fstream firmware_file(m_firmwareFilename.c_str(), std::fstream::in | std::fstream::binary);
-
+		if(!firmware_file.is_open())
+		{
+			std::cout << "Cannot open file?!" << std::endl;
+			return false;
+		}
+		
 		m_falconComm->setFirmwareMode();
 
 		u_int8_t send_buf[128], receive_buf[128];
@@ -87,12 +96,14 @@ namespace libnifalcon
 			m_errorCode = m_falconComm->read(receive_buf, firmware_file.gcount(), bytes_read);
 			if(bytes_read != bytes_written)
 			{
+				std::cout << "Unequal write " << bytes_read << " " << bytes_written << std::endl;
 				return false;
 			}
 			for(int i = 0; i < bytes_read; ++i)
 			{
 				if(send_buf[i] != receive_buf[i])
 				{
+					std::cout << "Checksum doesn't balance" << std::endl;
 					return false;
 				}
 			}
@@ -112,7 +123,6 @@ namespace libnifalcon
 		if(m_falconKinematic != NULL)
 		{
 			m_falconKinematic->getPosition(m_falconFirmware->getEncoderValues(), m_position);
-			std::cout << m_position[0] << " " << m_position[1] << " " << m_position[2] << std::endl;
 		}
 	}
 

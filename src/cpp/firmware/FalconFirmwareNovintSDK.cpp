@@ -1,5 +1,6 @@
 #include "FalconFirmwareNovintSDK.h"
 #include <cstdlib>
+#include <iostream>
 
 namespace libnifalcon
 {
@@ -46,7 +47,7 @@ namespace libnifalcon
 			*(m_rawInput+idx+3) = ((m_forceValues[i]) & 0xf000) >> 12;
 		}
 		m_rawInput[13] = m_ledStatus;
-		if(m_homingMode) m_rawInput[13] |= 0x10;
+		if(m_homingMode) m_rawInput[13] |= 0x01;
 		for(i = 1; i < 15; ++i)
 		{
 			m_rawInput[i] += 0x41;
@@ -56,22 +57,32 @@ namespace libnifalcon
 	bool FalconFirmwareNovintSDK::runIOLoop()
 	{
 		u_int32_t bytes_read, bytes_written;
-		if(m_falconComm == NULL) return false;
+		bool read_successful = false;
+		if(m_falconComm == NULL)
+		{
+			return false;
+		}
 
 		//Receive information from the falcon
 		if(m_hasWritten)
 		{
 			m_falconComm->read((u_int8_t*)m_rawOutput, (u_int32_t)16, bytes_read);
-			if(bytes_read < 16) return false;		
-			formatOutput();
-			m_hasWritten = false;
+			if(bytes_read == 16)
+			{
+				formatOutput();
+				m_hasWritten = false;
+				read_successful = true;
+			}
 		}
 		//Send information to the falcon
 		formatInput();
 		m_falconComm->write((u_int8_t*)m_rawInput, (u_int32_t)16, bytes_written);
-		if(bytes_written < 16) return false;
+		if(bytes_written < 16)
+		{
+			return false;
+		}
 		m_hasWritten = true;
-		return true;
+		return read_successful;
 	}
 	
 }

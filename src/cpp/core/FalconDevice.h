@@ -23,6 +23,7 @@ namespace libnifalcon
 		void close();
 
 		bool runIOLoop();
+		void runThreadLoop() { while(1) runIOLoop(); }
 		
 		void setFalconComm(FalconComm* f);
 		void setFalconFirmware(FalconFirmware* f);
