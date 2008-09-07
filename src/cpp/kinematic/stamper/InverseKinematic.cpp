@@ -7,7 +7,7 @@ using namespace gmtl::Math;
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		Angle InverseKinematic::calculate(gmtl::Point3f position)

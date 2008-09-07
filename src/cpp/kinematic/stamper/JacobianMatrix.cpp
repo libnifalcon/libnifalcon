@@ -7,7 +7,7 @@ using namespace gmtl::Math;
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		gmtl::Vec3f JacobianMatrix::calculate(Angle angle, gmtl::Vec3f cartesian)

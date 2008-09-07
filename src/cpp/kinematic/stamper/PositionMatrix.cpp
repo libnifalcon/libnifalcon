@@ -4,7 +4,7 @@
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		PositionMatrix::PositionMatrix(gmtl::Vec3f center, float range, int density)

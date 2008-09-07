@@ -6,30 +6,23 @@
 #  GMTL_FOUND, If false, do not try to use GMTL
 
 IF (WIN32)
-
   IF(CYGWIN)
-
     FIND_PATH( GMTL_INCLUDE_DIR gmtl/gmtl.h
       /usr/include
 	  /usr/local/include
     )
-
   ELSE(CYGWIN)
-
     FIND_PATH( GMTL_INCLUDE_DIR gmtl/gmtl.h
-      ${GLUT_ROOT_PATH}/include
+      ${GMTL_ROOT_PATH}/include
     )
-
   ENDIF(CYGWIN)
 
 ELSE (WIN32)
-
   FIND_PATH( GMTL_INCLUDE_DIR gmtl/gmtl.h
     /usr/include
     /usr/local/include
     ENV INCLUDE
     )
-
 ENDIF (WIN32)
 
 SET( GMTL_FOUND "NO" )

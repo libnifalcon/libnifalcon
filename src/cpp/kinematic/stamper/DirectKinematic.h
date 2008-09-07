@@ -10,7 +10,7 @@
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		class DirectKinematic

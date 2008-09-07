@@ -16,7 +16,7 @@
 #include "comm/FalconLibFTDIComm.h"
 #endif
 #include "firmware/FalconNovintFirmware.h"
-#include "kinematic/stamper/FalconStamperKinematic.h"
+#include "kinematic/FalconKinematicStamper.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -38,7 +38,7 @@ void sigproc(int i)
 void runFalconTest(FalconDevice d)
 {
 	FalconNovintFirmware f;
-	stamper::FalconStamperKinematic k(true);
+	FalconKinematicStamper k(true);
 	double position[3];
 	int8_t num_falcons;
 	int status, i;

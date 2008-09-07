@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES("../..")
 SET(CURRENT_LIBRARY nifalcon_kinematic_stamper)
 
 #INSTALL(FILES .h DESTINATION "/usr/local/include/falcon/comm")
-ADD_LIBRARY (${CURRENT_LIBRARY} AngularMatrix.cpp JacobianMatrix.cpp PositionMatrix.cpp DirectKinematic.cpp InverseKinematic.cpp FalconStamperKinematic.cpp)    
+ADD_LIBRARY (${CURRENT_LIBRARY} AngularMatrix.cpp JacobianMatrix.cpp PositionMatrix.cpp DirectKinematic.cpp InverseKinematic.cpp ../FalconKinematicStamper.cpp)    
 SET_TARGET_PROPERTIES(${CURRENT_LIBRARY} PROPERTIES OUTPUT_NAME ${CURRENT_LIBRARY})
 SET_TARGET_PROPERTIES (${CURRENT_LIBRARY} PROPERTIES VERSION ${LIBNIFVERSION})
 TARGET_LINK_LIBRARIES(${CURRENT_LIBRARY} ${LIBFTDI})

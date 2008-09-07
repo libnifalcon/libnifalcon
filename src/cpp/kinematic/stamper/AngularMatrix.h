@@ -9,7 +9,7 @@
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		class AngularMatrix

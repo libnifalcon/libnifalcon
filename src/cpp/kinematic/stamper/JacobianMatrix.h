@@ -6,11 +6,11 @@
 #include "gmtl/gmtl.h"
 
 #include "InverseKinematic.h"
-#include "FalconGeometry.h"
+#include "kinematic/FalconGeometry.h"
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		class JacobianMatrix

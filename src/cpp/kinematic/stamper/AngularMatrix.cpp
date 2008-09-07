@@ -1,14 +1,16 @@
 //Original code by Kevin Ouellet
 //kouellet@users.sourceforge.net
 #include "AngularMatrix.h"
+#include "StamperUtils.h"
 
-#include "FalconGeometry.h"
+#include "kinematic/FalconGeometry.h"
+
 
 #include <iostream>
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		AngularMatrix::AngularMatrix(gmtl::Vec3f center, float range, unsigned int size)

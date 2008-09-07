@@ -5,11 +5,12 @@
 
 #include "gmtl/gmtl.h"
 
-#include "FalconGeometry.h"
+#include "kinematic/FalconGeometry.h"
+#include "StamperUtils.h"
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 		class InverseKinematic
 		{

@@ -1,5 +1,5 @@
 //Original code by Kevin Ouellet
-//kouellet@users.sourceforge.net
+//kouellet@users.sourceforge.net#
 #ifndef POSITIONMATRIX_H_
 #define POSITIONMATRIX_H_
 
@@ -8,7 +8,7 @@
 
 namespace libnifalcon
 {
-	namespace stamper
+	namespace StamperKinematicImpl
 	{
 
 		class PositionMatrix
