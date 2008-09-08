@@ -33,13 +33,16 @@ namespace libnifalcon
 
 		virtual ~FalconFirmware() {}
 		virtual bool runIOLoop() = 0;
-
+		virtual int32_t getGripInfoSize() = 0;
+		virtual u_int8_t* getGripInfo() = 0;
+		
 		int16_t* getEncoderValues() { return m_encoderValues; }
 	
 		void setLEDStatus(u_int8_t leds) { m_ledStatus = leds; }
 		u_int8_t getLEDStatus() { return m_ledStatus; }
 		void setHomingMode(bool value) { m_homingMode = value; }
 		bool* getHomingModeStatus() { return m_homingStatus; }	
+
 	
 		void setFalconComm(FalconComm* f) { m_falconComm = f; }
 	protected:

@@ -15,6 +15,9 @@ namespace libnifalcon
 		FalconFirmwareNovintSDK();
 		~FalconFirmwareNovintSDK() {}
 		bool runIOLoop();
+		int32_t getGripInfoSize() { return 1; }
+		//Things I am going to hell for, #8926:
+		u_int8_t* getGripInfo() { return (u_int8_t*)(m_rawOutput+13); }
 	protected:
 	
 		void formatInput();

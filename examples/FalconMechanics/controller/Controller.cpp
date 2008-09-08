@@ -4,6 +4,8 @@
 #include "boost/bind.hpp"
 #include "boost/progress.hpp"
 
+
+
 #include "kinematic/stamper/InverseKinematic.h"
 #include "kinematic/stamper/JacobianMatrix.h"
 
@@ -16,27 +18,36 @@ namespace controller
 	{
 		falconKinematic = new libnifalcon::FalconKinematicStamper(false);
 		std::cout << "Falcon initialization" << std::endl;
+		//Don't set a kinematics model, since we're handing that ourselves
 		falconModel = new libnifalcon::FalconDevice();
+		int8_t i;
 		falconModel->setFalconComm(&falconComm);
 		falconModel->setFalconFirmware(&falconFirmware);
-		falconFirmware.setHomingMode(true);
-//		falconModel->setFalconKinematic(falconKinematic);
-		int8_t count;
-		std::cout << falconModel->getDeviceCount(count) << std::endl;
-		std::cout << count << std::endl;
-		std::cout << falconModel->open(0) << std::endl;
+		falconModel->setFalconGrip(&falconGrip);
 
-		std::cout << falconModel->setFirmwareFile("test_firmware.bin") << std::endl;
-		falconComm.setNormalMode();
-		for(int i = 0; i < 10; ++i)
-		{			
-			if(falconModel->loadFirmware()) break;
+		if(!falconModel->open(0))
+		{
+			std::cout << "Can't open!" << std::endl;
+		}
+		
+		falconFirmware.setHomingMode(true);
+		int8_t count;
+		if(!falconModel->isFirmwareLoaded())
+		{
+			std::cout << "Loading firmware..." << std::endl;
+			std::cout << falconModel->setFirmwareFile("test_firmware.bin") << std::endl;		
+			for(int i = 0; i < 10; ++i)
+			{			
+				if(falconModel->loadFirmware()) break;
+			}
 		}
 		std::cout << "Kinematics initialization" << std::endl;
-		falconKinematic->initialize();
-		std::cout << "Initialization finished" << std::endl;
-		
-		boost::thread thread(boost::bind( &libnifalcon::FalconDevice::runThreadLoop, falconModel));
+		if(falconModel->isFirmwareLoaded())
+		{
+			falconKinematic->initialize();
+			std::cout << "Initialization finished" << std::endl;
+			boost::thread thread(boost::bind( &libnifalcon::FalconDevice::runThreadLoop, falconModel));
+		}
 	}
 
 	Controller::~Controller()
@@ -172,7 +183,6 @@ namespace controller
 			
 			falconModel->runIOLoop();
 			/*
-		
 			angle1 = falconModel->getTheta(model::Falcon::ARM_1);
 			angle2 = falconModel->getTheta(model::Falcon::ARM_2);
 			angle3 = falconModel->getTheta(model::Falcon::ARM_3);

@@ -1,6 +1,5 @@
 #include "FalconFirmwareNovintSDK.h"
 #include <cstdlib>
-#include <iostream>
 
 namespace libnifalcon
 {
@@ -25,7 +24,6 @@ namespace libnifalcon
 			//Shift value down a nibble for homing status
 			m_homingStatus[i] = ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
 		}
-		//Give bottom nibble to grip?
 	}
 
 	void FalconFirmwareNovintSDK::formatInput()

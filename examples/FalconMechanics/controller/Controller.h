@@ -6,6 +6,7 @@
 #include "../view/falcon/Falcon.h"
 #include "core/FalconDevice.h"
 #include "comm/FalconCommLibFTDI.h"
+#include "grip/FalconGripFourButton.h"
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include "kinematic/FalconKinematicStamper.h"
 
@@ -56,6 +57,7 @@ namespace controller
 
 		libnifalcon::FalconDevice* falconModel;
 		libnifalcon::FalconKinematicStamper* falconKinematic;
+		libnifalcon::FalconGripFourButton falconGrip;
 		libnifalcon::FalconCommLibFTDI falconComm;
 		libnifalcon::FalconFirmwareNovintSDK falconFirmware;
 	};

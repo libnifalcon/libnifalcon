@@ -6,6 +6,7 @@ namespace libnifalcon
 {
 
     FalconDevice::FalconDevice() :
+		m_isFirmwareLoaded(false),
 		m_falconComm(NULL),
 		m_falconKinematic(NULL),
 		m_falconGrip(NULL),
@@ -36,9 +37,12 @@ namespace libnifalcon
 		{
 			return false;
 		}
-		return m_falconComm->open(index);
+		if(!m_falconComm->open(index)) 
+		{
+			return false;
+		}
+		return m_falconComm->setNormalMode();
 	}
-
 
 	void FalconDevice::close()
     {
@@ -81,37 +85,60 @@ namespace libnifalcon
 		std::fstream firmware_file(m_firmwareFilename.c_str(), std::fstream::in | std::fstream::binary);
 		if(!firmware_file.is_open())
 		{
-			std::cout << "Cannot open file?!" << std::endl;
+			std::cout << "Cannot open file!" << std::endl;
 			return false;
 		}
 		
-		m_falconComm->setFirmwareMode();
+		if(!m_falconComm->setFirmwareMode())
+		{
+			std::cout << "Cannot set firmware mode!" << std::endl;
+			return false;			
+		}
 
 		u_int8_t send_buf[128], receive_buf[128];
 		u_int32_t bytes_read, bytes_written;		
 		while(!firmware_file.eof())
 		{
 			firmware_file.read((char*)send_buf, 128);
+			if(firmware_file.gcount() > 128)
+			{
+				return false;
+			}
+			std::cout << firmware_file.gcount() << std::endl;
 			if((m_errorCode = m_falconComm->write(send_buf, firmware_file.gcount(), bytes_written)) < 0) return false;
 			m_errorCode = m_falconComm->read(receive_buf, firmware_file.gcount(), bytes_read);
 			if(bytes_read != bytes_written)
 			{
-				std::cout << "Unequal write " << bytes_read << " " << bytes_written << std::endl;
 				return false;
 			}
 			for(int i = 0; i < bytes_read; ++i)
 			{
 				if(send_buf[i] != receive_buf[i])
 				{
-					std::cout << "Checksum doesn't balance" << std::endl;
 					return false;
 				}
 			}
 		}
 		m_falconComm->setNormalMode();
+		m_isFirmwareLoaded = true;
 		return true;
 	}
 
+	bool FalconDevice::isFirmwareLoaded()
+	{
+		if(m_falconFirmware == NULL) return false;
+		if(m_isFirmwareLoaded) return true;
+		for(int i = 0; i < 10; ++i)
+		{
+			if(runIOLoop())
+			{
+				m_isFirmwareLoaded = true;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	bool FalconDevice::runIOLoop()
 	{
 		if(m_falconFirmware == NULL) return false;
@@ -120,10 +147,15 @@ namespace libnifalcon
 		{
 			return false;
 		}
+		if(m_falconGrip != NULL)
+		{
+			m_falconGrip->runGripLoop(m_falconFirmware->getGripInfoSize(), m_falconFirmware->getGripInfo());
+		}
 		if(m_falconKinematic != NULL)
 		{
 			m_falconKinematic->getPosition(m_falconFirmware->getEncoderValues(), m_position);
 		}
+		return true;
 	}
 
 	void FalconDevice::setFalconComm(FalconComm* f)

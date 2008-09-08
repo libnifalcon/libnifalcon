@@ -16,6 +16,7 @@ namespace libnifalcon
 	public:
 		FalconDevice();
 		~FalconDevice();
+		bool isFirmwareLoaded();
 		bool setFirmwareFile(std::string filename);
 		bool loadFirmware();
 		bool getDeviceCount(int8_t& count);
@@ -36,6 +37,7 @@ namespace libnifalcon
 		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
 
 	protected:
+		bool m_isFirmwareLoaded;
 		std::string m_firmwareFilename;
 		int32_t m_errorCode;
 		FalconComm* m_falconComm;

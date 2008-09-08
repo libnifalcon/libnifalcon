@@ -5,6 +5,7 @@ namespace libnifalcon {
 	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false)
 	{
+		initLibFTDI();
 	}
 
 	FalconCommLibFTDI::~FalconCommLibFTDI() 
@@ -22,10 +23,7 @@ namespace libnifalcon {
 
 	bool FalconCommLibFTDI::getDeviceCount(int8_t& device_count)
 	{
-		if(!m_isInitialized)
-			if(!initLibFTDI())
-				return false;
-
+		if(!m_isInitialized) return false;
 		struct ftdi_device_list* dev_list[128];
 		device_count = ftdi_usb_find_all(&(m_falconDevice), dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
 		ftdi_list_free(dev_list);
@@ -34,6 +32,7 @@ namespace libnifalcon {
 
 	bool FalconCommLibFTDI::open(u_int8_t device_index)
 	{
+		if(!m_isInitialized) return false;
 		unsigned int count, i, status;
 		struct ftdi_device_list *dev_list, *current;
 		if(m_isCommOpen) close();
