@@ -14,7 +14,6 @@ namespace libnifalcon
 		FalconKinematicStamper(bool init_now = true);
 		~FalconKinematicStamper() {}
 		void initialize();
-		float getTheta(int16_t encoder_value);
 		StamperKinematicImpl::InverseKinematic* getInverseKinematic() { return &m_inv; }
 		StamperKinematicImpl::DirectKinematic* getDirectKinematic() { return &m_dir; }
 		virtual bool getAngles(double* position, double* angles);

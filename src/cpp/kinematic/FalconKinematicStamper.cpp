@@ -17,12 +17,6 @@ namespace libnifalcon
 	{
 		m_dir.initialize();
 	}
-
-	float FalconKinematicStamper::getTheta(int16_t encoder_value)
-	{
-		return (((SHAFT_DIAMETER*gmtl::Math::PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((gmtl::Math::PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
-	}
-
 										  
 	bool FalconKinematicStamper::getAngles(double position[3], double* angles)
 	{
