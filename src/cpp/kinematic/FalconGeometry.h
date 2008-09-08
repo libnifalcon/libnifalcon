@@ -20,8 +20,10 @@ namespace libnifalcon
 	const static float r = 37.233758;
 	
 	// degrees = {90, -30, 150} -> radians = {PI/2,-PI/6,-5*PI/6}
+	// There's an offset of 15 degrees per axis
 	const static double PI = 3.14159265;
-	const static float phy[] = { PI/2, -PI/6, -5*PI/6 };
+	const static double OFFSET_ANGLE = (PI/12);
+	const static float phy[] = { PI/2 + OFFSET_ANGLE, -PI/6 + OFFSET_ANGLE, -5*PI/6  + OFFSET_ANGLE};
 }
 
 #endif /*FALCONGEOMETRY_H_*/
