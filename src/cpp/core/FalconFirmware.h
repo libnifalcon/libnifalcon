@@ -3,7 +3,6 @@
 
 #include <sys/types.h>
 #include <cstdlib>
-
 #include "FalconComm.h"
 
 namespace libnifalcon
@@ -13,9 +12,9 @@ namespace libnifalcon
 	public:
 		enum
 		{
-			RED_LED=0x2,
-			GREEN_LED=0x4,
-			BLUE_LED=0x8
+			GREEN_LED=0x2,
+			BLUE_LED=0x4,
+			RED_LED=0x8
 		};
 	
 		FalconFirmware() :
@@ -42,7 +41,7 @@ namespace libnifalcon
 		u_int8_t getLEDStatus() { return m_ledStatus; }
 		void setHomingMode(bool value) { m_homingMode = value; }
 		bool* getHomingModeStatus() { return m_homingStatus; }	
-
+		bool isHomed() { return ( m_homingStatus[0] && m_homingStatus[1] && m_homingStatus[2]); }
 	
 		void setFalconComm(FalconComm* f) { m_falconComm = f; }
 	protected:

@@ -87,7 +87,6 @@ void runFalconTest(FalconDevice d)
 	for(int j = 0; j < 3; ++j)
 	{
 		f.setLEDStatus(2 << j);
-		
 		for(int i = 0; i < 1000; ++i)
 		{
 			dev.runIOLoop();

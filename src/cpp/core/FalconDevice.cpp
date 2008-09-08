@@ -100,11 +100,6 @@ namespace libnifalcon
 		while(!firmware_file.eof())
 		{
 			firmware_file.read((char*)send_buf, 128);
-			if(firmware_file.gcount() > 128)
-			{
-				return false;
-			}
-			std::cout << firmware_file.gcount() << std::endl;
 			if((m_errorCode = m_falconComm->write(send_buf, firmware_file.gcount(), bytes_written)) < 0) return false;
 			m_errorCode = m_falconComm->read(receive_buf, firmware_file.gcount(), bytes_read);
 			if(bytes_read != bytes_written)

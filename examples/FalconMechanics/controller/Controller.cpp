@@ -90,6 +90,16 @@ namespace controller
 
 	void Controller::idle()
 	{
+
+		if(!falconFirmware.isHomed())
+		{
+			falconFirmware.setLEDStatus(falconFirmware.RED_LED);
+			return;
+		}
+		else
+		{
+			falconFirmware.setLEDStatus(falconFirmware.GREEN_LED);
+		}
 		int16_t* encoders = new int16_t[3];
 		encoders = falconModel->getFalconFirmware()->getEncoderValues();
 		angle1 = falconKinematic->getTheta(encoders[0]);
