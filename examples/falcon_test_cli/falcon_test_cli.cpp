@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <csignal>
 #include <boost/program_options.hpp>
 #include "core/FalconDevice.h"
 #ifdef LIBFTD2XX
