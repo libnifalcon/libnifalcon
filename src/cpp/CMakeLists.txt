@@ -1,7 +1,8 @@
 SET(LIBRARY_SRCS core/FalconDevice.cpp firmware/FalconFirmwareNovintSDK.cpp)
-INSTALL(FILES core/FalconDevice.h core/FalconComm.h core/FalconFirmware.h core/FalconGrip.h core/FalconKinematic.h DESTINATION "/usr/local/include/falcon/core")
-INSTALL(FILES firmware/FalconFirmwareNovintSDK.h DESTINATION "/usr/local/include/falcon/firmware")
-INSTALL(FILES grip/FalconGripFourButton.h DESTINATION "/usr/local/include/falcon/grip")
+
+INSTALL(FILES core/FalconDevice.h core/FalconComm.h core/FalconFirmware.h core/FalconGrip.h core/FalconKinematic.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/core)
+INSTALL(FILES firmware/FalconFirmwareNovintSDK.h DESTINATION  ${INCLUDE_INSTALL_DIR}/falcon/firmware)
+INSTALL(FILES grip/FalconGripFourButton.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/grip)
 
 INCLUDE_DIRECTORIES(.)
 
@@ -17,9 +18,9 @@ SET_TARGET_PROPERTIES (nifalcon_cpp_static PROPERTIES VERSION ${LIBNIFVERSION})
 SET_TARGET_PROPERTIES (nifalcon_cpp_shared PROPERTIES VERSION ${LIBNIFVERSION})
 
 IF(NOT WIN32)
-  INSTALL(TARGETS nifalcon_cpp_static nifalcon_cpp_shared LIBRARY DESTINATION "/usr/local/lib" ARCHIVE DESTINATION "/usr/local/lib")
+  INSTALL(TARGETS nifalcon_cpp_static nifalcon_cpp_shared LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR} ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR})
   IF(APPLE)
-	SET_TARGET_PROPERTIES(nifalcon_cpp_shared PROPERTIES INSTALL_NAME_DIR "/usr/local/lib")
+	SET_TARGET_PROPERTIES(nifalcon_cpp_shared PROPERTIES INSTALL_NAME_DIR ${LIBRARY_INSTALL_DIR})
   ENDIF(APPLE)
 ENDIF(NOT WIN32)
 
