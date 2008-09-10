@@ -5,6 +5,7 @@
 #ifdef LIBFTDI
 #include "comm/FalconCommLibFTDI.h"
 #endif
+#include "firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
 
 namespace libnifalcon
@@ -26,10 +27,10 @@ namespace libnifalcon
 			po::options_description comm("Communication Options");
 			comm.add_options()
 #ifdef LIBFTDI
-				("libftdi", "use libftdi driver")
+				("libftdi", "use libftdi based driver")
 #endif
 #ifdef LIBFTD2XX
-				("ftd2xx", "use ftd2xx driver")
+				("ftd2xx", "use ftd2xx based driver")
 #endif
 				;
 			m_progOptions.add(comm);
@@ -40,7 +41,7 @@ namespace libnifalcon
 			po::options_description device("Device options");
 			device.add_options()
 				("device_count", "Print the number of devices currently connected and return")
-				("device_index", po::value<int>(), "Index of device to open (starts at 0)")
+				("device_index", po::value<int>(), "Opens device of given index (starts at 0)")
 				;
 
 			m_progOptions.add(device);
@@ -93,20 +94,50 @@ namespace libnifalcon
 			m_falconDevice.getDeviceCount(count);
 			std::cout << "Connected Device Count: " << (int)count << std::endl;
 			return false;
-		}
-		
-		if(vm.count("device_index"))
+		}		
+		else if(vm.count("device_index"))
 		{
 			if(!m_falconDevice.open(vm["device_index"].as<int8_t>()))
 			{
 				std::cout << "Cannot open falcon device index " << vm["device_index"].as<int>() << std::endl;
+				return false;
 			}
 		}
+		else
+		{
+			std::cout << "No device index specified to open, cannot continue (--help for options)" << std::endl;
+			return false;			
+		}
+
+		//There's only one kind of firmware right now, so automatically set that.
+		m_falconDevice.setFalconFirmware(new FalconFirmwareNovintSDK());
 		//See if we have firmware
+		bool firmware_loaded;	 
+		if(vm.count("firmware"))
+		{
+			//Check for existence of firmware file
+			std::string firmware_file = vm["firmware"].as<std::string>();
+			if(!m_falconDevice.setFirmwareFile(firmware_file))
+			{
+				std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
+				return false;
+			}
+			//See if we need to load the firmware, or force it
+			if(vm.count("force_firmware") || !m_falconDevice.isFirmwareLoaded())
+			{
+				if(!m_falconDevice.loadFirmware())
+				{
+					std::cout << "Cannot load firmware to device" << std::endl;
+					return false;
+				}
+			}
+		}
+		if(!m_falconDevice.isFirmwareLoaded())
+		{
+			std::cout << "No firmware loaded to device, cannot continue" << std::endl;
+			return false;
+		}
 		
-		
-		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
-		std::cout << m_progOptions << std::endl;
 		return false;		
 	}
 }
