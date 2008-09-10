@@ -10,65 +10,56 @@
 #include "comm/FalconCommLibFTDI.h"
 #endif
 #include "firmware/FalconFirmwareNovintSDK.h"
+#include "util/FalconCLIBase.h"
 
 using namespace libnifalcon;
-using namespace boost::program_options;
+namespace po = boost::program_options;
 
 void sigproc(int i)
 {
 	exit(0);
 }
 
-bool parseCommandLineOptions(int argc, char** argv)
+class FalconCLITest : public FalconCLIBase
 {
-	options_description program("Program Options");
-	program.add_options()
-		("help", "show this help message");
-
-	options_description comm("Communication Options");
-	comm.add_options()
-#ifdef LIBFTDI
-		("libftdi", "use libftdi driver")
-#endif
-#ifdef LIBFTD2XX
-		("ftd2xx", "use ftd2xx driver")
-#endif
-		("device_index", value<int>(), "Index of device to open (default: 0)")
-		;
-
-	options_description firmware("Firmware Options");
-	firmware.add_options()
-		("firmware", value<std::string>(), "Firmware file")
-		("force_firmware", "Force firmware download, even if already loaded")
-		;
-	
-	options_description led("LED Status");
-	led.add_options()
-		("led_red", "Turn on Red LED")
-		("led_green", "Turn on Green LED")
-		("led_blue", "Turn on Blue LED");
-
-	options_description cli;
-	cli.add(program).add(comm).add(firmware).add(led);
-
-	variables_map vm;
-	store(parse_command_line(argc, argv, cli), vm);
-	notify(vm);    
-	
-	if (vm.count("help")) {
-		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
-		std::cout << cli << std::endl;
-		return false;
+public:
+	enum
+	{
+		LED_OPTIONS = 0x8
+	};
+	FalconCLITest()
+	{
 	}
-
-}
-
+	~FalconCLITest()
+	{
+	}
+	virtual void addOptions(int value)
+	{
+		FalconCLIBase::addOptions(value);
+		if(value & LED_OPTIONS)
+		{
+			po::options_description led("LED Status");
+			led.add_options()
+				("led_red", "Turn on Red LED")
+				("led_green", "Turn on Green LED")
+				("led_blue", "Turn on Blue LED");
+			m_progOptions.add(led);
+		}
+	}
+	virtual bool parseOptions(int argc, char** argv)
+	{
+		if(!FalconCLIBase::parseOptions(argc, argv)) return false;		
+	}
+};
+	
 int main(int argc, char** argv)
 {
 
 	signal(SIGINT, sigproc);
 	signal(SIGQUIT, sigproc);
-	if(!parseCommandLineOptions(argc, argv))
+	FalconCLITest f;
+	f.addOptions(FalconCLITest::LED_OPTIONS | FalconCLITest::DEVICE_OPTIONS | FalconCLITest::COMM_OPTIONS | FalconCLITest::FIRMWARE_OPTIONS);	
+	if(!f.parseOptions(argc, argv))
 		return 0;
 	return 0;
 }
