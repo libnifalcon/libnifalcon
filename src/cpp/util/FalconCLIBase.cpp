@@ -40,7 +40,7 @@ namespace libnifalcon
 			po::options_description device("Device options");
 			device.add_options()
 				("device_count", "Print the number of devices currently connected and return")
-				("device_index", po::value<int>(), "Index of device to open (default: 0)")
+				("device_index", po::value<int>(), "Index of device to open (starts at 0)")
 				;
 
 			m_progOptions.add(device);
@@ -94,7 +94,14 @@ namespace libnifalcon
 			std::cout << "Connected Device Count: " << (int)count << std::endl;
 			return false;
 		}
-	
+		
+		if(vm.count("device_index"))
+		{
+			if(!m_falconDevice.open(vm["device_index"].as<int8_t>()))
+			{
+				std::cout << "Cannot open falcon device index " << vm["device_index"].as<int>() << std::endl;
+			}
+		}
 		//See if we have firmware
 		
 		
