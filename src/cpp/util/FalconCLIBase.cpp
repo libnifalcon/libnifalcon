@@ -83,7 +83,7 @@ namespace libnifalcon
 #ifdef LIBFTD2XX
 		else if (vm.count("ftd2xx"))
 		{
-			m_falconDevice.setFalconComm(new FalconCommLibFTD2XX());
+			m_falconDevice.setFalconComm(new FalconCommFTD2XX());
 		}
 #endif
 		//Device count check
