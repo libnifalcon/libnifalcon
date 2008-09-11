@@ -26,10 +26,14 @@ namespace libnifalcon
 		bool runIOLoop();
 		void runThreadLoop() { while(1) runIOLoop(); }
 		
-		void setFalconComm(FalconComm* f);
-		void setFalconFirmware(FalconFirmware* f);
-		void setFalconGrip(FalconGrip* f);
-		void setFalconKinematic(FalconKinematic* f);
+		template<class T>
+		void setFalconComm();
+		template<class T>
+		void setFalconFirmware();
+		template<class T>
+		void setFalconGrip();
+		template<class T>
+		void setFalconKinematic();
 
 		FalconComm* getFalconComm() { return m_falconComm; }
 		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
@@ -47,6 +51,36 @@ namespace libnifalcon
 		double m_position[3];
 	};
 
+	template<class T>
+	void FalconDevice::setFalconComm()
+	{
+		m_falconComm = new T();
+		if(m_falconFirmware != NULL)
+		{
+			m_falconFirmware->setFalconComm(m_falconComm);
+		}		
+	}
+
+	template<class T>
+	void FalconDevice::setFalconFirmware()
+	{
+		m_falconFirmware = new T();
+	}
+
+	template<class T>
+	void FalconDevice::setFalconGrip()
+	{
+		m_falconGrip = new T();
+	}
+
+	template<class T>
+	void FalconDevice::setFalconKinematic()
+	{
+		m_falconKinematic = new T();
+	}
+	
 }
+
+
 
 #endif

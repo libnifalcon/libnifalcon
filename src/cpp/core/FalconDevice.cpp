@@ -153,29 +153,4 @@ namespace libnifalcon
 		return true;
 	}
 
-	void FalconDevice::setFalconComm(FalconComm* f)
-	{
-		m_falconComm = f;
-		if(m_falconFirmware != NULL)
-		{
-			m_falconFirmware->setFalconComm(m_falconComm);
-		}		
-	}
-	void FalconDevice::setFalconFirmware(FalconFirmware* f)
-	{
-		m_falconFirmware = f;
-		if(m_falconComm != NULL)
-		{
-			m_falconFirmware->setFalconComm(m_falconComm);
-		}
-	}
-	void FalconDevice::setFalconGrip(FalconGrip* f)
-	{
-		m_falconGrip = f;
-	}		
-	void FalconDevice::setFalconKinematic(FalconKinematic* f)
-	{
-		m_falconKinematic = f;
-	}
-
 };

@@ -78,13 +78,15 @@ namespace libnifalcon
 #ifdef LIBFTDI
 		else if (vm.count("libftdi"))
 		{
-			m_falconDevice.setFalconComm(new FalconCommLibFTDI());
+			std::cout << "Setting up libftdi device" << std::endl;
+			m_falconDevice.setFalconComm<FalconCommLibFTDI>();
 		}
 #endif
 #ifdef LIBFTD2XX
 		else if (vm.count("ftd2xx"))
 		{
-			m_falconDevice.setFalconComm(new FalconCommFTD2XX());
+			std::cout << "Setting up ftd2xx device" << std::endl;
+			m_falconDevice.setFalconComm<FalconCommFTD2XX>();
 		}
 #endif
 		//Device count check
@@ -97,7 +99,7 @@ namespace libnifalcon
 		}		
 		else if(vm.count("device_index"))
 		{
-			if(!m_falconDevice.open(vm["device_index"].as<int8_t>()))
+			if(!m_falconDevice.open(vm["device_index"].as<int>()))
 			{
 				std::cout << "Cannot open falcon device index " << vm["device_index"].as<int>() << std::endl;
 				return false;
@@ -110,7 +112,7 @@ namespace libnifalcon
 		}
 
 		//There's only one kind of firmware right now, so automatically set that.
-		m_falconDevice.setFalconFirmware(new FalconFirmwareNovintSDK());
+		m_falconDevice.setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
 		bool firmware_loaded;	 
 		if(vm.count("firmware"))

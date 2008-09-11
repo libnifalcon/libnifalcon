@@ -5,6 +5,9 @@
 #include "boost/progress.hpp"
 
 
+#include "comm/FalconCommLibFTDI.h"
+#include "grip/FalconGripFourButton.h"
+#include "firmware/FalconFirmwareNovintSDK.h"
 
 #include "kinematic/stamper/InverseKinematic.h"
 #include "kinematic/stamper/JacobianMatrix.h"
@@ -21,16 +24,16 @@ namespace controller
 		//Don't set a kinematics model, since we're handing that ourselves
 		falconModel = new libnifalcon::FalconDevice();
 		int8_t i;
-		falconModel->setFalconComm(&falconComm);
-		falconModel->setFalconFirmware(&falconFirmware);
-		falconModel->setFalconGrip(&falconGrip);
+		falconModel->setFalconComm<libnifalcon::FalconCommLibFTDI>();
+		falconModel->setFalconFirmware<libnifalcon::FalconFirmwareNovintSDK>();
+		falconModel->setFalconGrip<libnifalcon::FalconGripFourButton>();
 
 		if(!falconModel->open(0))
 		{
 			std::cout << "Can't open!" << std::endl;
 		}
 		
-		falconFirmware.setHomingMode(true);
+		falconModel->getFalconFirmware()->setHomingMode(true);
 		int8_t count;
 		if(!falconModel->isFirmwareLoaded())
 		{
@@ -91,14 +94,14 @@ namespace controller
 	void Controller::idle()
 	{
 
-		if(!falconFirmware.isHomed())
+		if(!falconModel->getFalconFirmware()->isHomed())
 		{
-			falconFirmware.setLEDStatus(falconFirmware.RED_LED);
+			falconModel->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::RED_LED);
 			return;
 		}
 		else
 		{
-			falconFirmware.setLEDStatus(falconFirmware.GREEN_LED);
+			falconModel->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::GREEN_LED);
 		}
 		int16_t* encoders = new int16_t[3];
 		encoders = falconModel->getFalconFirmware()->getEncoderValues();

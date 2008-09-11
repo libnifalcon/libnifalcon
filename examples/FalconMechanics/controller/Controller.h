@@ -57,9 +57,6 @@ namespace controller
 
 		libnifalcon::FalconDevice* falconModel;
 		libnifalcon::FalconKinematicStamper* falconKinematic;
-		libnifalcon::FalconGripFourButton falconGrip;
-		libnifalcon::FalconCommLibFTDI falconComm;
-		libnifalcon::FalconFirmwareNovintSDK falconFirmware;
 	};
 
 }
