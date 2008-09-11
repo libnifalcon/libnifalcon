@@ -1,7 +1,5 @@
 #include "FalconDevice.h"
 
-#include <iostream>
-
 namespace libnifalcon
 {
 
@@ -64,34 +62,40 @@ namespace libnifalcon
 		return true;
 	}
 
+	bool FalconDevice::loadFirmware(int retries)
+	{
+		for(int i = 0; i < retries; ++i)
+		{
+			if(loadFirmware())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	bool FalconDevice::loadFirmware()
 	{
 		if(m_falconComm == NULL)
 		{
-			std::cout << "No comm!" << std::endl;
 			return false;
 		}
 		if(!m_falconComm->isCommOpen())
 		{
-			std::cout << "Not open!" << std::endl;
 			return false;			
 		}
 		if(m_firmwareFilename.length() == 0)
 		{
-			std::cout << "No firmware!" << std::endl;
 			return false;
 		}
-		std::cout << "Loading firmware" << std::endl;
 		std::fstream firmware_file(m_firmwareFilename.c_str(), std::fstream::in | std::fstream::binary);
 		if(!firmware_file.is_open())
 		{
-			std::cout << "Cannot open file!" << std::endl;
 			return false;
 		}
 		
 		if(!m_falconComm->setFirmwareMode())
 		{
-			std::cout << "Cannot set firmware mode!" << std::endl;
 			return false;			
 		}
 
@@ -121,8 +125,14 @@ namespace libnifalcon
 
 	bool FalconDevice::isFirmwareLoaded()
 	{
-		if(m_falconFirmware == NULL) return false;
-		if(m_isFirmwareLoaded) return true;
+		if(m_falconFirmware == NULL)
+		{
+			return false;
+		}
+		if(m_isFirmwareLoaded)
+		{
+			return true;
+		}
 		for(int i = 0; i < 10; ++i)
 		{
 			if(runIOLoop())

@@ -33,7 +33,7 @@ public:
 	~FalconCLITest()
 	{
 	}
-	virtual void addOptions(int value)
+	void addOptions(int value)
 	{
 		FalconCLIBase::addOptions(value);
 		if(value & LED_OPTIONS)
@@ -46,9 +46,28 @@ public:
 			m_progOptions.add(led);
 		}
 	}
-	virtual bool parseOptions(int argc, char** argv)
+	bool parseOptions(int argc, char** argv)
 	{
-		if(!FalconCLIBase::parseOptions(argc, argv)) return false;		
+		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
+		int led = 0;
+		if(m_varMap.count("led_red"))
+		{
+			std::cout << "Turning on RED LED" << std::endl;
+			led |= FalconFirmware::RED_LED;
+		}
+		if(m_varMap.count("led_green"))
+		{
+			std::cout << "Turning on GREEN LED" << std::endl;
+			led |= FalconFirmware::GREEN_LED;
+		}
+		if(m_varMap.count("led_blue"))
+		{
+			std::cout << "Turning on BLUE LED" << std::endl;			
+			led |= FalconFirmware::BLUE_LED;
+		}
+		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
+		m_falconDevice.runIOLoop();
+		return true;
 	}
 };
 	

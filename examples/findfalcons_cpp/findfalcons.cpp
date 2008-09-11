@@ -69,20 +69,17 @@ void runFalconTest(FalconDevice d)
 	{
 		std::cout << "Cannot find firmware" << std::endl;
 	}
-
-	for(int i = 0; i < 10; ++i)
+	
+	if(!dev.loadFirmware(10))
 	{
-		if(!dev.loadFirmware())
-		{
-			std::cout << "Could not load firmware" << std::endl;
-		}
-		else
-		{
-			std::cout <<"Firmware loaded" << std::endl;
-			break;
-		}
+		std::cout << "Could not load firmware" << std::endl;
+		return;
 	}
-
+	else
+	{
+		std::cout <<"Firmware loaded" << std::endl;
+	}
+	
 	for(int j = 0; j < 3; ++j)
 	{
 		f->setLEDStatus(2 << j);

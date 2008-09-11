@@ -17,6 +17,7 @@ namespace libnifalcon
 		program.add_options()
 			("help", "show this help message");
 		m_progOptions.add(program);
+		m_falconDevice.setFalconFirmware<FalconFirmwareNovintSDK>();
 	}
 
 
@@ -60,48 +61,47 @@ namespace libnifalcon
 
 	bool FalconCLIBase::parseOptions(int argc, char** argv)
 	{
-		po::variables_map vm;
-		po::store(po::parse_command_line(argc, argv, m_progOptions), vm);
-		po::notify(vm);    
+		po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
+		po::notify(m_varMap);    
 
-		if (vm.count("help")) {
+		if (m_varMap.count("help")) {
 			std::cout << "Usage: falcon_test_cli [args]" << std::endl;
 			std::cout << m_progOptions << std::endl;
 			return false;
 		}
 
 		//First off, see if we have a communication method
-		if(vm.count("libftdi") && vm.count("ftd2xx"))
+		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx." << std::endl;		
 		}
 #ifdef LIBFTDI
-		else if (vm.count("libftdi"))
+		else if (m_varMap.count("libftdi"))
 		{
 			std::cout << "Setting up libftdi device" << std::endl;
 			m_falconDevice.setFalconComm<FalconCommLibFTDI>();
 		}
 #endif
 #ifdef LIBFTD2XX
-		else if (vm.count("ftd2xx"))
+		else if (m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Setting up ftd2xx device" << std::endl;
 			m_falconDevice.setFalconComm<FalconCommFTD2XX>();
 		}
 #endif
 		//Device count check
-		if(vm.count("device_count"))
+		if(m_varMap.count("device_count"))
 		{
 			int8_t count;
 			m_falconDevice.getDeviceCount(count);
 			std::cout << "Connected Device Count: " << (int)count << std::endl;
 			return false;
 		}		
-		else if(vm.count("device_index"))
+		else if(m_varMap.count("device_index"))
 		{
-			if(!m_falconDevice.open(vm["device_index"].as<int>()))
+			if(!m_falconDevice.open(m_varMap["device_index"].as<int>()))
 			{
-				std::cout << "Cannot open falcon device index " << vm["device_index"].as<int>() << std::endl;
+				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << std::endl;
 				return false;
 			}
 		}
@@ -115,19 +115,19 @@ namespace libnifalcon
 		m_falconDevice.setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
 		bool firmware_loaded;	 
-		if(vm.count("firmware"))
+		if(m_varMap.count("firmware"))
 		{
 			//Check for existence of firmware file
-			std::string firmware_file = vm["firmware"].as<std::string>();
+			std::string firmware_file = m_varMap["firmware"].as<std::string>();
 			if(!m_falconDevice.setFirmwareFile(firmware_file))
 			{
 				std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
 				return false;
 			}
 			//See if we need to load the firmware, or force it
-			if(vm.count("force_firmware") || !m_falconDevice.isFirmwareLoaded())
+			if(m_varMap.count("force_firmware") || !m_falconDevice.isFirmwareLoaded())
 			{
-				if(!m_falconDevice.loadFirmware())
+				if(!m_falconDevice.loadFirmware(10))
 				{
 					std::cout << "Cannot load firmware to device" << std::endl;
 					return false;
@@ -140,6 +140,6 @@ namespace libnifalcon
 			return false;
 		}
 		
-		return false;		
+		return true;
 	}
 }
