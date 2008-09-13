@@ -5,10 +5,13 @@
 
 namespace libnifalcon
 {	
-	class FalconGrip
+	class FalconGrip : public FalconCore
 	{
 	public:
 
+		enum {
+			FALCON_GRIP_INDEX_OUT_OF_RANGE = 4000
+		};
 		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) : m_numDigitalInputs(digital_inputs), m_numAnalogInputs(analog_inputs)
 		{
 			if(m_numDigitalInputs > 0)

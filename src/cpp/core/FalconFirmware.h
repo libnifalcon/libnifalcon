@@ -7,7 +7,7 @@
 
 namespace libnifalcon
 {
-	class FalconFirmware
+	class FalconFirmware : public FalconCore
 	{	
 	public:
 		enum

@@ -14,8 +14,8 @@ namespace libnifalcon
 		virtual bool getDeviceCount(int8_t& );
 		virtual bool open(u_int8_t );
 		virtual bool close();
-		virtual bool read(u_int8_t*, u_int32_t , u_int32_t& );
-		virtual bool write(u_int8_t*, u_int32_t , u_int32_t& );
+		virtual bool read(u_int8_t*, u_int32_t);
+		virtual bool write(u_int8_t*, u_int32_t);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:

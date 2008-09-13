@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "FalconCore.h"
 #include "FalconComm.h"
 #include "FalconFirmware.h"
 #include "FalconKinematic.h"
@@ -11,14 +12,24 @@
 
 namespace libnifalcon
 {
-	class FalconDevice
+	class FalconDevice : public FalconCore
 	{		
 	public:
+		enum {
+			FALCON_DEVICE_NO_COMM_SET = 1000,
+			FALCON_DEVICE_NO_FIRMWARE_SET,
+			FALCON_DEVICE_NO_KINEMATIC_SET,
+			FALCON_DEVICE_NO_GRIP_SET,
+			FALCON_DEVICE_NO_FIRMWARE_LOADED,
+			FALCON_DEVICE_FIRMWARE_NOT_VALID,
+			FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH
+		};
 		FalconDevice();
 		~FalconDevice();
 		bool isFirmwareLoaded();
 		bool setFirmwareFile(std::string filename);
 		bool loadFirmware(int retries);
+		bool loadFirmware();
 		bool getDeviceCount(int8_t& count);
 		bool open(u_int8_t index);
 		void close();
@@ -34,17 +45,13 @@ namespace libnifalcon
 		void setFalconGrip();
 		template<class T>
 		void setFalconKinematic();
-
 		FalconComm* getFalconComm() { return m_falconComm; }
 		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
 		FalconGrip* getFalconGrip() { return m_falconGrip; }
 		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
-
 	protected:
-		bool loadFirmware();
 		bool m_isFirmwareLoaded;
 		std::string m_firmwareFilename;
-		int32_t m_errorCode;
 		FalconComm* m_falconComm;
 		FalconKinematic* m_falconKinematic;
 		FalconFirmware* m_falconFirmware;

@@ -54,7 +54,6 @@ namespace libnifalcon
 
 	bool FalconFirmwareNovintSDK::runIOLoop()
 	{
-		u_int32_t bytes_read, bytes_written;
 		bool read_successful = false;
 		if(m_falconComm == NULL)
 		{
@@ -64,8 +63,7 @@ namespace libnifalcon
 		//Receive information from the falcon
 		if(m_hasWritten)
 		{
-			m_falconComm->read((u_int8_t*)m_rawOutput, (u_int32_t)16, bytes_read);
-			if(bytes_read == 16)
+			if(!m_falconComm->read((u_int8_t*)m_rawOutput, (u_int32_t)16))
 			{
 				formatOutput();
 				m_hasWritten = false;
@@ -74,8 +72,7 @@ namespace libnifalcon
 		}
 		//Send information to the falcon
 		formatInput();
-		m_falconComm->write((u_int8_t*)m_rawInput, (u_int32_t)16, bytes_written);
-		if(bytes_written < 16)
+		if(!m_falconComm->write((u_int8_t*)m_rawInput, (u_int32_t)16))
 		{
 			return false;
 		}

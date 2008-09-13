@@ -2,13 +2,17 @@
 #define FALCONKINEMATIC_H
 
 #include <sys/types.h>
+#include "FalconCore.h"
 #include "kinematic/FalconGeometry.h"
 
 namespace libnifalcon
 {
-	class FalconKinematic
+	class FalconKinematic : public FalconCore
 	{
 	public:
+		enum {
+			FALCON_KINEMATIC_OUT_OF_RANGE
+		};
 		FalconKinematic() {}
 		virtual ~FalconKinematic() {}
 		float getTheta(int16_t encoder_value)
