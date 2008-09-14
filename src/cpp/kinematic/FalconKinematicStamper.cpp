@@ -5,7 +5,7 @@
 
 namespace libnifalcon
 {
-	FalconKinematicStamper::FalconKinematicStamper(bool init_now)
+	FalconKinematicStamper::FalconKinematicStamper(WorkspaceBounds b, bool init_now) : FalconKinematic(b)
 	{
 		if(init_now)
 		{
@@ -17,7 +17,27 @@ namespace libnifalcon
 	{
 		m_dir.initialize();
 	}
-										  
+
+	gmtl::Point3f FalconKinematicStamper::translatePointToWorkspace(gmtl::Point3f p)
+	{
+		//For the moment, calculate against the static values in the simulator
+		gmtl::Point3f retp;		
+		retp[0] = (((p[0] + 100)/200) * (m_workspaceBounds.X[1] - m_workspaceBounds.X[0])) + m_workspaceBounds.X[0];
+		retp[1] = (((p[1] + 100)/200) * (m_workspaceBounds.Y[1] - m_workspaceBounds.Y[0])) + m_workspaceBounds.Y[0];
+		retp[2] = ((((p[2] - 150) + 100)/200) * (m_workspaceBounds.Z[1] - m_workspaceBounds.Z[0])) + m_workspaceBounds.Z[0];
+		return retp;
+	}
+	
+	gmtl::Point3f FalconKinematicStamper::translatePointFromWorkspace(gmtl::Point3f p)
+	{
+		//For the moment, calculate against the static values in the simulator
+		gmtl::Point3f retp;
+		retp[0] = ((p[0] - m_workspaceBounds.X[0])/(m_workspaceBounds.X[1] - m_workspaceBounds.X[0]) * 200) - 100;
+		retp[1] = ((p[1] - m_workspaceBounds.Y[0])/(m_workspaceBounds.Y[1] - m_workspaceBounds.Y[0]) * 200) - 100;
+		retp[2] = (((p[2] - m_workspaceBounds.Z[0])/(m_workspaceBounds.Z[1] - m_workspaceBounds.Z[0]) * 200) + 150) - 100;
+		return retp;
+	}
+	
 	bool FalconKinematicStamper::getAngles(double position[3], double* angles)
 	{
 		StamperKinematicImpl::Angle a;

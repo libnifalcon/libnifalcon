@@ -6,7 +6,7 @@
 #include "gmtl/gmtl.h"
 
 #include "InverseKinematic.h"
-#include "kinematic/FalconGeometry.h"
+#include "core/FalconGeometry.h"
 
 namespace libnifalcon
 {

@@ -11,14 +11,17 @@ namespace libnifalcon
 	class FalconKinematicStamper : public FalconKinematic
 	{
 	public:
-		FalconKinematicStamper(bool init_now = true);
+		FalconKinematicStamper(WorkspaceBounds b, bool init_now);
 		~FalconKinematicStamper() {}
 		void initialize();
 		StamperKinematicImpl::InverseKinematic* getInverseKinematic() { return &m_inv; }
 		StamperKinematicImpl::DirectKinematic* getDirectKinematic() { return &m_dir; }
+		
 		virtual bool getAngles(double* position, double* angles);
 		virtual bool getPosition(int16_t angles[3], double* position);
-	private:
+	protected:
+		gmtl::Point3f translatePointFromWorkspace(gmtl::Point3f p);
+		gmtl::Point3f translatePointToWorkspace(gmtl::Point3f p);
 		StamperKinematicImpl::InverseKinematic m_inv;
 		StamperKinematicImpl::DirectKinematic m_dir;
 	};

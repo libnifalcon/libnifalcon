@@ -3,9 +3,7 @@
 #include "AngularMatrix.h"
 #include "StamperUtils.h"
 
-#include "kinematic/FalconGeometry.h"
-
-
+#include "core/FalconGeometry.h"
 #include <iostream>
 
 namespace libnifalcon

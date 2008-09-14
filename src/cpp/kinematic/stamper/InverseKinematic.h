@@ -5,7 +5,7 @@
 
 #include "gmtl/gmtl.h"
 
-#include "kinematic/FalconGeometry.h"
+#include "core/FalconGeometry.h"
 #include "StamperUtils.h"
 
 namespace libnifalcon
