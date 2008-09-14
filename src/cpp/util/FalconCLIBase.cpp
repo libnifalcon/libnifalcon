@@ -131,6 +131,10 @@ namespace libnifalcon
 				{
 					std::cout << "Cannot load firmware to device" << std::endl;
 					std::cout << "Error Code: " << m_falconDevice.getErrorCode() << std::endl;
+					if(m_falconDevice.getErrorCode() == 2000)
+					{
+						std::cout << "Device Error Code: " << m_falconDevice.getFalconComm()->getDeviceErrorCode() << std::endl;
+					}
 					return false;
 				}
 			}

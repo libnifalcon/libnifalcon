@@ -182,8 +182,8 @@ namespace libnifalcon {
 		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice), 1)) < 0) return false;
 		//Send 3 bytes: 0x0a 0x43 0x0d
 
-		if(write(check_msg_1_send, 3)) return false;
-		if(read(receive_buf, 4) < 0) return false;
+		if(!write(check_msg_1_send, 3)) return false;
+		if(!read(receive_buf, 4)) return false;
 	
 		//Set to:
 		// DTR Low
@@ -192,11 +192,11 @@ namespace libnifalcon {
 		if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 140000)) < 0) return false;
 
 		//Send "A" character
-		if((m_deviceErrorCode = write(check_msg_2, 1)) < 0) return false;
+		if(!write(check_msg_2, 1)) return false;
 
 		//Expect back 2 bytes:
 		// 0x13 0x41
-		if(read(receive_buf, 2) < 0) return false;
+		if(!read(receive_buf, 2)) return false;
 		m_errorCode = 0;
 		return true;
 	}

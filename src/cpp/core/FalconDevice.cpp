@@ -1,5 +1,5 @@
 #include "FalconDevice.h"
-
+#include <iostream>
 namespace libnifalcon
 {
 
@@ -102,21 +102,27 @@ namespace libnifalcon
 			m_errorCode = FALCON_DEVICE_FIRMWARE_NOT_VALID;
 			return false;
 		}
-		
 		if(!m_falconComm->setFirmwareMode())
 		{
 			m_errorCode = m_falconComm->getErrorCode();
-			return false;			
+			return false;
 		}
-
 		u_int8_t send_buf[128], receive_buf[128];
 		int bytes_read;
 		while(!firmware_file.eof())
 		{
 			firmware_file.read((char*)send_buf, 128);
 			bytes_read = firmware_file.gcount();
-			if((m_errorCode = m_falconComm->write(send_buf, bytes_read)) < 0) return false;
-			m_errorCode = m_falconComm->read(receive_buf, bytes_read);
+			if(!m_falconComm->write(send_buf, bytes_read))
+			{
+				m_errorCode = m_falconComm->getErrorCode();
+				return false;
+			}
+			if(!m_falconComm->read(receive_buf, bytes_read))
+			{
+				m_errorCode = m_falconComm->getErrorCode();
+				return false;
+			}
 			if(m_falconComm->getLastBytesWritten() != m_falconComm->getLastBytesRead())
 			{
 				m_errorCode = FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH;
