@@ -30,7 +30,11 @@ namespace libnifalcon
 			m_encoderValues[2] = 0;			
 		}
 
-		virtual ~FalconFirmware() {}
+		virtual ~FalconFirmware()
+		{
+			//Don't do anything with the falcon communications
+			//Assume that's managed elsewhere
+		}
 		virtual bool runIOLoop() = 0;
 		virtual int32_t getGripInfoSize() = 0;
 		virtual u_int8_t* getGripInfo() = 0;

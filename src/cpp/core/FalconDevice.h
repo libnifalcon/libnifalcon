@@ -36,6 +36,8 @@ namespace libnifalcon
 
 		bool runIOLoop();
 		void runThreadLoop() { while(1) runIOLoop(); }
+
+		void setCleanupObjects(bool cleanup_objects) { m_cleanupObjects = cleanup_objects; }
 		
 		template<class T>
 		void setFalconComm();
@@ -49,8 +51,37 @@ namespace libnifalcon
 		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
 		FalconGrip* getFalconGrip() { return m_falconGrip; }
 		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
+		void removeFalconComm()
+		{
+			if(m_falconComm != NULL)
+			{
+				delete m_falconComm;
+			}			
+		}
+		void removeFalconFirmware()
+		{
+			if(m_falconFirmware != NULL)
+			{
+				delete m_falconFirmware;
+			}
+		}
+		void removeFalconGrip()
+		{
+			if(m_falconGrip != NULL)
+			{
+				delete m_falconGrip;
+			}
+		}
+		void removeFalconKinematic()
+		{
+			if(m_falconKinematic != NULL)
+			{
+				delete m_falconKinematic;
+			}
+		}
 	protected:
 		bool m_isFirmwareLoaded;
+		bool m_cleanupObjects;
 		std::string m_firmwareFilename;
 		FalconComm* m_falconComm;
 		FalconKinematic* m_falconKinematic;

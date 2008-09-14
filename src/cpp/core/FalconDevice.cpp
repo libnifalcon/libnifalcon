@@ -8,15 +8,19 @@ namespace libnifalcon
 		m_falconComm(NULL),
 		m_falconKinematic(NULL),
 		m_falconGrip(NULL),
-		m_falconFirmware(NULL)
+		m_falconFirmware(NULL),
+		m_cleanupObjects(true)
 	{
 	}
 
     FalconDevice::~FalconDevice()
 	{
-		if(m_falconComm != NULL)
+		if(m_cleanupObjects)
 		{
-			close();
+			removeFalconGrip();
+			removeFalconKinematic();
+			removeFalconFirmware();
+			removeFalconComm();
 		}
 	}
 

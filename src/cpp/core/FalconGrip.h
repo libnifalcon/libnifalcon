@@ -31,7 +31,11 @@ namespace libnifalcon
 				m_analogInputs = NULL;
 			}
 		}
-		virtual ~FalconGrip() {}
+		virtual ~FalconGrip()
+		{
+			delete[] m_digitalInputs;
+			delete[] m_analogInputs;
+		}
 		virtual bool runGripLoop(int size, u_int8_t* data) = 0;
 		bool getDigitalInput(int index)
 		{

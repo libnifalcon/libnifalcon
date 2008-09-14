@@ -4,6 +4,11 @@
 namespace libnifalcon
 {
  	const char* FalconCommFTD2XX::FALCON_DESCRIPTION = "FALCON HAPTIC";
+
+	FalconCommFTD2XX::~FalconCommFTD2XX {}
+	{
+		close();
+	}
 	
 	bool FalconCommFTD2XX::getDeviceCount(int8_t& device_count)
 	{

@@ -11,6 +11,7 @@ namespace libnifalcon {
 	FalconCommLibFTDI::~FalconCommLibFTDI() 
 	{
 		close();
+		ftdi_deinit(&(m_falconDevice));
 	}
 			
 	bool FalconCommLibFTDI::initLibFTDI()
