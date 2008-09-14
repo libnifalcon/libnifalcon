@@ -63,7 +63,7 @@ namespace libnifalcon
 		//Receive information from the falcon
 		if(m_hasWritten)
 		{
-			if(m_falconComm->read((u_int8_t*)m_rawOutput, (u_int32_t)16))
+			if(m_falconComm->read((uint8_t*)m_rawOutput, (uint32_t)16))
 			{
 				formatOutput();
 				m_hasWritten = false;
@@ -72,7 +72,7 @@ namespace libnifalcon
 		}
 		//Send information to the falcon
 		formatInput();
-		if(!m_falconComm->write((u_int8_t*)m_rawInput, (u_int32_t)16))
+		if(!m_falconComm->write((uint8_t*)m_rawInput, (uint32_t)16))
 		{
 			return false;
 		}

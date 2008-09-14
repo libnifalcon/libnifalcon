@@ -1,7 +1,7 @@
 #ifndef FALCONCOMMBASE_H
 #define FALCONCOMMBASE_H
 
-#include <sys/types.h>
+#include <stdint.h>
 #include "FalconCore.h"
 
 namespace libnifalcon 
@@ -23,10 +23,10 @@ namespace libnifalcon
 		FalconComm() : m_isCommOpen(false) {}
 		virtual ~FalconComm() {}
 		virtual bool getDeviceCount(int8_t& count) = 0;
-		virtual bool open(u_int8_t index) = 0;
+		virtual bool open(uint8_t index) = 0;
 		virtual bool close() = 0;
-		virtual bool read(u_int8_t* str, u_int32_t size) = 0;
-		virtual bool write(u_int8_t* str, u_int32_t size) = 0;
+		virtual bool read(uint8_t* str, uint32_t size) = 0;
+		virtual bool write(uint8_t* str, uint32_t size) = 0;
 		virtual bool setFirmwareMode() = 0;
 		virtual bool setNormalMode() = 0;
 
@@ -36,9 +36,9 @@ namespace libnifalcon
 		int getDeviceErrorCode() { return m_deviceErrorCode; }
 		bool isCommOpen() { return m_isCommOpen; }
 	protected:
-		const static u_int8_t MAX_DEVICES = 128;
-		const static u_int16_t FALCON_VENDOR_ID = 0x0403;
-		const static u_int16_t FALCON_PRODUCT_ID = 0xCB48;
+		const static uint8_t MAX_DEVICES = 128;
+		const static uint16_t FALCON_VENDOR_ID = 0x0403;
+		const static uint16_t FALCON_PRODUCT_ID = 0xCB48;
 		int m_deviceErrorCode;
 		int m_lastBytesRead;
 		int m_lastBytesWritten;

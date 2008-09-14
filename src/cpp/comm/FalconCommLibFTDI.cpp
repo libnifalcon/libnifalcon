@@ -37,7 +37,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::open(u_int8_t device_index)
+	bool FalconCommLibFTDI::open(uint8_t device_index)
 	{
 		if(!m_isInitialized)
 		{
@@ -91,7 +91,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::read(u_int8_t* str, u_int32_t size)
+	bool FalconCommLibFTDI::read(uint8_t* str, uint32_t size)
 	{
 		unsigned long bytes_rx;
 		clock_t timeout;
@@ -117,7 +117,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::write(u_int8_t* str, u_int32_t size)
+	bool FalconCommLibFTDI::write(uint8_t* str, uint32_t size)
 	{
 		if(!m_isCommOpen)
 		{

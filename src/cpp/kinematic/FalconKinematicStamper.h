@@ -1,7 +1,7 @@
 #ifndef FALCONSTAMPERKINEMATIC_H
 #define FALCONSTAMPERKINEMATIC_H
 
-#include <sys/types.h>
+#include <stdint.h>
 #include "core/FalconKinematic.h"
 #include "stamper/DirectKinematic.h"
 #include "stamper/InverseKinematic.h"

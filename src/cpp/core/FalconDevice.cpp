@@ -30,7 +30,7 @@ namespace libnifalcon
 		return m_falconComm->getDeviceCount(count);		
 	}
 
-    bool FalconDevice::open(u_int8_t index)
+    bool FalconDevice::open(uint8_t index)
 	{
 		if(m_falconComm == NULL)
 		{
@@ -107,7 +107,7 @@ namespace libnifalcon
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
-		u_int8_t send_buf[128], receive_buf[128];
+		uint8_t send_buf[128], receive_buf[128];
 		int bytes_read;
 		while(!firmware_file.eof())
 		{

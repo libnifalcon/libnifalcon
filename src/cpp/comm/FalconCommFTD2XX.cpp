@@ -12,12 +12,12 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::open(u_int8_t index)
+	bool FalconCommFTD2XX::open(uint8_t index)
 	{
 		return openDeviceFTD2XX(index, false) >= 0;
 	}
 
-	int8_t FalconCommFTD2XX::openDeviceFTD2XX(u_int8_t device_index, bool stop_at_count)
+	int8_t FalconCommFTD2XX::openDeviceFTD2XX(uint8_t device_index, bool stop_at_count)
 	{
 		unsigned int falcon_count = 0, device_count = 0, i = 0;
 		char* pcBufLD[MAX_DEVICES + 1];
@@ -77,7 +77,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::read(u_int8_t* str, u_int32_t size)
+	bool FalconCommFTD2XX::read(uint8_t* str, uint32_t size)
 	{
 		unsigned long bytes_rx = 0, b_read = 0, bytes_read = 0;
 
@@ -109,7 +109,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::write(u_int8_t* str, u_int32_t size)
+	bool FalconCommFTD2XX::write(uint8_t* str, uint32_t size)
 	{
 		if(!m_isCommOpen)
 		{
@@ -132,10 +132,10 @@ namespace libnifalcon
 
 	bool FalconCommFTD2XX::setFirmwareMode()
 	{
-		u_int32_t bytes_written, bytes_read;
-		u_int8_t check_msg_1[3] = {0x0a, 0x43, 0x0d};
-		u_int8_t check_msg_2[1] = {'A'};
-		u_int8_t send_buf[128], receive_buf[128];
+		uint32_t bytes_written, bytes_read;
+		uint8_t check_msg_1[3] = {0x0a, 0x43, 0x0d};
+		uint8_t check_msg_2[1] = {'A'};
+		uint8_t send_buf[128], receive_buf[128];
 
 		if(!m_isCommOpen)
 		{
@@ -161,7 +161,7 @@ namespace libnifalcon
 		if((m_deviceErrorCode = FT_SetDtr(m_falconDevice)) != FT_OK) return false;
 
 		//Send 3 bytes: 0x0a 0x43 0x0d
-		if(!write((u_int8_t*)check_msg_1, (u_int32_t)3)) return false;
+		if(!write((uint8_t*)check_msg_1, (uint32_t)3)) return false;
 	
 		//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
 		if(!read(receive_buf, 4)) return false;	

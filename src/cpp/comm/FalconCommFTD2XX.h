@@ -10,15 +10,15 @@ namespace libnifalcon
 	{
 	public:
 		virtual bool getDeviceCount(int8_t& );
-		virtual bool open(u_int8_t );
+		virtual bool open(uint8_t );
 		virtual bool close();
-		virtual bool read(u_int8_t*, u_int32_t);
-		virtual bool write(u_int8_t*, u_int32_t);
+		virtual bool read(uint8_t*, uint32_t);
+		virtual bool write(uint8_t*, uint32_t);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:
 		const static char* FALCON_DESCRIPTION;
-		int8_t openDeviceFTD2XX(u_int8_t , bool );
+		int8_t openDeviceFTD2XX(uint8_t , bool );
 		FT_HANDLE m_falconDevice;
 	};
 };

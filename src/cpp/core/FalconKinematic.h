@@ -1,7 +1,8 @@
 #ifndef FALCONKINEMATIC_H
 #define FALCONKINEMATIC_H
 
-#include <sys/types.h>
+#include <stdint.h>
+
 #include "FalconCore.h"
 #include "kinematic/FalconGeometry.h"
 

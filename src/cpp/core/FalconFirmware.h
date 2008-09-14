@@ -1,7 +1,7 @@
 #ifndef FALCONFIRMWARE_H
 #define FALCONFIRMWARE_H
 
-#include <sys/types.h>
+#include <stdint.h>
 #include <cstdlib>
 #include "FalconComm.h"
 
