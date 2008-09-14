@@ -54,6 +54,7 @@ namespace libnifalcon
 			firmware.add_options()
 				("firmware", po::value<std::string>(), "Firmware file")
 				("force_firmware", "Force firmware download, even if already loaded")
+				("skip_checksum", "Ignore checksum errors when loading firmware (useful for FTD2XX on non-windows platforms)")
 				;
 			m_progOptions.add(firmware);
 		}
@@ -127,7 +128,7 @@ namespace libnifalcon
 			//See if we need to load the firmware, or force it
 			if(m_varMap.count("force_firmware") || !m_falconDevice.isFirmwareLoaded())
 			{
-				if(!m_falconDevice.loadFirmware(10))
+				if(!m_falconDevice.loadFirmware(10, m_varMap.count("skip_checksum") > 0))
 				{
 					std::cout << "Cannot load firmware to device" << std::endl;
 					std::cout << "Error Code: " << m_falconDevice.getErrorCode() << std::endl;
