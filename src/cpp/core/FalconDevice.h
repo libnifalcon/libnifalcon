@@ -28,8 +28,8 @@ namespace libnifalcon
 		~FalconDevice();
 		bool isFirmwareLoaded();
 		bool setFirmwareFile(std::string filename);
-		bool loadFirmware(int retries);
-		bool loadFirmware();
+		bool loadFirmware(int retries, bool skip_checksum = false);
+		bool loadFirmware(bool skip_checksum);
 		bool getDeviceCount(int8_t& count);
 		bool open(u_int8_t index);
 		void close();

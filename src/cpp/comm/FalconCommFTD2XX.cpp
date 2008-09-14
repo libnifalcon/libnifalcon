@@ -1,5 +1,4 @@
 #include "FalconCommFTD2XX.h"
-#include <iostream>
 #include <cstring>
 
 namespace libnifalcon
@@ -88,16 +87,18 @@ namespace libnifalcon
 			return false;
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-//		while(bytes_read < size)
+		//Jankywait! But still better than permablocking for the moment.
+		//Will turn this back into a timeout at some point.
+		for(int i = 0; i < 10000000 && bytes_read < size; ++i)
 		{
 			if((m_deviceErrorCode = FT_GetQueueStatus(m_falconDevice, &bytes_rx)) != FT_OK) return false;
+			if(bytes_rx == 0) continue;
 			if(bytes_rx > size) bytes_rx = size - bytes_read;
 			if(bytes_rx > 0)
 			{
 				if((m_deviceErrorCode = FT_Read(m_falconDevice, str, bytes_rx, &b_read)) != FT_OK) return false;
 				bytes_read += bytes_rx;
 			}
-			//if (clock() > timeout) return bytes_read;
 		}
 		m_lastBytesRead = bytes_read;
 		if(bytes_read != size)
@@ -164,7 +165,7 @@ namespace libnifalcon
 		if(!write((uint8_t*)check_msg_1, (uint32_t)3)) return false;
 	
 		//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
-		if(!read(receive_buf, 4)) return false;	
+		if(!read(receive_buf, 5)) return false;	
 
 		//Set to:
 		// DTR Low

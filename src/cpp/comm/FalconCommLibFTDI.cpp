@@ -94,7 +94,6 @@ namespace libnifalcon {
 	bool FalconCommLibFTDI::read(uint8_t* str, uint32_t size)
 	{
 		unsigned long bytes_rx;
-		clock_t timeout;
 
 		if(!m_isCommOpen)
 		{

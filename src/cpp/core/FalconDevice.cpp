@@ -67,11 +67,11 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconDevice::loadFirmware(int retries)
+	bool FalconDevice::loadFirmware(int retries, bool skip_checksum)
 	{
 		for(int i = 0; i < retries; ++i)
 		{
-			if(loadFirmware())
+			if(loadFirmware(skip_checksum))
 			{
 				return true;
 			}
@@ -79,7 +79,7 @@ namespace libnifalcon
 		return false;
 	}
 	
-	bool FalconDevice::loadFirmware()
+	bool FalconDevice::loadFirmware(bool skip_checksum)
 	{
 		if(m_falconComm == NULL)
 		{
@@ -125,15 +125,19 @@ namespace libnifalcon
 			}
 			if(m_falconComm->getLastBytesWritten() != m_falconComm->getLastBytesRead())
 			{
+				std::cout << m_falconComm->getLastBytesWritten() << " " << m_falconComm->getLastBytesRead() << std::endl;
 				m_errorCode = FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH;
 				return false;
 			}
-			for(int i = 0; i < bytes_read; ++i)
+			if(!skip_checksum)
 			{
-				if(send_buf[i] != receive_buf[i])
+				for(int i = 0; i < bytes_read; ++i)
 				{
-					m_errorCode = FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH;
-					return false;
+					if(send_buf[i] != receive_buf[i])
+					{
+						m_errorCode = FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH;
+						return false;
+					}
 				}
 			}
 		}
