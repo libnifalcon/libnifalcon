@@ -5,7 +5,7 @@ namespace libnifalcon
 {
  	const char* FalconCommFTD2XX::FALCON_DESCRIPTION = "FALCON HAPTIC";
 
-	FalconCommFTD2XX::~FalconCommFTD2XX {}
+	FalconCommFTD2XX::~FalconCommFTD2XX()
 	{
 		close();
 	}

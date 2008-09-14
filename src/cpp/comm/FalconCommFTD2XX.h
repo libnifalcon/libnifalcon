@@ -9,7 +9,7 @@ namespace libnifalcon
 	class FalconCommFTD2XX : public FalconComm
 	{
 	public:
-		FalconCommFTD2XX {}
+		FalconCommFTD2XX() {}
 		virtual ~FalconCommFTD2XX();
 		virtual bool getDeviceCount(int8_t& );
 		virtual bool open(uint8_t );
