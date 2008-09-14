@@ -88,7 +88,7 @@ namespace libnifalcon
 			return false;
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		while(bytes_read < size)
+//		while(bytes_read < size)
 		{
 			if((m_deviceErrorCode = FT_GetQueueStatus(m_falconDevice, &bytes_rx)) != FT_OK) return false;
 			if(bytes_rx > size) bytes_rx = size - bytes_read;
@@ -143,6 +143,10 @@ namespace libnifalcon
 			return false;
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
+		if((m_deviceErrorCode = FT_SetLatencyTimer(m_falconDevice, 16)) != FT_OK)
+		{
+			return false;
+		}
 		//Set to:
 		// 9600 baud
 		// 8n1
@@ -159,8 +163,8 @@ namespace libnifalcon
 		//Send 3 bytes: 0x0a 0x43 0x0d
 		if(!write((u_int8_t*)check_msg_1, (u_int32_t)3)) return false;
 	
-		//Expect 5 bytes back
-		if(!read(receive_buf, 5)) return false;	
+		//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
+		if(!read(receive_buf, 4)) return false;	
 
 		//Set to:
 		// DTR Low
@@ -172,18 +176,25 @@ namespace libnifalcon
 		if(!write(check_msg_2, 1)) return false;
 
 		//Expect back 2 bytes:
-		// 0x13 0x41 
-		if(!read(receive_buf, 2)) return false;
+		// 0x13 0x41
+		// (Both LibFTDI and FTD2XX except 2)
+		if(!read(receive_buf, 1)) return false;
 		m_errorCode = 0;
 		return true;
 	}
 
 	bool FalconCommFTD2XX::setNormalMode()
 	{
+		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 		if((m_deviceErrorCode = FT_SetBaudRate(m_falconDevice, 1456312)) != FT_OK)
 		{
 			return false;
 		}
+		if((m_deviceErrorCode = FT_SetLatencyTimer(m_falconDevice, 1)) != FT_OK)
+		{
+			return false;
+		}
+		m_errorCode = 0;
 		return true;
 	}
 
