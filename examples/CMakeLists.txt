@@ -16,9 +16,8 @@ ADD_SUBDIRECTORY(findfalcons_cpp)
 
 IF(Boost_PROGRAM_OPTIONS_FOUND)
   ADD_SUBDIRECTORY(falcon_test_cli)
+  ADD_SUBDIRECTORY(falcon_mouse)
 ELSE(Boost_PROGRAM_OPTIONS_FOUND)
   MESSAGE("Cannot compile falcon_test_cli - Missing Boost Program Options")
 ENDIF(Boost_PROGRAM_OPTIONS_FOUND)
-
-
 
