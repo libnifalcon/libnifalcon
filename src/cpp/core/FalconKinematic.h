@@ -20,7 +20,7 @@ namespace libnifalcon
 		enum {
 			FALCON_KINEMATIC_OUT_OF_RANGE
 		};
-		FalconKinematic(WorkspaceBounds b) : m_workspaceBounds(b) {}
+		FalconKinematic() {}
 		virtual ~FalconKinematic() {}
 		float getTheta(int16_t encoder_value)
 		{

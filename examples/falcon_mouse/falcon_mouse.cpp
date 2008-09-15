@@ -74,8 +74,7 @@ public:
 
 	void runMouseLoop()
 	{
-		FalconKinematic::WorkspaceBounds x;
-		m_falconDevice.setFalconKinematic<FalconKinematicStamper>(x);
+		m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
 		while(1)
 		{
 			m_falconDevice.runIOLoop();

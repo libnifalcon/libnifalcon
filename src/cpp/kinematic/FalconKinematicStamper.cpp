@@ -5,7 +5,7 @@
 
 namespace libnifalcon
 {
-	FalconKinematicStamper::FalconKinematicStamper(WorkspaceBounds b, bool init_now) : FalconKinematic(b)
+	FalconKinematicStamper::FalconKinematicStamper(bool init_now)
 	{
 		if(init_now)
 		{
