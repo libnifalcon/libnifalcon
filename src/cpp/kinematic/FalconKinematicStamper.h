@@ -11,7 +11,7 @@ namespace libnifalcon
 	class FalconKinematicStamper : public FalconKinematic
 	{
 	public:
-		FalconKinematicStamper(WorkspaceBounds b, bool init_now);
+		FalconKinematicStamper(WorkspaceBounds b, bool init_now = true);
 		~FalconKinematicStamper() {}
 		void initialize();
 		StamperKinematicImpl::InverseKinematic* getInverseKinematic() { return &m_inv; }

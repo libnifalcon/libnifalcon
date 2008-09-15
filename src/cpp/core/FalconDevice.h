@@ -46,7 +46,8 @@ namespace libnifalcon
 		template<class T>
 		void setFalconGrip();
 		template<class T>
-		void setFalconKinematic();
+		void setFalconKinematic(FalconKinematic::WorkspaceBounds b);
+		double* getPosition() { return m_position; }
 		FalconComm* getFalconComm() { return m_falconComm; }
 		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
 		FalconGrip* getFalconGrip() { return m_falconGrip; }
@@ -56,6 +57,7 @@ namespace libnifalcon
 			if(m_falconComm != NULL)
 			{
 				delete m_falconComm;
+				m_falconComm = NULL;
 			}			
 		}
 		void removeFalconFirmware()
@@ -63,6 +65,7 @@ namespace libnifalcon
 			if(m_falconFirmware != NULL)
 			{
 				delete m_falconFirmware;
+				m_falconFirmware = NULL;
 			}
 		}
 		void removeFalconGrip()
@@ -70,6 +73,7 @@ namespace libnifalcon
 			if(m_falconGrip != NULL)
 			{
 				delete m_falconGrip;
+				m_falconGrip = NULL;
 			}
 		}
 		void removeFalconKinematic()
@@ -77,11 +81,14 @@ namespace libnifalcon
 			if(m_falconKinematic != NULL)
 			{
 				delete m_falconKinematic;
+				m_falconKinematic = NULL;
 			}
 		}
+		uint32_t getErrorCount() { return m_errorCount; }
 	protected:
 		bool m_isFirmwareLoaded;
 		bool m_cleanupObjects;
+		uint32_t m_errorCount;
 		std::string m_firmwareFilename;
 		FalconComm* m_falconComm;
 		FalconKinematic* m_falconKinematic;
@@ -117,9 +124,9 @@ namespace libnifalcon
 	}
 
 	template<class T>
-	void FalconDevice::setFalconKinematic()
+	void FalconDevice::setFalconKinematic(FalconKinematic::WorkspaceBounds b)
 	{
-		m_falconKinematic = new T();
+		m_falconKinematic = new T(b);
 	}
 	
 }

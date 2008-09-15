@@ -5,11 +5,12 @@ namespace libnifalcon
 
     FalconDevice::FalconDevice() :
 		m_isFirmwareLoaded(false),
+		m_cleanupObjects(true),
+		m_errorCount(0),
 		m_falconComm(NULL),
 		m_falconKinematic(NULL),
 		m_falconGrip(NULL),
-		m_falconFirmware(NULL),
-		m_cleanupObjects(true)
+		m_falconFirmware(NULL)
 	{
 	}
 
@@ -182,6 +183,7 @@ namespace libnifalcon
 		}		
 		if(!m_falconFirmware->runIOLoop())
 		{
+			++m_errorCount;
 			m_errorCode = m_falconFirmware->getErrorCode();
 			return false;
 		}
@@ -193,10 +195,11 @@ namespace libnifalcon
 				return false;				
 			}
 		}
-		if(m_falconKinematic != NULL)
+		if(m_falconKinematic != NULL && m_falconFirmware->isHomed())
 		{
 			if(!m_falconKinematic->getPosition(m_falconFirmware->getEncoderValues(), m_position))
 			{
+				++m_errorCount;
 				m_errorCode = m_falconKinematic->getErrorCode();
 				return false;				
 			}
