@@ -24,7 +24,7 @@ void sigproc(int i)
 {
 	run_app = false;
 }
-
+/*
 void millisleep(unsigned long milliseconds)
 {
 	timespec tmReq;
@@ -33,7 +33,7 @@ void millisleep(unsigned long milliseconds)
     // we're not interested in remaining time nor in return value
     (void)nanosleep(&tmReq, (timespec *)NULL);
 }
-
+*/
 
 class FalconMouse : public FalconCLIBase
 {
@@ -90,15 +90,19 @@ public:
 		m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
 		m_falconDevice.startThread();
 		double d[3];
+		int i = 0, j = 0;
+		int old_x = 0, old_y = 0, x = 0, y = 0;
 		while(run_app)
 		{
 			//This math doesn't map the workspace to the window properly yet.
 			m_falconDevice.getPosition(d);
-//			std::cout << d[0] << " " << d[1] << " " << d[2] << std::endl;
-			int x = ((d[0] + 60.0) / 120.0) * 1600;
-			int y = (((120.0 - (d[1] + 60.0)) / 120.0) * 1050);
-			setMousePosition(x, y);
-			millisleep(1);
+			old_x = x;
+			old_y = y;
+			x = ((d[0] + 60.0) / 120.0) * 1600;
+			y = (((120.0 - (d[1] + 60.0)) / 120.0) * 1050);
+
+			if(old_x != x || old_y != y)
+				setMousePosition(x, y);
 		}
 		m_falconDevice.stopThread();
 	}

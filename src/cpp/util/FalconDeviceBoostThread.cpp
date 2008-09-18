@@ -16,11 +16,11 @@ namespace libnifalcon
 	
 	void FalconDeviceBoostThread::getPosition(double* pos)
 	{
-		m_threadMutex.lock();
+//		m_threadMutex.lock();
 		pos[0] = m_position[0];
 		pos[1] = m_position[1];
 		pos[2] = m_position[2];
-		m_threadMutex.unlock();
+//		m_threadMutex.unlock();
 	}
 	
 	void FalconDeviceBoostThread::startThread()
@@ -36,9 +36,9 @@ namespace libnifalcon
 	{
 		while(m_runThreadLoop)
 		{
-			m_threadMutex.lock();
+//			m_threadMutex.lock();
 			runIOLoop();			
-			m_threadMutex.unlock();
+//			m_threadMutex.unlock();
 		}
 	}
 
