@@ -103,12 +103,6 @@ namespace libnifalcon
 		 * @return true on success, false otherwise
 		 */		
 		bool runIOLoop();
-		/**
-		 * Conveinence function
-		 *
-		 * @deprecated
-		 */
-		void runThreadLoop() { while(1) runIOLoop(); }
 
 		/**
 		 * Set whether the FalconDevice object should delete its behavior objects on destruction

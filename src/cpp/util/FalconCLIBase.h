@@ -2,7 +2,7 @@
 #define FALCONCLIBASE_H
 
 #include <boost/program_options.hpp>
-#include "core/FalconDevice.h"
+#include "FalconDeviceBoostThread.h"
 
 namespace libnifalcon
 {
@@ -10,7 +10,7 @@ namespace libnifalcon
 	{
 	protected:
 		boost::program_options::options_description m_progOptions;
-		FalconDevice m_falconDevice;
+		FalconDeviceBoostThread m_falconDevice;
 		boost::program_options::variables_map m_varMap;
 	public:
 		FalconCLIBase();

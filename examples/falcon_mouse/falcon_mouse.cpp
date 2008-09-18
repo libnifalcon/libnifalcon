@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <csignal>
+#include <ctime>
 #include <boost/program_options.hpp>
 #include "core/FalconDevice.h"
 #ifdef LIBFTD2XX
@@ -17,10 +18,22 @@
 using namespace libnifalcon;
 namespace po = boost::program_options;
 
+bool run_app = true;
+
 void sigproc(int i)
 {
-	exit(0);
+	run_app = false;
 }
+
+void millisleep(unsigned long milliseconds)
+{
+	timespec tmReq;
+    tmReq.tv_sec = (time_t)(milliseconds / 1000);
+    tmReq.tv_nsec = (milliseconds % 10)* 10 * 10;
+    // we're not interested in remaining time nor in return value
+    (void)nanosleep(&tmReq, (timespec *)NULL);
+}
+
 
 class FalconMouse : public FalconCLIBase
 {
@@ -64,7 +77,7 @@ public:
 		}
 		if(m_varMap.count("led_blue"))
 		{
-			std::cout << "Turning on BLUE LED" << std::endl;			
+			std::cout << "Turning on BLUE LED" << std::endl;
 			led |= FalconFirmware::BLUE_LED;
 		}
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
@@ -75,17 +88,22 @@ public:
 	void runMouseLoop()
 	{
 		m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
-		while(1)
+		m_falconDevice.startThread();
+		double d[3];
+		while(run_app)
 		{
-			m_falconDevice.runIOLoop();
-			//This math doesn't map the workspace to the window properly yet.		
-			int x = ((m_falconDevice.getPosition()[0] + 60.0) / 120.0) * 1600;
-			int y = (((120.0 - (m_falconDevice.getPosition()[1] + 60.0)) / 120.0) * 1050);
+			//This math doesn't map the workspace to the window properly yet.
+			m_falconDevice.getPosition(d);
+//			std::cout << d[0] << " " << d[1] << " " << d[2] << std::endl;
+			int x = ((d[0] + 60.0) / 120.0) * 1600;
+			int y = (((120.0 - (d[1] + 60.0)) / 120.0) * 1050);
 			setMousePosition(x, y);
+			millisleep(1);
 		}
+		m_falconDevice.stopThread();
 	}
 };
-	
+
 int main(int argc, char** argv)
 {
 
@@ -97,7 +115,7 @@ int main(int argc, char** argv)
 		std::cout << "Cannot initialize display, exiting..." << std::endl;
 		return 1;
 	}
-	f.addOptions(FalconMouse::LED_OPTIONS | FalconMouse::DEVICE_OPTIONS | FalconMouse::COMM_OPTIONS | FalconMouse::FIRMWARE_OPTIONS);	
+	f.addOptions(FalconMouse::LED_OPTIONS | FalconMouse::DEVICE_OPTIONS | FalconMouse::COMM_OPTIONS | FalconMouse::FIRMWARE_OPTIONS);
 	if(!f.parseOptions(argc, argv))
 		return 0;
 	f.runMouseLoop();
