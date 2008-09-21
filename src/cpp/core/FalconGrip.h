@@ -12,37 +12,22 @@ namespace libnifalcon
 		enum {
 			FALCON_GRIP_INDEX_OUT_OF_RANGE = 4000
 		};
-		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) : m_numDigitalInputs(digital_inputs), m_numAnalogInputs(analog_inputs)
+		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) : m_numDigitalInputs(digital_inputs), m_numAnalogInputs(analog_inputs), m_digitalInputs(0)
 		{
-			if(m_numDigitalInputs > 0)
-			{
-				m_digitalInputs = new bool[m_numDigitalInputs];
-			}
-			else
-			{
-				m_digitalInputs = NULL;
-			}
-			if(m_numAnalogInputs > 0)
-			{
-				m_analogInputs = new int32_t[m_numAnalogInputs];
-			}
-			else
-			{
-				m_analogInputs = NULL;
-			}
 		}
 		virtual ~FalconGrip()
 		{
-			delete[] m_digitalInputs;
-			delete[] m_analogInputs;
 		}
 		virtual bool runGripLoop(int size, u_int8_t* data) = 0;
-		bool getDigitalInput(int index)
+		int32_t getNumDigitalInputs() const { return m_numDigitalInputs; }
+		int32_t getNumAnalogInputs() const { return m_numAnalogInputs; }
+		bool getDigitalInput(int index) const
 		{
 			if(index > m_numDigitalInputs) return false;
-			return m_digitalInputs[index];
+			return m_digitalInputs & (1 << index);
 		}
-		int32_t getAnalogInput(int index)
+		int32_t getDigitalInputs() const { return m_digitalInputs; }
+		int32_t getAnalogInput(int index) const
 		{
 			if(index > m_numAnalogInputs) return 0;
 			return m_analogInputs[index];
@@ -50,8 +35,9 @@ namespace libnifalcon
 	protected:
 		int m_numDigitalInputs;
 		int m_numAnalogInputs;
-		bool* m_digitalInputs;
-		int32_t* m_analogInputs;
+		//I think assuming 32 digital inputs and 128 analog is enough
+		int32_t m_digitalInputs;
+		int32_t m_analogInputs[128];
 	};
 }
 

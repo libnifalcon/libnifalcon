@@ -151,7 +151,13 @@ namespace libnifalcon
 		 * Get communication behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon communications object
-		 */					
+		 */
+		void setForce(double force[3])
+		{
+			m_forceVec[0] = force[0];
+			m_forceVec[1] = force[1];
+			m_forceVec[2] = force[2];
+		}
 		FalconComm* getFalconComm() { return m_falconComm; }
 		/**
 		 * Get firmware behavior object pointer
@@ -171,12 +177,19 @@ namespace libnifalcon
 		 * @return Non-smart pointer to internal falcon kinematic object
 		 */					
 		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
+		bool isOpen()
+		{
+			if(m_falconComm != NULL)
+			{
+				return m_falconComm->isCommOpen();
+			}
+			return false;
+		}
 		void removeFalconComm()
 		{
 			if(m_falconComm != NULL)
 			{
 				delete m_falconComm;
-				m_falconComm = NULL;
 			}			
 		}
 		void removeFalconFirmware()
@@ -214,6 +227,7 @@ namespace libnifalcon
 		FalconFirmware* m_falconFirmware;
 		FalconGrip* m_falconGrip;
 		double m_position[3];
+		double m_forceVec[3];
 	};
 
 	template<class T>

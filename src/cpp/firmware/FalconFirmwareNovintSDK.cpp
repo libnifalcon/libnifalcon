@@ -13,6 +13,7 @@ namespace libnifalcon
 	{
 		//Turn motor values into system specific ints
 		int i;
+		m_homingStatus = 0;
 		for(i = 0; i < 3; ++i)
 		{
 			int idx = 1 + (i*4);
@@ -22,7 +23,7 @@ namespace libnifalcon
 				(((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
 				(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
 			//Shift value down a nibble for homing status
-			m_homingStatus[i] = ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
+			m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
 		}
 	}
 

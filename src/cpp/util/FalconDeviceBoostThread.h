@@ -1,25 +1,25 @@
 #ifndef FALCONDEVICEBOOSTTHREADS_H
 #define FALCONDEVICEBOOSTTHREADS_H
-
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include "core/FalconDevice.h"
 
 namespace libnifalcon
 {
-
 	class FalconDeviceBoostThread : public FalconDevice
 	{
 	public:
 		FalconDeviceBoostThread();
-		~FalconDeviceBoostThread();
-		void getPosition(double* pos);
+		virtual ~FalconDeviceBoostThread();
+		void getPosition(double pos[3]);		
 		void startThread();
-		void runThreadLoop();
+		virtual void runThreadLoop();
 		void stopThread();
+		bool isThreadRunning() { return m_runThreadLoop; }
 	protected:
+		void runDeviceComm();
 		boost::thread* m_ioThread;
-		boost::mutex m_threadMutex;
+		double m_localPosition[3];
 		bool m_runThreadLoop;
 	};
 }
