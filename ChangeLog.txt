@@ -2,7 +2,7 @@ libnifalcon ChangeLog
 =====================
 
 2008-09-20 Kyle Machulis <kyle@nonpolynomial.com>
-	* Beta Version 1b1
+	* Alpha Version 1 alpha 1
 	* Changed license to BSD
 	* Added new C++ based libnifalcon library
 	* Added kinematics classes by Kevin Ouellet

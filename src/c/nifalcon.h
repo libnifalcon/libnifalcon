@@ -1,13 +1,14 @@
-/*
- * Declaration file for NovInt Falcon User Space Driver - Bootloader and Base Functionality
+/***
+ * @file llcrashloggerwindows.h
+ * @brief Declaration file for C Version of libnifalcon driver - Bootloader and Base Functionality
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright $copyright$
  *
- * Copyright (c) 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
+ * $info$
+ * 
+ * $Id$
  *
- * More info on Nonpolynomial Labs @ http://www.nonpolynomial.com
- *
- * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
- *
- * This library is covered by the MIT License, read LICENSE for details.
+ * $license$
  */
 
 #ifndef LIBNIFALCON_H
@@ -20,7 +21,6 @@
 #if defined(LIBFTDI)
 #include <ftdi.h>
 typedef struct ftdi_context falcon_handle; /*!< libftdi typedef for falcon access */
-//#elifdef LIBFTD2XX
 #elif defined(LIBFTD2XX)
 #include <ftd2xx.h>
 typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */

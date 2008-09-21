@@ -1,13 +1,12 @@
 /*
- * Implementation file for NovInt Falcon User Space Driver - Bootloader and Base Functionality
+ * Implementation file for C version of libnifalcon driver - FTD2XX based
  *
- * Copyright (c) 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
- *
- * More info on Nonpolynomial Labs @ http://www.nonpolynomial.com
- *
+ * Author: Kyle Machulis
+ * Copyright: 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
+ * License: BSD (See LICENSE for details), or FTD2XX license (check http://www.ftdichip.com for details)
  * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
  *
- * This library is covered by the MIT License, read LICENSE for details.
+ * Uses FTD2XX library, available at http://www.ftdichip.com
  */
 
 #include "nifalcon.h"
