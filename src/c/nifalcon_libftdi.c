@@ -1,12 +1,15 @@
-/*
- * Implementation file for C version of libnifalcon driver - libftdi based
+/***
+ * @file nifalcon_libftdi.h
+ * @brief Implementation file for C version of libnifalcon driver - libftdi based
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
  *
- * Author: Kyle Machulis
- * Copyright: 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
- * License: BSD (See LICENSE for details), or LGPL license (libftdi)
- * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
- * Using libftdi library, available at http://www.intra2net.com/de/produkte/opensource/ftdi/
  */
 
 #include "nifalcon.h"

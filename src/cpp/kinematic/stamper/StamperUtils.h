@@ -1,5 +1,17 @@
-//Original code by Kevin Ouellet
-//kouellet@users.sourceforge.net
+/***
+ * @file StamperUtils.cpp
+ * @brief Enums and structs used in the Stamper kinematics implementation
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ */
+
 #ifndef STAMPERUTILS_H_
 #define STAMPERUTILS_H_
 

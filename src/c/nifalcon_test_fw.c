@@ -1,10 +1,14 @@
-/*
- * Implementation file for C version of libnifalcon driver - test firmware functionality
+/***
+ * @file nifalcon_test_fw.c
+ * @brief Implementation file for C version of libnifalcon driver - test firmware functionality
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
  *
- * Author: Kyle Machulis
- * Copyright: 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
- * License: BSD (See LICENSE for details), or LGPL license (libftdi)
- * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
 

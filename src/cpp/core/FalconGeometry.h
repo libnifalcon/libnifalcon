@@ -1,16 +1,19 @@
-//! Falcon Geometry Constants
-/*!
-  Measurements for use with Novint Falcon Kinematics Models
-  
-  Many of the following values refer to diagram from R.E. Stamper Kinematics Paper, page 30
-  
-  Viewable at http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf
-
-  Original code and all measurements by Kevin Ouellet
-  
-  kouellet@users.sourceforge.net
-*/
-
+/***
+ * @file FalconGeometry.h
+ * @brief Constants defining the mechanical measurements of the falcon
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Many of the following values refer to a diagram from R.E. Stamper Kinematics Paper, page 30  
+ * Viewable at http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf
+ *
+ */
 
 #ifndef FALCONGEOMETRY_H_
 #define FALCONGEOMETRY_H_

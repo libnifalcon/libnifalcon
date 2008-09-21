@@ -1,14 +1,17 @@
-/*
- * Declaration file for NovInt Falcon User Space Driver - Test Firmware Functionality
+/***
+ * @file nifalcon_test_fw.h
+ * @brief Declaration file for C version of libnifalcon driver - test firmware functionality
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
  *
- * Copyright (c) 2007-2008 Kyle Machulis/Nonpolynomial Labs <kyle@nonpolynomial.com>
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
- * More info on Nonpolynomial Labs @ http://www.nonpolynomial.com
- *
- * Sourceforge project @ http://www.sourceforge.net/projects/libnifalcon
- *
- * This library is covered by the MIT License, read LICENSE for details.
  */
+
 
 #ifndef LIBNIFALCON_TEST_FIRMWARE_H
 #define LIBNIFALCON_TEST_FIRMWARE_H

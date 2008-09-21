@@ -1,5 +1,16 @@
-//Original code by Kevin Ouellet
-//kouellet@users.sourceforge.net
+/***
+ * @file AngularMatrix.h
+ * @brief Lookup table to find cartesian coordinates of end effector based on leg angles
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ */
 #ifndef ANGULARMATRIX_H_
 #define ANGULARMATRIX_H_
 

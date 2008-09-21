@@ -1,3 +1,16 @@
+/***
+ * @file FalconGrip.h
+ * @brief Base class for falcon kinematic classes 
+ * @author Kyle Machulis (kyle@nonpolynomial.com) / Kevin Ouellet (kouellet@users.sourceforge.net)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ */
 #ifndef FALCONKINEMATIC_H
 #define FALCONKINEMATIC_H
 
