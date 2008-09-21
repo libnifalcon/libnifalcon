@@ -2,12 +2,12 @@
  * @file llcrashloggerwindows.h
  * @brief Declaration file for C Version of libnifalcon driver - Bootloader and Base Functionality
  * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @location $HeadURL$
+ * @version $Id$
  * @copyright $copyright$
  *
  * $info$
  * 
- * $Id: nifalcon.h 179 2008-09-21 04:37:21Z kmachulis $
- *
  * $license$
  */
 
