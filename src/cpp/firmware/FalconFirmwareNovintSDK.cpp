@@ -1,5 +1,5 @@
 /***
- * @file FalconFirmwareNovintSDK.h
+ * @file FalconFirmwareNovintSDK.cpp
  * @brief Firmware communications for the firmware included with the Novint SDK/Official Drivers
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @version $Id$

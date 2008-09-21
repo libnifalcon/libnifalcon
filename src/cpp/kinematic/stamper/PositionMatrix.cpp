@@ -1,5 +1,5 @@
 /***
- * @file PositionMatrix.h
+ * @file PositionMatrix.cpp
  * @brief Lookup table generator for discerning positions from angles (workaround to avoid calculating the 32 degree polynomial from Stamper paper)
  * @author Kevin Ouellet (kouellet@users.sourceforge.net)
  * @version $Id$

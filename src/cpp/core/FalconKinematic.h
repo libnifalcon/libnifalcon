@@ -1,5 +1,5 @@
 /***
- * @file FalconGrip.h
+ * @file FalconKinematic.h
  * @brief Base class for falcon kinematic classes 
  * @author Kyle Machulis (kyle@nonpolynomial.com) / Kevin Ouellet (kouellet@users.sourceforge.net)
  * @version $Id$

@@ -1,5 +1,5 @@
 /***
- * @file InverseKinematic.cpp
+ * @file InverseKinematic.h
  * @brief IK implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
  * @author Kevin Ouellet (kouellet@users.sourceforge.net)
  * @version $Id$

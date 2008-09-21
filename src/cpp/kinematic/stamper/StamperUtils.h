@@ -1,5 +1,5 @@
 /***
- * @file StamperUtils.cpp
+ * @file StamperUtils.h
  * @brief Enums and structs used in the Stamper kinematics implementation
  * @author Kevin Ouellet (kouellet@users.sourceforge.net)
  * @version $Id$

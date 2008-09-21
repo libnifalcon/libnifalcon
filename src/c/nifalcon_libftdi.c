@@ -1,5 +1,5 @@
 /***
- * @file nifalcon_libftdi.h
+ * @file nifalcon_libftdi.c
  * @brief Implementation file for C version of libnifalcon driver - libftdi based
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @version $Id$

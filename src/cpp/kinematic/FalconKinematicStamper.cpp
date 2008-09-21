@@ -1,5 +1,5 @@
 /***
- * @file FalconKinematicStamper.h
+ * @file FalconKinematicStamper.cpp
  * @brief IK and DK implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
  * @author Kevin Ouellet (kouellet@users.sourceforge.net) / Kyle Machulis (kyle@nonpolynomial.com)
  * @version $Id$
