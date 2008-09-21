@@ -6,7 +6,7 @@
  *
  * $info$
  * 
- * $Id$
+ * $Id: nifalcon.h 179 2008-09-21 04:37:21Z kmachulis $
  *
  * $license$
  */
