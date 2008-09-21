@@ -7,6 +7,7 @@ libnifalcon ChangeLog
 	* Added new C++ based libnifalcon library
 	* Added kinematics classes by Kevin Ouellet
 	* Removed OpenGL examples for the moment
+	* Removed C based kinematics classes until they are corrected
 2008-08-20 Kyle Machulis <kyle@nonpolynomial.com>
 	* Fixed firmware initialization race condition that caused various loading issues
 	* Added check to see if firmware is already on the falcon
