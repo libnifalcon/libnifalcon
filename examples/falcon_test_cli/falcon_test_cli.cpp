@@ -1,3 +1,17 @@
+/***
+ * @file falcon_test_cli.cpp
+ * @brief Command line interface to run basic device tests on the falcon
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @version $Id$
+ * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * $HeadURL$
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ */
+
 #include <iostream>
 #include <string>
 #include <csignal>
