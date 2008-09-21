@@ -1,15 +1,20 @@
 ===========
-libnifalcon
+libnifalcon 
 ===========
 
 by Kyle Machulis <kyle@nonpolynomial.com>
 Nonpolynomial Labs - http://www.nonpolynomial.com
 
+Kinematics by Kevin Ouellet
+http://sourceforge.net/users/kouellet/
+
+NOTE: This file needs to be updated somemore, but I just want to get the beta done. :)
+
 ===========
 Description
 ===========
 
-libnifalcon is a C-based development library for the NovInt Falcon, and is an open source, crossplatform alternative to NovInt's SDK. 
+libnifalcon is a development library for the NovInt Falcon, and is an open source, crossplatform alternative to NovInt's SDK. 
 
 libnifalcon provides basic functionality to connect to the falcon and load firmware to the internal microcontroller. In addition, it comes with sample functionality made available through the firmware available in NovInt's drivers (the novint.bin file in TestUtilties and the nifalcon_test_fw files for the library source). This firmware is distributed in the firmware directory of the source distribution, and is required for the findfalcons utility to run.
 
@@ -25,7 +30,7 @@ http://home.novint.com
 
 Technical information, including protocol and hardware information, is available at
 
-http://wiki.nonpolynomial.com/NovintFalcon
+http://wiki.libnifalcon.sourceforge.net
 
 ====================
 Library Requirements
@@ -49,11 +54,20 @@ libftdi
 
 http://www.intra2net.com/de/produkte/opensource/ftdi/
 
------------------------------------------------------
-GLUT (optional, only needed for kinematics simulator)
------------------------------------------------------
+-----------------------------------------
+GMTL (optional, for kinematics libraries)
+-----------------------------------------
 
-http://www.opengl.org/resources/libraries/glut/
+http://ggt.sourceforge.net/
+
+----------------------------------------------
+Boost (optional, for examples and utilities)
+---------------------------------------------=
+
+http://www.boost.org/
+
+
+
 
 =====================
 ftd2xx versus libftdi
@@ -65,15 +79,15 @@ FTD2XX:
 Windows: Fine
 Linux: Fine
 64-bit Linux: No 64-bit drivers available
-OS X: Locks up on write function after < 1000 loops
+OS X: Okish?
 
 libftdi:
 Windows: Untested (Recommended to use FTD2XX)
-Linux: Stable, but runs at half speed
-64-bit Linux: Stable, but runs at half speed
-OS X: Stable, but runs at half speed
+Linux: Fine
+64-bit Linux: Fine
+OS X: Fine
 
-So, basically, ftd2xx is stable on windows and linux, iffy everywhere else. libftdi is somewhat slower, but works everywhere. This is being worked on right now, see the following blog post for more details:
+So, basically, ftd2xx is stable on windows and linux, iffy on OS X. libftdi is somewhat slower, but works everywhere. This is being worked on right now, see the following blog post for more details:
 
 http://www.nonpolynomial.com/archives/2008/04/libusb-libftdi-latency-and-my-own-stupid.php
 
@@ -92,7 +106,7 @@ Windows
 Linux
 -----
 
-- Either ftd2xx or libftdi can be used on linux. Currently, ftd2xx still runs slightly faster. 
+- Either ftd2xx or libftdi can be used on linux.
 - 64-BIT USERS: There are no versions of ftd2xx drivers for 64-bit linux. libftdi has been tested and found to work fine with libnifalcon on 64-bit platforms.
 - IF USING FTD2XX, make sure to read the instructions that come with it on setting up the proc system properly.
 - Some installations of libftdi using debian apt-get seem to be a little unstable with libnifalcon (this has mainly been found on 64-bit machines). If you have installed libftdi from a prepackaged install and have stability issues accessing the falcon, it is recommended that you try compiling libftdi yourself.
@@ -102,4 +116,4 @@ Linux
 OSX
 ---
 
-- If you use ftd2xx: OS X seems to block on writes after a very short period of time. This does not happen with libftdi. Stopping and restarting the program seems to clear up the issue. I have no idea what the problem is here. 
+- As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. Kyle still uses libftdi.

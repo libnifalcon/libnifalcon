@@ -1,6 +1,12 @@
 libnifalcon ChangeLog
 =====================
 
+2008-09-20 Kyle Machulis <kyle@nonpolynomial.com>
+	* Beta Version 1b1
+	* Changed license to BSD
+	* Added new C++ based libnifalcon library
+	* Added kinematics classes by Kevin Ouellet
+	* Removed OpenGL examples for the moment
 2008-08-20 Kyle Machulis <kyle@nonpolynomial.com>
 	* Fixed firmware initialization race condition that caused various loading issues
 	* Added check to see if firmware is already on the falcon
