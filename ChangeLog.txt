@@ -5,7 +5,7 @@ libnifalcon ChangeLog
 	* Release v1 alpha 2
 	* Added beginnings of HDL compatibility libraries
 	* Added novint license since libnifalcon includes SDK code and firmware, which is covered under their license
-	* Added requirement for CMake 2.6.2 with Boost 1.36 fix. Bleeding edge goodness.
+	* Added FindBoost cmake module from CMake 2.6.2.
 	* Fixed findfalcons_cpp demo compiling and double deletion bug
 2008-09-20 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 1
