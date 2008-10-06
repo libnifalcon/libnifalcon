@@ -20,7 +20,6 @@
 #include "comm/FalconCommLibFTDI.h"
 #endif
 #include "firmware/FalconFirmwareNovintSDK.h"
-#include "kinematic/FalconKinematicStamper.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -38,7 +37,7 @@ void sigproc(int i)
 	exit(0);
 }
 
-void runFalconTest(FalconDevice d)
+void runFalconTest(FalconDevice& d)
 {
 	FalconFirmware* f;
 	FalconKinematic* k;
@@ -51,8 +50,6 @@ void runFalconTest(FalconDevice d)
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
 	f = dev.getFalconFirmware();
-	dev.setFalconKinematic<FalconKinematicStamper>();
-	k = dev.getFalconKinematic();
 	if(!dev.getDeviceCount(num_falcons))
 	{
 		std::cout << "Cannot get device_libftdi count" << std::endl;
@@ -88,20 +85,17 @@ void runFalconTest(FalconDevice d)
 		}
 	}
 
-//	for(int j = 0; j < 3; ++j)
-	while(1)
+	for(int j = 0; j < 3; ++j)
 	{
-		//f->setLEDStatus(2 << j);
+		f->setLEDStatus(2 << j);
 		for(int i = 0; i < 1000; ++i)
 		{
 			dev.runIOLoop();
-			//std::cout << f->getEncoderValues()[0] << " " << f->getEncoderValues()[1] << " " << f->getEncoderValues()[2] << std::endl;
-			std::cout << dev.getPosition()[0] << " " << dev.getPosition()[1] << " " << dev.getPosition()[2] << std::endl;
+			std::cout << f->getEncoderValues()[0] << " " << f->getEncoderValues()[1] << " " << f->getEncoderValues()[2] << std::endl;			
 		}
 	}
 	f->setLEDStatus(0);
-	dev.runIOLoop();
-	
+	dev.runIOLoop();	
 	dev.close();
 }
 
@@ -112,7 +106,10 @@ int main(int argc, char** argv)
 #ifdef LIBFTDI
 	std::cout << "Running libftdi test" << std::endl;
 	dev.setFalconComm<FalconCommLibFTDI>();
+#elif FTD2xx
+	std::cout << "Running ftd2xx test" << std::endl;
+	dev.setFalconComm<FalconCommLibFTD2XX>();	
+#endif	
 	runFalconTest(dev);
-#endif
 	return 0;
 }
