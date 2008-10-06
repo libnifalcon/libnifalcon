@@ -1,25 +1,35 @@
 libnifalcon ChangeLog
 =====================
 
+2008-10-05 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1 alpha 2
+	* Added beginnings of HDL compatibility libraries
+	* Added novint license since libnifalcon includes SDK code and firmware, which is covered under their license
+	* Added requirement for CMake 2.6.2 with Boost 1.36 fix. Bleeding edge goodness.
+	* Fixed findfalcons_cpp demo compiling and double deletion bug
 2008-09-20 Kyle Machulis <kyle@nonpolynomial.com>
-	* Alpha Version 1 alpha 1
+	* Release v1 alpha 1
 	* Changed license to BSD
 	* Added new C++ based libnifalcon library
 	* Added kinematics classes by Kevin Ouellet
 	* Removed OpenGL examples for the moment
 	* Removed C based kinematics classes until they are corrected
 2008-08-20 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v0.5
 	* Fixed firmware initialization race condition that caused various loading issues
 	* Added check to see if firmware is already on the falcon
 	* Changed findfalcons output to make it slightly more usable
 	* Added more error reporting to test firmware
-2008-07-15 Kyle Machulis <kyle@nonpolynomial.com>
+2008-07-15 Kyle Machulis <kyle@nonpolynomial.com>	
+	* Release v0.4
 	* Removed stray "_s" extensions in CMake files
 2008-05-26 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v0.3
 	* Fixed libftdi latency timer sets, library now runs much faster on Linux and OS X
 	* Added basic kinematics algorithms to do IK/DK placement calculations for the end effector
 	* Added OpenGL kinematics simulation for visualization
 2008-04-05 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v0.2
 	* Fixed input packet motor bit shifting error (Thanks to Michael Huang and Jared Allen)
 	* Added libftdi support for platforms where FTDI drivers are not available (64-bit Linux) or do not work properly (OS X, Linux)
 	* Added library checks for CMake to figure out what can and cannot be built
@@ -27,4 +37,5 @@ libnifalcon ChangeLog
 	* Added non-printf error checking to clean up library
 	* Added lots of other stuff I'm probably forgetting here
 2008-02-17 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v0.1
 	* First release of libnifalcon project, includes source files and cmake build system
