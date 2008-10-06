@@ -37,7 +37,7 @@ namespace libnifalcon
 		};
 	public:
 		FalconNovintHDALCompat();
-		virtual ~FalconNovintHDALCompat();		
+		virtual ~FalconNovintHDALCompat();
 		int addServoOp(HDLServoOp o, void* param);
  		bool removeServoOp(int op_handle);
 		virtual void runThreadLoop();

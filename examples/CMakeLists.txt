@@ -13,7 +13,7 @@ ENDIF(LIBFTD2XX_FOUND)
 
 ADD_SUBDIRECTORY(findfalcons)
 ADD_SUBDIRECTORY(findfalcons_cpp)
-
+ADD_SUBDIRECTORY(falcon_hdl)
 IF(Boost_PROGRAM_OPTIONS_FOUND)
   ADD_SUBDIRECTORY(falcon_test_cli)
   ADD_SUBDIRECTORY(falcon_mouse)
