@@ -36,6 +36,7 @@ void sigproc(int i)
 
 class FalconCLITest : public FalconCLIBase
 {
+	FalconDevice m_falconDevice;
 public:
 	enum
 	{
@@ -62,7 +63,7 @@ public:
 	}
 	bool parseOptions(int argc, char** argv)
 	{
-		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
+		if(!FalconCLIBase::parseOptions(m_falconDevice, argc, argv)) return false;
 		int led = 0;
 		if(m_varMap.count("led_red"))
 		{

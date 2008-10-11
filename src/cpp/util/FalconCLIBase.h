@@ -15,7 +15,7 @@
 #define FALCONCLIBASE_H
 
 #include <boost/program_options.hpp>
-#include "FalconDeviceBoostThread.h"
+#include "core/FalconDevice.h"
 
 namespace libnifalcon
 {
@@ -23,8 +23,9 @@ namespace libnifalcon
 	{
 	protected:
 		boost::program_options::options_description m_progOptions;
-		FalconDeviceBoostThread m_falconDevice;
 		boost::program_options::variables_map m_varMap;
+		virtual void addOptions(int value);	
+		virtual bool parseOptions(FalconDevice& device, int argc, char** argv);
 	public:
 		FalconCLIBase();
 		~FalconCLIBase()
@@ -36,8 +37,7 @@ namespace libnifalcon
 			COMM_OPTIONS = 0x2,
 			FIRMWARE_OPTIONS = 0x4
 		};
-		virtual void addOptions(int value);	
-		virtual bool parseOptions(int argc, char** argv);
+	   
 	};
 }
 #endif

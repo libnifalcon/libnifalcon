@@ -27,6 +27,7 @@
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include "kinematic/FalconKinematicStamper.h"
 #include "util/FalconCLIBase.h"
+#include "util/FalconDeviceBoostThread.h"
 #include "falcon_mouse.h"
 
 using namespace libnifalcon;
@@ -51,6 +52,7 @@ void millisleep(unsigned long milliseconds)
 
 class FalconMouse : public FalconCLIBase
 {
+	FalconDeviceBoostThread m_falconDevice;
 public:
 	enum
 	{
@@ -75,9 +77,10 @@ public:
 			m_progOptions.add(led);
 		}
 	}
+	
 	bool parseOptions(int argc, char** argv)
 	{
-		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
+		if(!FalconCLIBase::parseOptions(m_falconDevice, argc, argv)) return false;
 		int led = 0;
 		if(m_varMap.count("led_red"))
 		{
