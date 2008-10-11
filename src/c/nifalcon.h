@@ -22,11 +22,11 @@
 #if defined(LIBFTDI)
 #include <ftdi.h>
 typedef struct ftdi_context falcon_handle; /*!< libftdi typedef for falcon access */
-#elif defined(LIBFTD2XX)
+#elif defined(FTD2XX)
 #include <ftd2xx.h>
 typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
 #else
-#error "Either LIBFTDI or LIBFTD2XX (but not both) must be defined to compile libnifalcon"
+#error "Either LIBFTDI or FTD2XX (but not both) must be defined to compile libnifalcon"
 #endif
 
 /// VID for the Novint Falcon
