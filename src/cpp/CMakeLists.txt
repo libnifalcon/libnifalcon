@@ -8,7 +8,6 @@ FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
 	SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 	SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES VERSION ${LIBNIFALCON_VERSION})
 
-
 	#optional arguments
 	IF(LINK_LIBS)
 	  FOREACH(LINK_LIB ${LINK_LIBS})
@@ -23,7 +22,7 @@ FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
 
 	#installation for non-windows platforms
 	IF(NOT WIN32)
-	  INSTALL(TARGETS ${NIFALCON_LIB} LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR} ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR})
+	  INSTALL(TARGETS ${CURRENT_LIB} LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR} ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR})
 	ENDIF(NOT WIN32)
 
 	#rewrite of install_name_dir in apple binaries
@@ -32,18 +31,55 @@ FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
 	ENDIF(APPLE)
   ENDFOREACH(LIB_TYPE)
 ENDFUNCTION(BUILD_NIFALCON_LIB)
+
 SET(BUILD_TYPES STATIC SHARED)
 
 #Build rules for core libnifalcon C++ library
 
-SET(LIBRARY_SRCS core/FalconDevice.cpp firmware/FalconFirmwareNovintSDK.cpp kinematic/stamper/AngularMatrix.cpp kinematic/stamper/JacobianMatrix.cpp kinematic/stamper/PositionMatrix.cpp kinematic/stamper/DirectKinematic.cpp kinematic/stamper/InverseKinematic.cpp kinematic/FalconKinematicStamper.cpp)
+SET(LIBRARY_SRCS 
+  core/FalconDevice.cpp 
+  firmware/FalconFirmwareNovintSDK.cpp 
+  kinematic/stamper/AngularMatrix.cpp 
+  kinematic/stamper/JacobianMatrix.cpp 
+  kinematic/stamper/PositionMatrix.cpp 
+  kinematic/stamper/DirectKinematic.cpp 
+  kinematic/stamper/InverseKinematic.cpp 
+  kinematic/FalconKinematicStamper.cpp)
+
 INCLUDE_DIRECTORIES(. ${GMTL_INCLUDE_DIR})
 
-INSTALL(FILES core/*.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/core)
-INSTALL(FILES firmware/*.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/firmware)
-INSTALL(FILES kinematic/*.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic)
-INSTALL(FILES kinematic/stamper/*.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic/stamper)
-INSTALL(FILES grip/*.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/grip)
+INSTALL(DIRECTORY ${GMTL_INCLUDE_DIR}/gmtl DESTINATION ${INCLUDE_INSTALL_DIR}/falcon)
+
+INSTALL(FILES 
+  core/FalconComm.h 
+  core/FalconCore.h  
+  core/FalconDevice.h
+  core/FalconFirmware.h
+  core/FalconGeometry.h
+  core/FalconGrip.h
+  core/FalconKinematic.h
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/core)
+
+INSTALL(FILES 
+  firmware/FalconFirmwareNovintSDK.h 
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/firmware)
+
+INSTALL(FILES 
+  kinematic/FalconKinematicStamper.h 
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic)
+
+INSTALL(FILES 
+  kinematic/stamper/AngularMatrix.h 
+  kinematic/stamper/JacobianMatrix.h 
+  kinematic/stamper/PositionMatrix.h 
+  kinematic/stamper/DirectKinematic.h
+  kinematic/stamper/StamperUtils.h
+  kinematic/stamper/InverseKinematic.h
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic/stamper)
+
+INSTALL(FILES 
+  grip/FalconGripFourButton.h 
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/grip)
 
 BUILD_NIFALCON_LIB(${LIBNIFALCON_CPP} "${BUILD_TYPES}" "${LIBRARY_SRCS}" FALSE FALSE)
 
