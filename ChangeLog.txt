@@ -1,6 +1,14 @@
 libnifalcon ChangeLog
 =====================
 
+2008-10-11 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1 alpha 3
+	* Overhauled cmake files to make building cleaner
+	* Renamed c libraries to libnifalcon_c
+	* Renamed c++ libraries to libnifalcon
+	* Added Findlibnifalcon cmake module
+	* Added GMTL to source distribution
+	* Folded Stamper kinematics functionality into main library
 2008-10-05 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 2
 	* Added beginnings of HDL compatibility libraries
