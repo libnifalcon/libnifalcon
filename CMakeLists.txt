@@ -87,8 +87,8 @@ SET(LIBNIFALCON_C_PREFIX "nifalcon_c")
 
 SET(LIBNIFALCON_CPP "nifalcon")
 SET(LIBNIFALCON_CPP_COMM_PREFIX "nifalcon_comm")
-SET(LIBNIFALCON_CPP_CLI_BASE "nifalcon_clibase")
-SET(LIBNIFALCON_CPP_BOOST_THREAD "nifalcon_boost_thread_device")
+SET(LIBNIFALCON_CPP_CLI_BASE "nifalcon_cli_base")
+SET(LIBNIFALCON_CPP_BOOST_THREAD "nifalcon_device_boost_thread")
 
 #common library additions
 
