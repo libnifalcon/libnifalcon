@@ -46,7 +46,7 @@ namespace libnifalcon
 			}
 			for(int i = 0; i < m_numDigitalInputs; ++i)
 			{
-				if(data[0] & (i << i))
+				if(data[0] & (1 << i))
 					m_digitalInputs |= (1 << i);
 				else
 					m_digitalInputs &= ~(1 << i);
