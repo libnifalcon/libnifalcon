@@ -6,7 +6,9 @@ libnifalcon ChangeLog
 	* More cmake file condensing
 	* Fixed comparison bug in FalconGripFourButton
 	* Added CPU specific optimizations for option for GCC builds
-	* Added Fast Math optimization option for GCC >= 4.0	
+	* Added Fast Math optimization option for GCC >= 4.0
+	* Added (but commented out) packet buffering scheme for firmware
+	* Fixed bug with returning grip info data portion from novint firmware object
 2008-10-11 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 3
 	* Overhauled cmake files to make building cleaner
