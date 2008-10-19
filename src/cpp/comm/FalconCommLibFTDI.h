@@ -25,14 +25,14 @@ namespace libnifalcon
 		FalconCommLibFTDI();
 		~FalconCommLibFTDI();
 		virtual bool getDeviceCount(int8_t& );
-		virtual bool open(u_int8_t );
+		virtual bool open(uint8_t );
 		virtual bool close();
-		virtual bool read(u_int8_t*, u_int32_t);
-		virtual bool write(u_int8_t*, u_int32_t);
+		virtual bool read(uint8_t*, u_int32_t);
+		virtual bool write(uint8_t*, u_int32_t);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:
-//		int8_t openDeviceFTD2XX(u_int8_t , bool );
+//		int8_t openDeviceFTD2XX(uint8_t , bool );
 		bool initLibFTDI();
 		ftdi_context m_falconDevice;
 		bool m_isInitialized;

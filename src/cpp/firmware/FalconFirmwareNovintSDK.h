@@ -26,14 +26,14 @@ namespace libnifalcon
 		bool runIOLoop();
 		int32_t getGripInfoSize() { return 1; }
 		//Things I am going to hell for, #8926:
-		u_int8_t* getGripInfo() { return (u_int8_t*)(m_rawOutput+13); }
+		uint8_t* getGripInfo() { return (uint8_t*)(m_rawOutput+13); }
 	protected:
 	
 		void formatInput();
 		void formatOutput();
 
 		bool m_hasWritten;
-		u_int8_t m_rawInput[16], m_rawOutput[16];
+		uint8_t m_rawInput[16], m_rawOutput[16];
 	};
 }
 

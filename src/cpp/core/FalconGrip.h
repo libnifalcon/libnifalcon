@@ -31,7 +31,7 @@ namespace libnifalcon
 		virtual ~FalconGrip()
 		{
 		}
-		virtual bool runGripLoop(int size, u_int8_t* data) = 0;
+		virtual bool runGripLoop(int size, uint8_t* data) = 0;
 		int32_t getNumDigitalInputs() const { return m_numDigitalInputs; }
 		int32_t getNumAnalogInputs() const { return m_numAnalogInputs; }
 		bool getDigitalInput(int index) const

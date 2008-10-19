@@ -37,7 +37,7 @@ namespace libnifalcon
 		{
 		}
 
-		bool runGripLoop(int size, u_int8_t* data)
+		bool runGripLoop(int size, uint8_t* data)
 		{
 			//Assuming this to always be 1, since the data can easily be packed into a nibble
 			if(size != 1)

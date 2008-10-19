@@ -194,7 +194,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
 		}		
-		if(m_falconKinematic != NULL && m_falconFirmware->isHomed())
+		if(m_falconKinematic != NULL)
 		{
 			int16_t enc_vec[3];
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);

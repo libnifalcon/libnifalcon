@@ -100,7 +100,7 @@ namespace libnifalcon
 		 *
 		 * @return true if falcon opened successfully, false otherwise
 		 */				
-		bool open(u_int8_t index);
+		bool open(uint8_t index);
 		/** 
 		 * Closes the falcon, if open
 		 *

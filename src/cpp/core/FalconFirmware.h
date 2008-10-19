@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 #include <cstdlib>
+#include <deque>
 #include "FalconComm.h"
 
 namespace libnifalcon
@@ -46,6 +47,7 @@ namespace libnifalcon
 		FalconFirmware() :
 			m_falconComm(NULL),
 			m_homingMode(false)
+			//m_packetBufferSize(1)
 		{
 			//Who needs loops!
 			m_forceValues[0] = 0;
@@ -87,7 +89,7 @@ namespace libnifalcon
 		 * 
 		 * @return Byte buffer with grip data
 		 */
-		virtual u_int8_t* getGripInfo() = 0;
+		virtual uint8_t* getGripInfo() = 0;
 
 		/** 
 		 * Sets the instantious force (in whatever units the falcon takes) for the next I/O loop
@@ -113,14 +115,14 @@ namespace libnifalcon
 		 * 
 		 * @param leds Bitfield of the LED flags
 		 */
-		void setLEDStatus(u_int8_t leds) { m_ledStatus = leds; }
+		void setLEDStatus(uint8_t leds) { m_ledStatus = leds; }
 		/** 
 		 * Returns the current LED status bitfield
 		 * 
 		 * 
 		 * @return The current LED status bitfield
 		 */
-		u_int8_t getLEDStatus() { return m_ledStatus; }
+		uint8_t getLEDStatus() { return m_ledStatus; }
 		/** 
 		 * Sets the homing mode for the next I/O loop
 		 * 
@@ -133,7 +135,7 @@ namespace libnifalcon
 		 * 
 		 * @return Bitfield of encoder homing statuses
 		 */
-		u_int8_t getHomingModeStatus() { return m_homingStatus; }
+		uint8_t getHomingModeStatus() { return m_homingStatus; }
 		/** 
 		 * Returns the overall homing status
 		 *
@@ -149,17 +151,29 @@ namespace libnifalcon
 		 * @param f Pointer to the communications object
 		 */
 		void setFalconComm(FalconComm* f) { m_falconComm = f; }
+
+		/*
+		void setPacketBufferSize(uint8_t size)
+		{
+			m_packetBufferSize = size;
+		}
+		*/
+		
 	protected:
 		FalconComm* m_falconComm; /**< Communications object for I/O */
 
 		//Values sent to falcon
 		bool m_homingMode;		/**< True if homing mode is on, false for homing mode off */
-		u_int8_t m_ledStatus;	/**< Bitfield for LED Status */
+		uint8_t m_ledStatus;	/**< Bitfield for LED Status */
 		int16_t m_forceValues[3]; /**< Force values for the next I/O loop */
-
 		//Values received from falcon
 		int16_t m_encoderValues[3];	/**< Encoder values from the last I/O loop */
-		u_int8_t m_homingStatus; /**< Current homing status from the last I/O loop */
+		uint8_t m_homingStatus; /**< Current homing status from the last I/O loop */
+
+		//Variables for Packet Buffer No One Uses
+		//uint8_t m_packetBufferSize;
+		//std::deque<uint8_t*> m_packetBuffer;
+		
 	};
 }
 #endif
