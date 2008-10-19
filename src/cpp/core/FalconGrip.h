@@ -25,7 +25,10 @@ namespace libnifalcon
 		enum {
 			FALCON_GRIP_INDEX_OUT_OF_RANGE = 4000
 		};
-		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) : m_numDigitalInputs(digital_inputs), m_numAnalogInputs(analog_inputs), m_digitalInputs(0)
+		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) :
+			m_numDigitalInputs(digital_inputs),
+			m_numAnalogInputs(analog_inputs),
+			m_digitalInputs(0)
 		{
 		}
 		virtual ~FalconGrip()

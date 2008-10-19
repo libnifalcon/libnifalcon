@@ -38,6 +38,7 @@ namespace libnifalcon
 				(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
 			//Shift value down a nibble for homing status
 			m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
+			m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
 		}
 	}
 
@@ -114,6 +115,7 @@ namespace libnifalcon
 				read_successful = true;
 			}
 			*/
+			memset(m_rawOutput, 0, 16);
 			if(m_falconComm->read((uint8_t*)m_rawOutput, (uint32_t)16))
 			{
 				formatOutput();
