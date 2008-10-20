@@ -139,7 +139,7 @@ SET(GMTL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #library definitions
 
-SET(LIBNIFALCON_VERSION 1.0)
+SET(LIBNIFALCON_VERSION 1.0.alpha4)
 
 #library name definitions
 

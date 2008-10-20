@@ -1,7 +1,7 @@
 libnifalcon ChangeLog
 =====================
 
-2008-10-11 Kyle Machulis <kyle@nonpolynomial.com>
+2008-10-19 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 4
 	* More cmake file condensing
 	* Fixed comparison bug in FalconGripFourButton
