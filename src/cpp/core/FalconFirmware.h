@@ -16,6 +16,7 @@
 #define FALCONFIRMWARE_H
 
 #include <stdint.h>
+#include <string>
 #include <cstdlib>
 #include <deque>
 #include "FalconComm.h"
@@ -39,24 +40,21 @@ namespace libnifalcon
 			ENCODER_3_HOMED = 0x4, /**< Flag for encoder homing for motor 3 */
 		};
 
+		enum {
+			FALCON_FIRMWARE_NO_COMM_SET = 3000, /**< Error for no communications policy set */
+			FALCON_FIRMWARE_NO_FIRMWARE_SET, /**< Error for no firmware policy set */
+			FALCON_FIRMWARE_NO_FIRMWARE_LOADED, /**< Error for no firmware loaded */
+			FALCON_FIRMWARE_FILE_NOT_VALID, /**< Error for firmware file missing */
+			FALCON_FIRMWARE_CHECKSUM_MISMATCH /**< Error for checksum mismatch during firmware loading */
+		};
+
+		
 		/** 
 		 * Constructor
 		 * 
 		 * 
 		 */
-		FalconFirmware() :
-			m_falconComm(NULL),
-			m_homingMode(false)
-			//m_packetBufferSize(1)
-		{
-			//Who needs loops!
-			m_forceValues[0] = 0;
-			m_forceValues[1] = 0;
-			m_forceValues[2] = 0;
-			m_encoderValues[0] = 0;
-			m_encoderValues[1] = 0;
-			m_encoderValues[2] = 0;			
-		}
+		FalconFirmware();
 
 		/** 
 		 * Destructor
@@ -151,6 +149,40 @@ namespace libnifalcon
 		 * @param f Pointer to the communications object
 		 */
 		void setFalconComm(FalconComm* f) { m_falconComm = f; }
+		/** 
+		 * Checks to see if firmware is loaded by running IO loop 10 times, returning true on first success
+		 * Will automatically return false is setFalconFirmware() has not been called.
+		 *
+		 * @return true if firmware is loaded, false otherwise
+		 */
+		bool isFirmwareLoaded();
+		/** 
+		 * Sets the firmware file to load to the falcon
+		 *
+		 * @param filename Name of the file to use for firmware
+		 *
+		 * @return true if file exists and is openable, false otherwise
+		 */		
+		bool setFirmwareFile(std::string filename);
+		/** 
+		 * Conveinence function, calls loadFirmware with a certain number of retries
+		 *
+		 * @param retries Number of times to retry loading firmware before quitting
+		 * @param skip_checksum Whether or not to skip checksum tests when loading firmware (useful with ftd2xx on non-windows platforms)
+		 *
+		 * @return true if firmware is loaded successfully, false otherwise
+		 */		
+		bool loadFirmware(int retries, bool skip_checksum = false);
+		/** 
+		 * Tries to load the firmware that was specified by the setFirmwareFile function. For the moment, skip_checksum should be used
+		 * on non-windows platforms when using the ftd2xx communications core, as there is a bug that causes bad checksum returns on
+		 * otherwise proper firmware loading events
+		 *
+		 * @param skip_checksum Whether or not to skip checksum tests when loading firmware (useful with ftd2xx on non-windows platforms)
+		 *
+		 * @return true if firmware is loaded successfully, false otherwise
+		 */				
+		bool loadFirmware(bool skip_checksum);
 
 		/*
 		void setPacketBufferSize(uint8_t size)
@@ -161,6 +193,8 @@ namespace libnifalcon
 		
 	protected:
 		FalconComm* m_falconComm; /**< Communications object for I/O */
+		std::string m_firmwareFilename; /**< Filename of the firmware to load */
+		bool m_isFirmwareLoaded; /**< True if firmware has been loaded, false otherwise */
 
 		//Values sent to falcon
 		bool m_homingMode;		/**< True if homing mode is on, false for homing mode off */

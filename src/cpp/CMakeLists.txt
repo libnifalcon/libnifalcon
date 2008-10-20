@@ -2,6 +2,7 @@
 
 SET(LIBRARY_SRCS 
   core/FalconDevice.cpp 
+  core/FalconFirmware.cpp 
   firmware/FalconFirmwareNovintSDK.cpp 
   kinematic/stamper/AngularMatrix.cpp 
   kinematic/stamper/JacobianMatrix.cpp 

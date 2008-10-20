@@ -16,8 +16,6 @@
 #define FALCON_DEVICE_H
 
 #include <string>
-#include <fstream>
-#include <iostream>
 #include "FalconCore.h"
 #include "FalconComm.h"
 #include "FalconFirmware.h"
@@ -38,7 +36,6 @@ namespace libnifalcon
 			FALCON_DEVICE_FIRMWARE_NOT_VALID, /**< Error for firmware file missing */
 			FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH /**< Error for checksum mismatch during firmware loading */
 		};
-
 
 		enum {
 			FALCON_LOOP_FIRMWARE = 0x1,
@@ -272,10 +269,8 @@ namespace libnifalcon
 		 */								
 		uint32_t getErrorCount() { return m_errorCount; }
 	protected:
-		bool m_isFirmwareLoaded; /**< True if firmware has been loaded, false otherwise */
 		bool m_cleanupObjects;	/**< If true, object should clean up objects on destruction */
 		uint32_t m_errorCount;	/**< Number of errors in I/O loops */
-		std::string m_firmwareFilename; /**< Filename of the firmware to load */
 		FalconComm* m_falconComm; /**< Falcon communication object */
 		FalconKinematic* m_falconKinematic; /**<  Falcon kinematics object */
 		FalconFirmware* m_falconFirmware; /**<  Falcon firmware object */

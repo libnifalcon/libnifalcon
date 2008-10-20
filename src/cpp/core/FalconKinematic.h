@@ -31,7 +31,7 @@ namespace libnifalcon
 			double Z[2];
 		};
 		enum {
-			FALCON_KINEMATIC_OUT_OF_RANGE
+			FALCON_KINEMATIC_OUT_OF_RANGE = 5000
 		};
 		FalconKinematic() {}
 		virtual ~FalconKinematic() {}

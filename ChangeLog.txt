@@ -12,6 +12,7 @@ libnifalcon ChangeLog
 	* Fixed library misnaming for C libraries (Thanks to Stephen Sinclair)
 	* Removed automatic ftd2xx building from Mac and Linux due to symbol issues (now requires explicit CMake option setting - FORCE_FTD2XX_BUILD)
 	* Added cmake option for libusb debug messages (LIBUSB_DEBUG)
+	* Added execution flags to the FalconDevice runIOLoop function
 2008-10-11 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 3
 	* Overhauled cmake files to make building cleaner
