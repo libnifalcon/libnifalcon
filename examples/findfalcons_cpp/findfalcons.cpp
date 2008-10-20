@@ -13,11 +13,10 @@
  */
 
 #include "core/FalconDevice.h"
-#ifdef LIBFTD2XX
-#include "comm/FalconCommFTD2XX.h"
-#endif
-#ifdef LIBFTDI
+#if defined(LIBFTDI)
 #include "comm/FalconCommLibFTDI.h"
+#elif defined(LIBFTD2XX)
+#include "comm/FalconCommFTD2XX.h"
 #endif
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
@@ -103,10 +102,10 @@ int main(int argc, char** argv)
 {
 	signal(SIGINT, sigproc);
 	signal(SIGQUIT, sigproc);
-#ifdef LIBFTDI
+#if defined(LIBFTDI)
 	std::cout << "Running libftdi test" << std::endl;
 	dev.setFalconComm<FalconCommLibFTDI>();
-#elif FTD2xx
+#elif defined(FTD2xx)
 	std::cout << "Running ftd2xx test" << std::endl;
 	dev.setFalconComm<FalconCommLibFTD2XX>();	
 #endif	

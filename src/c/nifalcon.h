@@ -22,7 +22,7 @@
 #if defined(LIBFTDI)
 #include <ftdi.h>
 typedef struct ftdi_context falcon_handle; /*!< libftdi typedef for falcon access */
-#elif defined(FTD2XX)
+#elif defined(LIBFTD2XX)
 #include <ftd2xx.h>
 typedef FT_HANDLE falcon_handle; /*!< ftd2xx typedef for falcon access */
 #else

@@ -9,6 +9,9 @@ libnifalcon ChangeLog
 	* Added Fast Math optimization option for GCC >= 4.0
 	* Added (but commented out) packet buffering scheme for firmware
 	* Fixed bug with returning grip info data portion from novint firmware object
+	* Fixed library misnaming for C libraries (Thanks to Stephen Sinclair)
+	* Removed automatic ftd2xx building from Mac and Linux due to symbol issues (now requires explicit CMake option setting - FORCE_FTD2XX_BUILD)
+	* Added cmake option for libusb debug messages (LIBUSB_DEBUG)
 2008-10-11 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 alpha 3
 	* Overhauled cmake files to make building cleaner
@@ -36,7 +39,7 @@ libnifalcon ChangeLog
 	* Added check to see if firmware is already on the falcon
 	* Changed findfalcons output to make it slightly more usable
 	* Added more error reporting to test firmware
-2008-07-15 Kyle Machulis <kyle@nonpolynomial.com>	
+2008-07-15 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v0.4
 	* Removed stray "_s" extensions in CMake files
 2008-05-26 Kyle Machulis <kyle@nonpolynomial.com>

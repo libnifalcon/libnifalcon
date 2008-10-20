@@ -41,7 +41,7 @@ FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
       SET_COMPILE_FLAGS(${CURRENT_LIB} ${CXX_DEFINES})
     ENDIF(CXX_DEFINES)
 
-    #installation for non-windows platforms
+	#installation for non-windows platforms
     IF(NOT WIN32)
       INSTALL(TARGETS ${CURRENT_LIB} LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR} ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR})
     ENDIF(NOT WIN32)
@@ -78,8 +78,16 @@ PROJECT(LIBNIFALCON)
 #options
 
 OPTION(DEBUG_BUILD "Compile libnifalcon in debug mode" OFF)
-OPTION(FAST_MATH "Use -ffast-math for GCC 4.0" ON)
-OPTION(ARCH_OPTS "Use architecture specific optimizations for GCC" ON)
+OPTION(FAST_MATH "Use -ffast-math for GCC 4.0" OFF)
+OPTION(ARCH_OPTS "Use architecture specific optimizations for GCC" OFF)
+OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
+OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
+OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
+
+
+IF(WINDOWS)
+  SET(FORCE_FTD2XX_BUILD ON)
+ENDIF(WINDOWS)
 
 IF(DEBUG_BUILD)
   SET(CMAKE_BUILD_TYPE "Debug")
@@ -104,12 +112,20 @@ IF(ARCH_OPTS)
   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${CPU_OPT}")
 ENDIF(ARCH_OPTS)
 
+IF(IS_BIG_ENDIAN)
+  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNIFALCON_BIG_ENDIAN")
+  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNIFALCON_BIG_ENDIAN")
+ENDIF(IS_BIG_ENDIAN)
+
 #finds for libnifalcon building
 
 FIND_PACKAGE(libusb)
-FIND_PACKAGE(libftd2xx)
 FIND_PACKAGE(libftdi)
 FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
+
+IF(FORCE_FTD2XX_BUILD)
+  FIND_PACKAGE(libftd2xx)
+ENDIF(FORCE_FTD2XX_BUILD)
 
 IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND)
   MESSAGE(FATAL_ERROR "Either ftd2xx (http://www.ftdichip.com) or libftdi (http://www.intra2net.com/de/produkte/opensource/ftdi/) is required to build libnifalcon")

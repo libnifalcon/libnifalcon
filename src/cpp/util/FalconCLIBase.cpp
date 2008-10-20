@@ -40,10 +40,9 @@ namespace libnifalcon
 		{
 			po::options_description comm("Communication Options");
 			comm.add_options()
-#ifdef LIBFTDI
+#if defined(LIBFTDI)
 				("libftdi", "use libftdi based driver")
-#endif
-#ifdef LIBFTD2XX
+#elif defined(LIBFTD2XX)
 				("ftd2xx", "use ftd2xx based driver")
 #endif
 				;
@@ -89,16 +88,16 @@ namespace libnifalcon
 		//First off, see if we have a communication method
 		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
 		{
-			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx." << std::endl;		
+			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;		
 		}
-#ifdef LIBFTDI
+		//This is an either/or choice, since we can't link against both. Prefer libftdi. Thanks for the static linking against old libusb binaries, FTDI!
+#if defined(LIBFTDI)
 		else if (m_varMap.count("libftdi"))
 		{
 			std::cout << "Setting up libftdi device" << std::endl;
 			device.setFalconComm<FalconCommLibFTDI>();
 		}
-#endif
-#ifdef LIBFTD2XX
+#elif defined(LIBFTD2XX)
 		else if (m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Setting up ftd2xx device" << std::endl;
@@ -117,7 +116,7 @@ namespace libnifalcon
 		{
 			if(!device.open(m_varMap["device_index"].as<int>()))
 			{
-				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << std::endl;
+				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << device.getErrorCode() << " Device Error Code: " << device.getFalconComm()->getDeviceErrorCode() << std::endl;
 				return false;
 			}
 		}

@@ -29,6 +29,10 @@ namespace libnifalcon {
 			
 	bool FalconCommLibFTDI::initLibFTDI()
 	{
+#if defined(LIBUSB_DEBUG)
+		//Spam libusb messages
+		usb_set_debug(10);
+#endif
 		if((m_deviceErrorCode = ftdi_init(&(m_falconDevice))) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
