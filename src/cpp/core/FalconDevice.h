@@ -38,6 +38,14 @@ namespace libnifalcon
 			FALCON_DEVICE_FIRMWARE_NOT_VALID, /**< Error for firmware file missing */
 			FALCON_DEVICE_FIRMWARE_CHECKSUM_MISMATCH /**< Error for checksum mismatch during firmware loading */
 		};
+
+
+		enum {
+			FALCON_LOOP_FIRMWARE = 0x1,
+			FALCON_LOOP_KINEMATIC = 0x2,
+			FALCON_LOOP_GRIP = 0x4
+		};
+		
 		/** 
 		 * Constructor
 		 *
@@ -116,7 +124,7 @@ namespace libnifalcon
 		 *
 		 * @return true on success, false otherwise
 		 */		
-		bool runIOLoop();
+		bool runIOLoop(uint8_t exe_flags = (FALCON_LOOP_FIRMWARE | FALCON_LOOP_KINEMATIC | FALCON_LOOP_GRIP));
 
 		/**
 		 * Set whether the FalconDevice object should delete its behavior objects on destruction

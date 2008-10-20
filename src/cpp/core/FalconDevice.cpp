@@ -187,26 +187,26 @@ namespace libnifalcon
 		return false;
 	}
 	
-	bool FalconDevice::runIOLoop()
+	bool FalconDevice::runIOLoop(uint8_t exe_flags)
 	{
 		if(m_falconFirmware == NULL)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
 		}		
-		if(m_falconKinematic != NULL)
+		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
 			int16_t enc_vec[3];
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
-		if(!m_falconFirmware->runIOLoop())
+		if(!m_falconFirmware->runIOLoop() && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
 			++m_errorCount;
 			m_errorCode = m_falconFirmware->getErrorCode();
 			return false;
 		}
-		if(m_falconGrip != NULL)
+		if(m_falconGrip != NULL && (exe_flags & FALCON_LOOP_GRIP))
 		{
 			if(!m_falconGrip->runGripLoop(m_falconFirmware->getGripInfoSize(), m_falconFirmware->getGripInfo()))
 			{
@@ -214,7 +214,7 @@ namespace libnifalcon
 				return false;				
 			}
 		}
-		if(m_falconKinematic != NULL && m_falconFirmware->isHomed())
+		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
 			if(!m_falconKinematic->getPosition(m_falconFirmware->getEncoderValues(), m_position))
 			{
