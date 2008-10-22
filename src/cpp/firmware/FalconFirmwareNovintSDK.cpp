@@ -121,7 +121,11 @@ namespace libnifalcon
 				formatOutput();
 				m_hasWritten = false;
 				read_successful = true;
-			}			
+			}
+			else
+			{
+				return false;
+			}
 		}
 		//Send information to the falcon
 		formatInput();
