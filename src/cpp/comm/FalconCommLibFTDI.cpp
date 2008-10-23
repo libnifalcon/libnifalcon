@@ -18,6 +18,8 @@ namespace libnifalcon {
 	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false)
 	{
+		//No way to poll, so we act like we always have something available
+		m_hasBytesAvailable = true;
 		initLibFTDI();
 	}
 
