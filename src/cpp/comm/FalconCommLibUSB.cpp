@@ -13,7 +13,7 @@ namespace libnifalcon
 		initLibUSB();
 #if defined(LIBUSB_DEBUG)
 		//Spam libusb messages
-		libusb_set_debug(10);
+		libusb_set_debug(NULL, 4);
 #endif
 
 	}
@@ -96,7 +96,7 @@ namespace libnifalcon
 		libusb_submit_transfer(in_transfer);
 		
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
-								  128, FalconCommLibUSB::cb_out, this, 1000);
+								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
 		return true;
 	}
@@ -121,9 +121,10 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
+		((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
 		((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 		//Minus 2. Stupid modem bits.
-		((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
+
 	}
 
 }
