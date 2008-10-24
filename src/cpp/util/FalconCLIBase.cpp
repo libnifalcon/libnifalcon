@@ -41,6 +41,8 @@ namespace libnifalcon
 			po::options_description comm("Communication Options");
 			comm.add_options()
 #if defined(LIBFTDI)
+				("libusb", "use libusb-1.0 based driver")
+#elif defined(LIBFTDI)
 				("libftdi", "use libftdi based driver")
 #elif defined(LIBFTD2XX)
 				("ftd2xx", "use ftd2xx based driver")

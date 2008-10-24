@@ -128,6 +128,7 @@ ENDIF(IS_BIG_ENDIAN)
 #finds for libnifalcon building
 
 FIND_PACKAGE(libusb)
+FIND_PACKAGE(libusb-1.0)
 FIND_PACKAGE(libftdi)
 FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
 

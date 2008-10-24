@@ -13,12 +13,16 @@
  */
 
 #include "core/FalconDevice.h"
-#if defined(LIBFTDI)
+#if defined(LIBUSB)
+#include "comm/FalconCommLibUSB.h"
+#elif defined(LIBFTDI)
 #include "comm/FalconCommLibFTDI.h"
 #elif defined(LIBFTD2XX)
 #include "comm/FalconCommFTD2XX.h"
 #endif
 #include "firmware/FalconFirmwareNovintSDK.h"
+//#include "kinematic/FalconKinematicStamper.h"
+#include <sys/time.h>
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -36,6 +40,27 @@ void sigproc(int i)
 	exit(0);
 }
 
+static struct timeval _tstart[10], _tend[10];
+static struct timezone tz;
+void tstart(int i)
+{
+	gettimeofday(&_tstart[i], &tz);
+}
+
+void tend(int i)
+{
+	gettimeofday(&_tend[i],&tz);
+}
+
+double tval(int i)
+{
+	double t1, t2;
+	t1 =  (double)_tstart[i].tv_sec + (double)_tstart[i].tv_usec/(1000*1000);
+	t2 =  (double)_tend[i].tv_sec + (double)_tend[i].tv_usec/(1000*1000);
+	return t2-t1;
+}
+
+
 void runFalconTest(FalconDevice& d)
 {
 	FalconFirmware* f;
@@ -48,12 +73,15 @@ void runFalconTest(FalconDevice& d)
 	u_int32_t loop_count = 0;
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
+//	dev.setFalconKinematic<FalconKinematicStamper>();
+
+	std::cout << "running" << std::endl;
 	f = dev.getFalconFirmware();
 	if(!dev.getDeviceCount(num_falcons))
 	{
 		std::cout << "Cannot get device_libftdi count" << std::endl;
 	}
-	
+
 	count = 0;
 
 	std::cout << "Falcons found: " << num_falcons << std::endl;
@@ -65,7 +93,7 @@ void runFalconTest(FalconDevice& d)
 		return;
 	}
 	std::cout << "Opened falcon" << std::endl;
-	
+
 	if(!dev.setFirmwareFile("test_firmware.bin"))
 	{
 		std::cout << "Cannot find firmware" << std::endl;
@@ -84,14 +112,19 @@ void runFalconTest(FalconDevice& d)
 		}
 	}
 
-	for(int j = 0; j < 3; ++j)
+
+	for(int j = 0; j < 1000; ++j)
 	{
-		f->setLEDStatus(2 << j);
-		for(int i = 0; i < 1000; ++i)
+		f->setLEDStatus(2 << (j % 3));
+		tstart(0);
+		for(int i = 0; i < 1000; )
 		{
-			dev.runIOLoop();
-			std::cout << f->getEncoderValues()[0] << " " << f->getEncoderValues()[1] << " " << f->getEncoderValues()[2] << std::endl;			
+			if(dev.runIOLoop()) ++i;
+			else continue;
+			//std::cout << f->getEncoderValues()[0] << " " << f->getEncoderValues()[1] << " " << f->getEncoderValues()[2] << std::endl;			
 		}
+		tend(0);
+		std::cout << "Time: " << tval(0) << std::endl;
 	}
 	f->setLEDStatus(0);
 	dev.runIOLoop();	
@@ -102,7 +135,10 @@ int main(int argc, char** argv)
 {
 	signal(SIGINT, sigproc);
 	signal(SIGQUIT, sigproc);
-#if defined(LIBFTDI)
+#if defined(LIBUSB)
+	std::cout << "Running libusb test" << std::endl;
+	dev.setFalconComm<FalconCommLibUSB>();
+#elif defined(LIBFTDI)
 	std::cout << "Running libftdi test" << std::endl;
 	dev.setFalconComm<FalconCommLibFTDI>();
 #elif defined(FTD2xx)
