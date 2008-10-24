@@ -67,6 +67,7 @@ namespace libnifalcon
 		}
 		if(!m_falconComm->setFirmwareMode())
 		{
+			std::cout << "Can't set firmware mode! " << m_errorCode << " " << m_falconComm->getDeviceErrorCode() << std::endl;
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
@@ -74,12 +75,24 @@ namespace libnifalcon
 		int bytes_read;
 		while(!firmware_file.eof())
 		{
-			firmware_file.read((char*)send_buf, 128);
+			//58 is an odd number to use for this, isn't it?
+			//Well, full speed can only take 64 bytes
+			//The FTDI tacks 2 bytes onto that for its status
+			//If you send 60-62, libusb-1.0 freaks out
+			//So, 58 it is. Happy medium
+			firmware_file.read((char*)send_buf, 58);
 			bytes_read = firmware_file.gcount();
 			if(!m_falconComm->write(send_buf, bytes_read))
 			{
 				m_errorCode = m_falconComm->getErrorCode();
 				return false;
+			}
+			if(m_falconComm->requiresPoll())
+			{
+				while(!m_falconComm->hasBytesAvailable())
+				{
+					m_falconComm->poll();
+				}
 			}
 			if(!m_falconComm->read(receive_buf, bytes_read))
 			{

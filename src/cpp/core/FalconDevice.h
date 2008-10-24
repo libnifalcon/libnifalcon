@@ -15,6 +15,7 @@
 #ifndef FALCON_DEVICE_H
 #define FALCON_DEVICE_H
 
+#include <iostream>
 #include <string>
 #include "FalconCore.h"
 #include "FalconComm.h"

@@ -15,6 +15,7 @@
 #define FALCONKINEMATIC_H
 
 #include <stdint.h>
+#include <iostream>
 
 #include "FalconCore.h"
 #include "FalconGeometry.h"
@@ -33,8 +34,8 @@ namespace libnifalcon
 		enum {
 			FALCON_KINEMATIC_OUT_OF_RANGE = 5000
 		};
-		FalconKinematic() {}
-		virtual ~FalconKinematic() {}
+		FalconKinematic() { }
+		~FalconKinematic() { }
 		float getTheta(int16_t encoder_value)
 		{
 			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;

@@ -34,7 +34,10 @@ namespace libnifalcon
 
 		bool m_hasWritten;
 		uint8_t m_gripInfo;
-		uint8_t m_rawInput[16], m_rawOutput[16];
+		uint8_t m_rawData[128];
+		uint32_t m_currentOutputIndex;
+		uint32_t m_rawDataSize;
+		uint8_t m_rawInput[16], m_rawOutput[16], m_rawOutputInternal[16];
 	};
 }
 

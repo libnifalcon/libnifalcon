@@ -125,7 +125,7 @@ namespace libnifalcon
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
-		if(!m_falconFirmware->runIOLoop() && (exe_flags & FALCON_LOOP_KINEMATIC))
+		if(!m_falconFirmware->runIOLoop() && (exe_flags & FALCON_LOOP_FIRMWARE))
 		{
 			++m_errorCount;
 			m_errorCode = m_falconFirmware->getErrorCode();

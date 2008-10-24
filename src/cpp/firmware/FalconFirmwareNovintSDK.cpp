@@ -19,26 +19,37 @@ namespace libnifalcon
 {
 
 	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
-		m_hasWritten(false)
+		m_hasWritten(false),
+		m_currentOutputIndex(0)
 	{
 	}
 	
 	void FalconFirmwareNovintSDK::formatOutput()
 	{
-		//Turn motor values into system specific ints
-		int i;
-		m_homingStatus = 0;
-		for(i = 0; i < 3; ++i)
+		for(int i = 0; i < m_rawDataSize; ++i)
 		{
-			int idx = 1 + (i*4);
-			m_encoderValues[i] =
-				(((*(m_rawOutput+idx) - 0x41) & 0xf)) |
-				(((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
-				(((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
-				(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
-			//Shift value down a nibble for homing status
-			m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
-			m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
+			m_rawOutputInternal[m_currentOutputIndex] = m_rawData[i];
+			++m_currentOutputIndex;
+			if(m_currentOutputIndex == 16 && m_rawOutputInternal[m_currentOutputIndex - 1] == '>')
+			{
+				memcpy(m_rawOutput, m_rawOutputInternal, 16);
+				//Turn motor values into system specific ints
+				int i;
+				m_homingStatus = 0;
+				for(i = 0; i < 3; ++i)
+				{
+					int idx = 1 + (i*4);
+					m_encoderValues[i] =
+						(((*(m_rawOutput+idx) - 0x41) & 0xf)) |
+						(((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
+						(((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
+						(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
+					//Shift value down a nibble for homing status
+					m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
+					m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
+				}
+				m_currentOutputIndex = 0;
+			}			
 		}
 	}
 
@@ -76,56 +87,34 @@ namespace libnifalcon
 			return false;
 		}
 
-		//Receive information from the falcon
-		if(m_hasWritten)
+		if(m_falconComm->requiresPoll())
 		{
-			//The packet buffer no one uses. D:
-			//Right now, to get a packet buffer working, I need to know how many bytes
-			//are waiting for me from the falcon. FTD2XX implements this by running
-			//a thread under the covers to buffer to the host side, then letting anything
-			//accessing the driver read from that. libftdi has no such facility, meaning that
-			//to figure out whether or not there's anything left to get, you have to do a bulk
-			//read, at the cost of 1ms. This upsets the falcon badly. In a
-			//perfect world, I'd just use libusb 1.0 and its non-blocking functionality,
-			//which means I could both maintain a buffer and not have to worry about
-			//thread off libftdi. But, for right now, this all will just stay commented out.
-			//I/O works "well enough" as is, you only lose 5% or so of packets.
-			/*
-			uint8_t o[16];
-			while(1)
-			{
-				m_falconComm->read(o, 16);
-				if(m_falconComm->getLastBytesRead() == 0) break;
-				if(m_packetBuffer.size() < m_packetBufferSize)
-				{
-					m_packetBuffer.push_back(o);
-				}
-				else
-				{
-					break;
-				}
-				if(m_packetBuffer.size() == m_packetBufferSize) break;
-			}
-			if(m_packetBuffer.size() > 0)
-			{				
-				memcpy((void*)m_rawOutput, (void*)m_packetBuffer.front(), 16);
-				m_packetBuffer.pop_front();
-				formatOutput();
-				m_hasWritten = false;
-				read_successful = true;
-			}
-			*/
-			memset(m_rawOutput, 0, 16);
-			if(m_falconComm->read((uint8_t*)m_rawOutput, (uint32_t)16))
+			m_falconComm->poll();
+		}
+		
+		//Receive information from the falcon
+		if(m_hasWritten && m_falconComm->hasBytesAvailable())
+		{
+			m_rawDataSize = m_falconComm->getBytesAvailable();
+			//std::cout << m_rawDataSize << std::endl;
+			//hack to make libftdi work for the time being
+			if(m_rawDataSize <= 0 && !m_falconComm->requiresPoll()) m_rawDataSize = 16;
+			if(m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize))
 			{
 				formatOutput();
 				m_hasWritten = false;
-				read_successful = true;
+				if(m_rawDataSize <= 0) read_successful = false;
+				else read_successful = true;
 			}
 			else
 			{
 				return false;
 			}
+		}
+		else if(m_hasWritten && !m_falconComm->hasBytesAvailable())
+		{
+			//std::cout << "Waiting!" << std::endl;
+			return false;
 		}
 		//Send information to the falcon
 		formatInput();

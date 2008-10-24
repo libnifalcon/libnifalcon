@@ -38,7 +38,12 @@ namespace libnifalcon
 		 * 
 		 * 
 		 */
-		FalconComm() : m_isCommOpen(false) {}
+		FalconComm() :
+			m_isCommOpen(false),
+			m_requiresPoll(false),
+			m_hasBytesAvailable(false),
+			m_bytesAvailable(0)
+		{}
 		/** 
 		 * Destructor
 		 * 
@@ -129,6 +134,13 @@ namespace libnifalcon
 		 * @return True if open, false otherwise
 		 */
 		bool isCommOpen() { return m_isCommOpen; }
+
+
+		bool requiresPoll() { return m_requiresPoll; }
+		bool hasBytesAvailable() { return m_hasBytesAvailable; }
+		uint32_t getBytesAvailable() { return m_bytesAvailable; }
+		void setBytesAvailable(uint32_t b) { m_bytesAvailable = b; }
+		virtual void poll() {}
 	protected:
 		const static uint8_t MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */
 		const static uint16_t FALCON_VENDOR_ID = 0x0403; /**< USB Vendor ID for the Falcon */
@@ -137,6 +149,9 @@ namespace libnifalcon
 		int m_lastBytesRead;	/**< Number of bytes read in last read operation */
 		int m_lastBytesWritten; /**< Number of bytes written in the last write operation */
 		bool m_isCommOpen; 	/**< Whether or not the communications are open */
+		bool m_hasBytesAvailable;
+		int m_bytesAvailable;
+		bool m_requiresPoll;
 	};
 
 };
