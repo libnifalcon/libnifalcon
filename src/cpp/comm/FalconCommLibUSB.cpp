@@ -83,35 +83,110 @@ namespace libnifalcon
 		return true;
 	}
 
+	//Ripped out of libusb_open_device_with_vid_pid
 	bool FalconCommLibUSB::getDeviceCount(int8_t& count)
 	{
-		count = 1;
+		struct libusb_device **devs;
+		struct libusb_device *found = NULL;
+		struct libusb_device *dev;
+		size_t i = 0;		
+		int r;
+		count = 0;
+		
+		if (libusb_get_device_list(NULL, &devs) < 0)
+			return NULL;
+		
+		while ((dev = devs[i++]) != NULL)
+		{
+			struct libusb_device_descriptor desc;
+			r = libusb_get_device_descriptor(dev, &desc);
+			if (r < 0)
+			{
+				break;
+			}
+			if (desc.idVendor == FALCON_VENDOR_ID && desc.idProduct == FALCON_PRODUCT_ID)
+			{
+				++count;
+			}
+		}
+
+		libusb_free_device_list(devs, 1);
 		return true;
 	}
 
+	//Ripped out of libusb_open_device_with_vid_pid
 	bool FalconCommLibUSB::open(uint8_t index)
 	{
-		m_falconDevice = libusb_open_device_with_vid_pid(NULL, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
-		if(m_falconDevice == 0)
+
+		struct libusb_device **devs;
+		struct libusb_device *found = NULL;
+		struct libusb_device *dev;
+		size_t i = 0;
+		int r;
+		int count = 0;
+		
+		if ((m_deviceErrorCode = libusb_get_device_list(NULL, &devs)) < 0)
 		{
-			std::cout << "Cannot open device "<< std::endl;
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
 		}
-			
-		int r = libusb_claim_interface(m_falconDevice, 0);
-		if (r < 0) {
+		
+		while ((dev = devs[i++]) != NULL)
+		{
+			struct libusb_device_descriptor desc;
+			m_deviceErrorCode = libusb_get_device_descriptor(dev, &desc);
+			if (m_deviceErrorCode < 0)
+			{
+				m_errorCode = FALCON_COMM_DEVICE_ERROR;
+				libusb_free_device_list(devs, 1);
+				return false;				
+			}
+			if (desc.idVendor == FALCON_VENDOR_ID && desc.idProduct == FALCON_PRODUCT_ID)
+			{
+				if(count == index)
+				{
+					found = dev;
+					break;
+				}
+				++count;
+			}
+		}
+
+		if (found)
+		{
+			m_deviceErrorCode = libusb_open(found, &m_falconDevice);
+			if (m_deviceErrorCode < 0)
+			{
+				m_falconDevice = NULL;
+				m_errorCode = FALCON_COMM_DEVICE_ERROR;
+				libusb_free_device_list(devs, 1);
+				return false;				
+			}
+		}
+		else
+		{
+			m_errorCode = FALCON_COMM_DEVICE_INDEX_OUT_OF_RANGE_ERROR;
+			return false;
+		}
+
+		
+		if ((m_deviceErrorCode = libusb_claim_interface(m_falconDevice, 0)) < 0)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			std::cout << "usb_claim_interface error " << r << std::endl;
 			return false;
 		}
 		out_transfer = libusb_alloc_transfer(0);
 		if (!out_transfer)
 		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			std::cout << "Cannot allocate out transfer" << std::endl;
 			return false;
 		}
 		in_transfer = libusb_alloc_transfer(0);
 		if (!in_transfer)
 		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			std::cout << "Cannot allocate in transfer\n" << std::endl;
 			return false;
 		}
