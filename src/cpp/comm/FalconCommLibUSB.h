@@ -36,7 +36,9 @@ namespace libnifalcon
 		void setHasBytesAvailable(bool v);
 		bool initLibUSB();
 		void poll();
+		void reset();
 	protected:
+		bool m_isTransferAllocated;
 		struct timeval m_tv;
 		libusb_device_handle* m_falconDevice;
 		unsigned char input[128], output[128];

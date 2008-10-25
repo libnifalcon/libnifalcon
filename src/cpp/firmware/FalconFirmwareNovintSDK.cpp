@@ -19,7 +19,6 @@ namespace libnifalcon
 {
 
 	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
-		m_hasWritten(false),
 		m_currentOutputIndex(0)
 	{
 	}

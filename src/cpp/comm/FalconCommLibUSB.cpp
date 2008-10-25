@@ -52,7 +52,8 @@
 namespace libnifalcon
 {
 
-	FalconCommLibUSB::FalconCommLibUSB()
+	FalconCommLibUSB::FalconCommLibUSB() :
+		m_isTransferAllocated(false)
 	{
 		m_tv.tv_sec = 0;
 		m_tv.tv_usec = 100;
@@ -235,6 +236,7 @@ namespace libnifalcon
 			return false;
 		}
 
+
 		libusb_fill_bulk_transfer(in_transfer, m_falconDevice, 0x02, buffer,
 								  size, FalconCommLibUSB::cb_in, NULL, 0);
 		libusb_submit_transfer(in_transfer);
@@ -244,6 +246,9 @@ namespace libnifalcon
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
+		
+		m_isTransferAllocated = true;
+		
 		return true;
 	}
 
@@ -265,6 +270,8 @@ namespace libnifalcon
 		//Save ourselves having to reset this on every error
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 
+		reset();
+		
 		//Clear out current buffers to make sure we have a fresh start
 		//if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0) return false;
@@ -338,6 +345,8 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
+		reset();
+
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 		//if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 1)) < 0) return false;
 		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 1, INTERFACE_ANY, NULL, 0, 1000) != 0) return false;
@@ -346,8 +355,6 @@ namespace libnifalcon
 		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x2, INTERFACE_ANY, NULL, 0, 1000) != 0) return false;
 		//if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 1456312)) < 0) return false;
 		m_errorCode = 0;
-		return true;
-
 		return true;		
 	}
 
@@ -356,16 +363,25 @@ namespace libnifalcon
 		libusb_handle_events_timeout(NULL, &m_tv);
 	}
 	
+	void FalconCommLibUSB::reset()
+	{
+		if(!m_isTransferAllocated) return;
+		libusb_cancel_transfer(in_transfer);
+		libusb_cancel_transfer(out_transfer);
+	}
+	
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
-
 	}
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
 		//Minus 2. Stupid modem bits.
-		((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
-		((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
+		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
+		{
+			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
+			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
+		}
 	}
 
 }

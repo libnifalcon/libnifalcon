@@ -190,7 +190,10 @@ namespace libnifalcon
 			m_packetBufferSize = size;
 		}
 		*/
-		
+
+		virtual void resetFirmwareState()
+		{
+		}
 	protected:
 		FalconComm* m_falconComm; /**< Communications object for I/O */
 		std::string m_firmwareFilename; /**< Filename of the firmware to load */
@@ -204,6 +207,7 @@ namespace libnifalcon
 		int16_t m_encoderValues[3];	/**< Encoder values from the last I/O loop */
 		uint8_t m_homingStatus; /**< Current homing status from the last I/O loop */
 
+		bool m_hasWritten;
 		//Variables for Packet Buffer No One Uses
 		//uint8_t m_packetBufferSize;
 		//std::deque<uint8_t*> m_packetBuffer;

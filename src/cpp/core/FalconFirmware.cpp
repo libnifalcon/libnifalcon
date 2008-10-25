@@ -7,7 +7,8 @@ namespace libnifalcon
 	FalconFirmware::FalconFirmware() :
 		m_falconComm(NULL),
 		m_homingMode(false),
-		m_isFirmwareLoaded(false)
+		m_isFirmwareLoaded(false),
+		m_hasWritten(false)
 			//m_packetBufferSize(1)
 		{
 			//Who needs loops!
@@ -117,6 +118,7 @@ namespace libnifalcon
 			}
 		}
 		m_falconComm->setNormalMode();
+		m_hasWritten = false;
 		m_isFirmwareLoaded = true;
 		return true;
 	}

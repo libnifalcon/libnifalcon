@@ -135,6 +135,7 @@ namespace libnifalcon
 		 */
 		bool isCommOpen() { return m_isCommOpen; }
 
+		virtual void reset() {}
 
 		bool requiresPoll() { return m_requiresPoll; }
 		bool hasBytesAvailable() { return m_hasBytesAvailable; }
