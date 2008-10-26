@@ -14,6 +14,7 @@
 #include "FalconFirmwareNovintSDK.h"
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 
 namespace libnifalcon
 {

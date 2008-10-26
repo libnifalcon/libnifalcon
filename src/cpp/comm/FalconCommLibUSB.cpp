@@ -1,6 +1,7 @@
 #include "FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
+#include <cstring>
 
 //Taken from LibFTDI
 //I just don't want to wait for the libusb 1.0 port of libftdi
