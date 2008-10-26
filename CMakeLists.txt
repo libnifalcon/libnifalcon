@@ -32,7 +32,7 @@ FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
     #optional arguments
     IF(LINK_LIBS)
       FOREACH(LINK_LIB ${LINK_LIBS})
-	TARGET_LINK_LIBRARIES(${CURRENT_LIB} ${LINK_LIB})
+		TARGET_LINK_LIBRARIES(${CURRENT_LIB} ${LINK_LIB})
       ENDFOREACH(LINK_LIB)
     ENDIF(LINK_LIBS)
 
@@ -84,7 +84,7 @@ OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(ENABLE_GPROF "Enable gprof profiling (-pg option)" OFF)
-
+OPTION(SET_BUILD_RPATH "Use different RPATH for build tree and install (requires relink at install time, handy for development)" OFF)
 
 IF(WINDOWS)
   SET(FORCE_FTD2XX_BUILD ON)
@@ -140,6 +140,8 @@ IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND)
   MESSAGE(FATAL_ERROR "Either ftd2xx (http://www.ftdichip.com) or libftdi (http://www.intra2net.com/de/produkte/opensource/ftdi/) is required to build libnifalcon")
 ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND)
 
+SET(PROJECT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
 #Local output paths
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -182,6 +184,22 @@ ENDIF(UNIX)
 MESSAGE(STATUS "Include Install Directory: ${INCLUDE_INSTALL_DIR}")
 MESSAGE(STATUS "Library Install Directory: ${LIBRARY_INSTALL_DIR}")
 MESSAGE(STATUS "Runtime Install Directory: ${RUNTIME_INSTALL_DIR}")
+
+IF(SET_BUILD_RPATH)
+  # use, i.e. don't skip the full RPATH for the build tree
+  SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+  
+  # when building, don't use the install RPATH already
+  # (but later on when installing)
+  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  
+  # the RPATH to be used when installing
+  SET(CMAKE_INSTALL_RPATH "${LIBRARY_INSTALL_DIR}")
+  
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ENDIF(SET_BUILD_RPATH)
 
 #the two main source directories
 
