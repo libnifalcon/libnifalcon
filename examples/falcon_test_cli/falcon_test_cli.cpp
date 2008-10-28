@@ -25,13 +25,41 @@
 #endif
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include "util/FalconCLIBase.h"
+#include "sys/time.h"
 
 using namespace libnifalcon;
 namespace po = boost::program_options;
 
+bool stop = true;
+
 void sigproc(int i)
 {
-	exit(0);
+	if(!stop)
+	{
+		stop = true;
+		std::cout << "Quitting" << std::endl;
+	}
+	else exit(0);
+}
+
+static struct timeval _tstart, _tend;
+static struct timezone tz;
+void tstart()
+{
+	gettimeofday(&_tstart, &tz);
+}
+
+void tend()
+{
+	gettimeofday(&_tend,&tz);
+}
+
+double tval()
+{
+	double t1, t2;
+	t1 =  (double)_tstart.tv_sec + (double)_tstart.tv_usec/(1000*1000);
+	t2 =  (double)_tend.tv_sec + (double)_tend.tv_usec/(1000*1000);
+	return t2-t1;
 }
 
 class FalconCLITest : public FalconCLIBase
@@ -59,6 +87,11 @@ public:
 				("led_green", "Turn on Green LED")
 				("led_blue", "Turn on Blue LED");
 			m_progOptions.add(led);
+
+			po::options_description tests("Tests");
+			tests.add_options()
+				("loop_timing", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
+			m_progOptions.add(tests);
 		}
 	}
 	bool parseOptions(int argc, char** argv)
@@ -82,6 +115,22 @@ public:
 		}
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
 		m_falconDevice.runIOLoop();
+
+		if(m_varMap.count("loop_timing"))
+		{
+			stop = false;
+			while(!stop)
+			{
+				tstart();
+				for(int i = 0; i < 1000 && !stop;)
+				{
+					if(m_falconDevice.runIOLoop()) ++i;					
+				}
+				if(stop) break;
+				tend();
+				std::cout << "Loop time (in seconds): " << tval() << std::endl;
+			}
+		}
 		return true;
 	}
 };

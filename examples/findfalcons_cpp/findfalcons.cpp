@@ -40,27 +40,6 @@ void sigproc(int i)
 	exit(0);
 }
 
-static struct timeval _tstart[10], _tend[10];
-static struct timezone tz;
-void tstart(int i)
-{
-	gettimeofday(&_tstart[i], &tz);
-}
-
-void tend(int i)
-{
-	gettimeofday(&_tend[i],&tz);
-}
-
-double tval(int i)
-{
-	double t1, t2;
-	t1 =  (double)_tstart[i].tv_sec + (double)_tstart[i].tv_usec/(1000*1000);
-	t2 =  (double)_tend[i].tv_sec + (double)_tend[i].tv_usec/(1000*1000);
-	return t2-t1;
-}
-
-
 void runFalconTest(FalconDevice& d)
 {
 	FalconFirmware* f;
@@ -87,6 +66,7 @@ void runFalconTest(FalconDevice& d)
 	std::cout << "Falcons found: " << num_falcons << std::endl;
 
 	std::cout << "Opening falcon" << std::endl;
+	
 	if(!dev.open(0))
 	{
 		std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
@@ -94,37 +74,73 @@ void runFalconTest(FalconDevice& d)
 	}
 	std::cout << "Opened falcon" << std::endl;
 
-	if(!dev.setFirmwareFile("test_firmware.bin"))
+	std::cout << "Finding firmware" << std::endl;
+	if(!dev.isFirmwareLoaded())
 	{
-		std::cout << "Cannot find firmware" << std::endl;
+		if(!dev.setFirmwareFile("test_firmware.bin"))
+		{
+			std::cout << "Cannot find firmware" << std::endl;
+		}
+		
+		for(int i = 0; i < 10; ++i)
+		{
+			if(!dev.loadFirmware(false))
+			{
+				std::cout << "Could not load firmware" << std::endl;
+			}
+			else
+			{
+				std::cout <<"Firmware loaded" << std::endl;
+				break;
+			}
+		}
 	}
+	std::cout << "Firmware found" << std::endl;
+	std::cout << "closing" << std::endl;
 
-	for(int i = 0; i < 10; ++i)
+	dev.close();
+	std::cout << "reopening" << std::endl;
+	if(!dev.open(0))
 	{
-		if(!dev.loadFirmware(false))
+		std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
+		return;
+	}
+	std::cout << "Opened falcon" << std::endl;
+
+	std::cout << "Finding firmware" << std::endl;
+	if(!dev.isFirmwareLoaded())
+	{
+		std::cout << "Loading firmware!" << std::endl;
+		if(!dev.setFirmwareFile("test_firmware.bin"))
 		{
-			std::cout << "Could not load firmware" << std::endl;
+			std::cout << "Cannot find firmware" << std::endl;
 		}
-		else
+		
+		for(int i = 0; i < 10; ++i)
 		{
-			std::cout <<"Firmware loaded" << std::endl;
-			break;
+			if(!dev.loadFirmware(false))
+			{
+				std::cout << "Could not load firmware" << std::endl;
+			}
+			else
+			{
+				std::cout <<"Firmware loaded" << std::endl;
+				break;
+			}
 		}
 	}
-
-
-	for(int j = 0; j < 1000; ++j)
+	std::cout << "Firmware found" << std::endl;
+	
+	for(int j = 0; j < 3; ++j)
 	{
 		f->setLEDStatus(2 << (j % 3));
-		tstart(0);
 		for(int i = 0; i < 1000; )
 		{
 			if(dev.runIOLoop()) ++i;
 			else continue;
-			//std::cout << f->getEncoderValues()[0] << " " << f->getEncoderValues()[1] << " " << f->getEncoderValues()[2] << std::endl;			
+			printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d \n", (j*1000)+i,  f->getEncoderValues()[0], f->getEncoderValues()[1], f->getEncoderValues()[2]);
+			++count;
 		}
-		tend(0);
-		std::cout << "Time: " << tval(0) << std::endl;
 	}
 	f->setLEDStatus(0);
 	dev.runIOLoop();	
