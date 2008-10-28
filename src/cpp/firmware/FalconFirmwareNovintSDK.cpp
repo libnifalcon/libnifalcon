@@ -96,7 +96,6 @@ namespace libnifalcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
 			m_rawDataSize = m_falconComm->getBytesAvailable();
-			//std::cout << m_rawDataSize << std::endl;
 			//hack to make libftdi work for the time being
 			if(m_rawDataSize <= 0 && !m_falconComm->requiresPoll()) m_rawDataSize = 16;
 			if(m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize))

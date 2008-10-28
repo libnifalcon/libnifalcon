@@ -54,7 +54,8 @@ namespace libnifalcon
 {
 
 	FalconCommLibUSB::FalconCommLibUSB() :
-		m_isTransferAllocated(false)
+		m_isWriteAllocated(false),
+		m_isReadAllocated(false)
 	{
 		m_tv.tv_sec = 0;
 		m_tv.tv_usec = 100;
@@ -76,13 +77,6 @@ namespace libnifalcon
 	
 	bool FalconCommLibUSB::initLibUSB()
 	{
-		int r = libusb_init(NULL);
-		if (r < 0)
-		{
-			std::cout << "failed to initialise libusb" << std::endl;
-			return false;
-		}
-		return true;
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
@@ -91,11 +85,18 @@ namespace libnifalcon
 		struct libusb_device **devs;
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
+		struct libusb_context *context;
 		size_t i = 0;		
 		int r;
 		count = 0;
+
+		if((m_deviceErrorCode = libusb_init(&context)) < 0)
+		{
+			std::cout << "failed to initialise libusb" << std::endl;
+			return false;
+		}
 		
-		if (libusb_get_device_list(NULL, &devs) < 0)
+		if (libusb_get_device_list(m_usbContext, &devs) < 0)
 			return NULL;
 		
 		while ((dev = devs[i++]) != NULL)
@@ -113,6 +114,7 @@ namespace libnifalcon
 		}
 
 		libusb_free_device_list(devs, 1);
+		libusb_exit(context);
 		return true;
 	}
 
@@ -124,10 +126,15 @@ namespace libnifalcon
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
 		size_t i = 0;
-		int r;
 		int count = 0;
-		
-		if ((m_deviceErrorCode = libusb_get_device_list(NULL, &devs)) < 0)
+
+		if((m_deviceErrorCode = libusb_init(&m_usbContext)) < 0)
+		{
+			std::cout << "failed to initialise libusb" << std::endl;
+			return false;
+		}
+
+		if ((m_deviceErrorCode = libusb_get_device_list(m_usbContext, &devs)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
@@ -175,7 +182,7 @@ namespace libnifalcon
 		if ((m_deviceErrorCode = libusb_claim_interface(m_falconDevice, 0)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
-			std::cout << "usb_claim_interface error " << r << std::endl;
+			std::cout << "usb_claim_interface error " << m_deviceErrorCode << std::endl;
 			return false;
 		}
 		out_transfer = libusb_alloc_transfer(0);
@@ -192,6 +199,9 @@ namespace libnifalcon
 			std::cout << "Cannot allocate in transfer\n" << std::endl;
 			return false;
 		}
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0) return false;
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_TX, INTERFACE_ANY, NULL, 0, 1000)) != 0) return false;
+
 		m_isCommOpen = true;
 		return true;
 	}
@@ -203,8 +213,21 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
+		reset();
+		libusb_free_transfer(in_transfer);
+		libusb_free_transfer(out_transfer);
+
+		if ((m_deviceErrorCode = libusb_release_interface(m_falconDevice, 0)) < 0)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			std::cout << "usb_release_interface error " << m_deviceErrorCode << std::endl;
+			return false;
+		}
 
 		libusb_close(m_falconDevice);
+		libusb_exit(m_usbContext);
+		m_falconDevice = NULL;
+		m_isCommOpen = false;
 		return true;
 	}
 
@@ -239,16 +262,16 @@ namespace libnifalcon
 
 
 		libusb_fill_bulk_transfer(in_transfer, m_falconDevice, 0x02, buffer,
-								  size, FalconCommLibUSB::cb_in, NULL, 0);
+								  size, FalconCommLibUSB::cb_in, this, 0);
 		libusb_submit_transfer(in_transfer);
-
+		m_isWriteAllocated = true;
 		//Try to read over 64 and you'll fry libusb-1.0. Granted, the endpoint
 		//limits that anyways, but still.
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
 		
-		m_isTransferAllocated = true;
+		m_isReadAllocated = true;
 		
 		return true;
 	}
@@ -276,7 +299,6 @@ namespace libnifalcon
 		//Clear out current buffers to make sure we have a fresh start
 		//if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0) return false;
-
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_TX, INTERFACE_ANY, NULL, 0, 1000)) != 0) return false;
 		//Reset the device
 		//if((m_deviceErrorCode = ftdi_usb_reset(&(m_falconDevice))) < 0) return false;
@@ -346,8 +368,10 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
-		reset();
-
+		if(m_isWriteAllocated || m_isReadAllocated)
+		{
+			reset();
+		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 		//if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 1)) < 0) return false;
 		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 1, INTERFACE_ANY, NULL, 0, 1000) != 0) return false;
@@ -366,13 +390,21 @@ namespace libnifalcon
 	
 	void FalconCommLibUSB::reset()
 	{
-		if(!m_isTransferAllocated) return;
-		libusb_cancel_transfer(in_transfer);
-		libusb_cancel_transfer(out_transfer);
+		if(m_isWriteAllocated)
+		{
+			libusb_cancel_transfer(in_transfer);
+			setSent();
+		}
+		if(m_isReadAllocated)
+		{
+			libusb_cancel_transfer(out_transfer);
+			setReceived();
+		}
 	}
 	
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
+		((FalconCommLibUSB*)transfer->user_data)->setSent();
 	}
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
@@ -382,6 +414,7 @@ namespace libnifalcon
 		{
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
+			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
 	}
 

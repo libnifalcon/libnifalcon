@@ -19,6 +19,9 @@
 #ifdef LIBFTDI
 #include "comm/FalconCommLibFTDI.h"
 #endif
+#ifdef LIBUSB
+#include "comm/FalconCommLibUSB.h"
+#endif
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
 
@@ -42,7 +45,8 @@ namespace libnifalcon
 			comm.add_options()
 #if defined(LIBUSB)
 				("libusb", "use libusb-1.0 based driver")
-#elif defined(LIBFTDI)
+#endif
+#if defined(LIBFTDI)
 				("libftdi", "use libftdi based driver")
 #elif defined(LIBFTD2XX)
 				("ftd2xx", "use ftd2xx based driver")
@@ -93,6 +97,14 @@ namespace libnifalcon
 			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;		
 		}
 		//This is an either/or choice, since we can't link against both. Prefer libftdi. Thanks for the static linking against old libusb binaries, FTDI!
+
+#if defined(LIBUSB)
+		else if (m_varMap.count("libusb"))
+		{
+			std::cout << "Setting up libusb device" << std::endl;
+			device.setFalconComm<FalconCommLibUSB>();
+		}
+#endif
 #if defined(LIBFTDI)
 		else if (m_varMap.count("libftdi"))
 		{

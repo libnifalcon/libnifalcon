@@ -85,6 +85,7 @@ OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platfo
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(ENABLE_GPROF "Enable gprof profiling (-pg option)" OFF)
 OPTION(SET_BUILD_RPATH "Use different RPATH for build tree and install (requires relink at install time, handy for development)" OFF)
+OPTION(BUILD_C_LIBNIFALCON "Build the C version of libnifalcon, with findfalcons test utility" OFF)
 
 IF(WINDOWS)
   SET(FORCE_FTD2XX_BUILD ON)

@@ -10,15 +10,16 @@ namespace libnifalcon
 		m_isFirmwareLoaded(false),
 		m_hasWritten(false)
 			//m_packetBufferSize(1)
-		{
-			//Who needs loops!
-			m_forceValues[0] = 0;
-			m_forceValues[1] = 0;
-			m_forceValues[2] = 0;
-			m_encoderValues[0] = 0;
-			m_encoderValues[1] = 0;
-			m_encoderValues[2] = 0;			
-		}
+	{
+		//Who needs loops!
+		m_forceValues[0] = 0;
+		m_forceValues[1] = 0;
+		m_forceValues[2] = 0;
+		m_encoderValues[0] = 0;
+		m_encoderValues[1] = 0;
+		m_encoderValues[2] = 0;			
+	}
+	
 	bool FalconFirmware::setFirmwareFile(std::string filename)
     {
 		std::fstream test_file(filename.c_str(),  std::fstream::in | std::fstream::binary);
@@ -125,18 +126,29 @@ namespace libnifalcon
 
 	bool FalconFirmware::isFirmwareLoaded()
 	{
-		if(m_isFirmwareLoaded)
+		if(m_falconComm->requiresPoll())
 		{
-			return true;
-		}
-		for(int i = 0; i < 10; ++i)
-		{
-			if(runIOLoop())
+			for(int i = 0; i < 250; ++i)
 			{
-				m_isFirmwareLoaded = true;
-				return true;
+				if(runIOLoop())
+				{
+					m_isFirmwareLoaded = true;
+					return true;
+				}
 			}
 		}
+		else
+		{
+			for(int i = 0; i < 10; ++i)
+			{
+				if(runIOLoop())
+				{
+					m_isFirmwareLoaded = true;
+					return true;
+				}
+			}
+		}
+		m_isFirmwareLoaded = false;
 		m_errorCode = FALCON_FIRMWARE_NO_FIRMWARE_LOADED;
 		return false;
 	}

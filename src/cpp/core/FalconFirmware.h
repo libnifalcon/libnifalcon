@@ -193,6 +193,7 @@ namespace libnifalcon
 
 		virtual void resetFirmwareState()
 		{
+			m_hasWritten = false;
 		}
 	protected:
 		FalconComm* m_falconComm; /**< Communications object for I/O */

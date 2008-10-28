@@ -27,7 +27,6 @@ namespace libnifalcon
 		int32_t getGripInfoSize() { return 1; }
 		//Things I am going to hell for, #8926:
 		uint8_t* getGripInfo() { return &(m_gripInfo); }
-		
 	protected:
 	
 		void formatInput();

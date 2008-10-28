@@ -92,6 +92,8 @@ namespace libnifalcon {
 		setNormalMode();
 		ftdi_list_free(&dev_list);
 		m_isCommOpen = true;
+		if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
+		setNormalMode();
 		return true;
 	}
 
@@ -199,8 +201,8 @@ namespace libnifalcon {
 		if((m_deviceErrorCode = ftdi_setrts(&(m_falconDevice), 0)) < 0) return false;
 		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice), 0)) < 0) return false;
 		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice), 1)) < 0) return false;
-		//Send 3 bytes: 0x0a 0x43 0x0d
 
+		//Send 3 bytes: 0x0a 0x43 0x0d
 		if(!write(check_msg_1_send, 3)) return false;
 		if(!read(receive_buf, 4)) return false;
 	

@@ -23,6 +23,9 @@
 #ifdef LIBFTDI
 #include "comm/FalconCommLibFTDI.h"
 #endif
+#ifdef LIBUSB
+#include "comm/FalconCommLibUSB.h"
+#endif
 #include "firmware/FalconFirmwareNovintSDK.h"
 #include "util/FalconCLIBase.h"
 #include "sys/time.h"
@@ -90,7 +93,7 @@ public:
 
 			po::options_description tests("Tests");
 			tests.add_options()
-				("loop_timing", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
+				("loop-time-test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
 			m_progOptions.add(tests);
 		}
 	}
@@ -116,7 +119,7 @@ public:
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
 		m_falconDevice.runIOLoop();
 
-		if(m_varMap.count("loop_timing"))
+		if(m_varMap.count("loop-time-test"))
 		{
 			stop = false;
 			while(!stop)

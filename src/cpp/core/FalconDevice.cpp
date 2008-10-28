@@ -59,7 +59,11 @@ namespace libnifalcon
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
-		return m_falconComm->setNormalMode();
+		if(m_falconFirmware != NULL)
+		{
+			m_falconFirmware->resetFirmwareState();
+		}
+		return true;
 	}
 
 	void FalconDevice::close()
@@ -69,7 +73,11 @@ namespace libnifalcon
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return;
 		}
-		m_falconComm->close();		
+		m_falconComm->close();
+		if(m_falconFirmware != NULL)
+		{
+			m_falconFirmware->resetFirmwareState();
+		}
 	}
 	
 	bool FalconDevice::setFirmwareFile(std::string filename)

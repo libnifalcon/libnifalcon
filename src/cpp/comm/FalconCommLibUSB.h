@@ -34,17 +34,21 @@ namespace libnifalcon
 		static void cb_in(struct libusb_transfer *transfer);
 		static void cb_out(struct libusb_transfer *transfer);
 		void setHasBytesAvailable(bool v);
+		void setSent() { m_isWriteAllocated = false; }
+		void setReceived()  { m_isReadAllocated = false; }
 		bool initLibUSB();
 		void poll();
 		void reset();
 	protected:
-		bool m_isTransferAllocated;
+
+		bool m_isWriteAllocated;
+		bool m_isReadAllocated;
 		struct timeval m_tv;
 		libusb_device_handle* m_falconDevice;
 		unsigned char input[128], output[128];
 		struct libusb_transfer* in_transfer;
 		struct libusb_transfer* out_transfer;
-		struct libusb_pollfd** pollfds;
+		struct libusb_context* m_usbContext;
 	};
 };
 
