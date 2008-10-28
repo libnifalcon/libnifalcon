@@ -1,3 +1,7 @@
+IF(NOT BUILD_C_LIBNIFALCON)
+  RETURN()
+ENDIF(NOT BUILD_C_LIBNIFALCON)
+
 SET(LIBRARY_SRCS nifalcon_test_fw.c)
 INSTALL(FILES nifalcon.h nifalcon_test_fw.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/c/)
 
