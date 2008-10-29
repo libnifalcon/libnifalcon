@@ -1,6 +1,7 @@
 #include "FalconFirmware.h"
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 namespace libnifalcon
 {
@@ -9,7 +10,7 @@ namespace libnifalcon
 		m_homingMode(false),
 		m_isFirmwareLoaded(false),
 		m_hasWritten(false)
-			//m_packetBufferSize(1)
+		//m_packetBufferSize(1)
 	{
 		//Who needs loops!
 		m_forceValues[0] = 0;
@@ -43,19 +44,9 @@ namespace libnifalcon
 		}
 		return false;
 	}
-	
+
 	bool FalconFirmware::loadFirmware(bool skip_checksum)
 	{
-		if(m_falconComm == NULL)
-		{
-			m_errorCode = FALCON_FIRMWARE_NO_COMM_SET;
-			return false;
-		}
-		if(!m_falconComm->isCommOpen())
-		{
-			m_errorCode = FalconComm::FALCON_COMM_DEVICE_NOT_VALID_ERROR;
-			return false;			
-		}
 		if(m_firmwareFilename.length() == 0)
 		{
 			m_errorCode = FALCON_FIRMWARE_FILE_NOT_VALID;
@@ -67,6 +58,33 @@ namespace libnifalcon
 			m_errorCode = FALCON_FIRMWARE_FILE_NOT_VALID;
 			return false;
 		}
+		long begin, end, file_size;
+		begin = firmware_file.tellg();
+		firmware_file.seekg (0, std::ios::end);
+		end = firmware_file.tellg();
+		file_size = end-begin;
+		firmware_file.seekg (0, std::ios::beg);
+
+		uint8_t* buf = new uint8_t[file_size];		
+		firmware_file.read((char*)buf, file_size);
+		bool success = loadFirmware(skip_checksum, file_size, buf);
+		firmware_file.close();
+		delete[] buf;
+		return success;
+	}
+	
+	bool FalconFirmware::loadFirmware(bool skip_checksum, long firmware_size, uint8_t* buffer)
+	{
+		if(m_falconComm == NULL)
+		{
+			m_errorCode = FALCON_FIRMWARE_NO_COMM_SET;
+			return false;
+		}
+		if(!m_falconComm->isCommOpen())
+		{
+			m_errorCode = FalconComm::FALCON_COMM_DEVICE_NOT_VALID_ERROR;
+			return false;			
+		}
 		if(!m_falconComm->setFirmwareMode())
 		{
 			std::cout << "Can't set firmware mode! " << m_errorCode << " " << m_falconComm->getDeviceErrorCode() << std::endl;
@@ -74,17 +92,28 @@ namespace libnifalcon
 			return false;
 		}
 		uint8_t send_buf[128], receive_buf[128];
-		int bytes_read;
-		while(!firmware_file.eof())
+		int bytes_read, total_read = 0;
+
+		//58 is an odd number to use for this, isn't it?
+		//Well, full speed can only take 64 bytes
+		//The FTDI tacks 2 bytes onto that for its status
+		//If you send 60-62, libusb-1.0 freaks out
+		//So, 58 it is. Happy medium
+
+		const int READ_SIZE = 58;
+		
+		while(total_read != firmware_size)
 		{
-			//58 is an odd number to use for this, isn't it?
-			//Well, full speed can only take 64 bytes
-			//The FTDI tacks 2 bytes onto that for its status
-			//If you send 60-62, libusb-1.0 freaks out
-			//So, 58 it is. Happy medium
-			firmware_file.read((char*)send_buf, 58);
-			bytes_read = firmware_file.gcount();
-			if(!m_falconComm->write(send_buf, bytes_read))
+
+			if(total_read + READ_SIZE > firmware_size)
+			{
+				bytes_read = firmware_size-total_read;
+			}
+			else
+			{
+				bytes_read = READ_SIZE;
+			}
+			if(!m_falconComm->write(buffer+total_read, bytes_read))
 			{
 				m_errorCode = m_falconComm->getErrorCode();
 				return false;
@@ -101,22 +130,20 @@ namespace libnifalcon
 				m_errorCode = m_falconComm->getErrorCode();
 				return false;
 			}
-			if(m_falconComm->getLastBytesWritten() != m_falconComm->getLastBytesRead())
-			{
-				m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
-				return false;
-			}
+
 			if(!skip_checksum)
 			{
 				for(int i = 0; i < bytes_read; ++i)
 				{
-					if(send_buf[i] != receive_buf[i])
+					if((buffer[total_read+i]) != receive_buf[i])
 					{
 						m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
 						return false;
 					}
 				}
 			}
+			total_read += bytes_read;
+
 		}
 		m_falconComm->setNormalMode();
 		m_hasWritten = false;

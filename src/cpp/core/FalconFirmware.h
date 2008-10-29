@@ -164,7 +164,8 @@ namespace libnifalcon
 		 * @return true if file exists and is openable, false otherwise
 		 */		
 		bool setFirmwareFile(std::string filename);
-		/** 
+
+        /** 
 		 * Conveinence function, calls loadFirmware with a certain number of retries
 		 *
 		 * @param retries Number of times to retry loading firmware before quitting
@@ -173,6 +174,8 @@ namespace libnifalcon
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */		
 		bool loadFirmware(int retries, bool skip_checksum = false);
+		bool loadFirmware(bool skip_checksum = false);
+		
 		/** 
 		 * Tries to load the firmware that was specified by the setFirmwareFile function. For the moment, skip_checksum should be used
 		 * on non-windows platforms when using the ftd2xx communications core, as there is a bug that causes bad checksum returns on
@@ -182,8 +185,8 @@ namespace libnifalcon
 		 *
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */				
-		bool loadFirmware(bool skip_checksum);
-
+		bool loadFirmware(bool skip_checksum, long firmware_size, uint8_t* buffer);
+		
 		/*
 		void setPacketBufferSize(uint8_t size)
 		{
