@@ -77,19 +77,28 @@ PROJECT(LIBNIFALCON)
 
 #options
 
-OPTION(DEBUG_BUILD "Compile libnifalcon in debug mode" OFF)
-OPTION(FAST_MATH "Use -ffast-math for GCC 4.0" OFF)
 OPTION(ARCH_OPTS "Use architecture specific optimizations for GCC" OFF)
-OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
+OPTION(BUILD_C_LIBNIFALCON "Build the C version of libnifalcon, with findfalcons test utility" OFF)
+OPTION(DEBUG_BUILD "Compile libnifalcon in debug mode" OFF)
+OPTION(ENABLE_GPROF "Enable gprof profiling (-pg option)" OFF)
+OPTION(FAST_MATH "Use -ffast-math for GCC 4.0" OFF)
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
-OPTION(ENABLE_GPROF "Enable gprof profiling (-pg option)" OFF)
 OPTION(SET_BUILD_RPATH "Use different RPATH for build tree and install (requires relink at install time, handy for development)" OFF)
-OPTION(BUILD_C_LIBNIFALCON "Build the C version of libnifalcon, with findfalcons test utility" OFF)
+OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
 
-IF(WINDOWS)
-  SET(FORCE_FTD2XX_BUILD ON)
-ENDIF(WINDOWS)
+
+IF(WINDOWS OR FORCE_FTD2XX_BUILD)
+  FIND_PACKAGE(libftd2xx)
+ENDIF(WINDOWS OR FORCE_FTD2XX_BUILD)
+
+IF(NOT LIBFTD2XX_FOUND)
+  FIND_PACKAGE(libusb)
+  FIND_PACKAGE(libftdi)
+  FIND_PACKAGE(libusb-1.0)
+ENDIF(NOT LIBFTD2XX_FOUND)
+
+FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
 
 IF(DEBUG_BUILD)
   SET(CMAKE_BUILD_TYPE "Debug")
@@ -128,18 +137,9 @@ ENDIF(IS_BIG_ENDIAN)
 
 #finds for libnifalcon building
 
-FIND_PACKAGE(libusb)
-FIND_PACKAGE(libusb-1.0)
-FIND_PACKAGE(libftdi)
-FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
-
-IF(FORCE_FTD2XX_BUILD)
-  FIND_PACKAGE(libftd2xx)
-ENDIF(FORCE_FTD2XX_BUILD)
-
-IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND)
-  MESSAGE(FATAL_ERROR "Either ftd2xx (http://www.ftdichip.com) or libftdi (http://www.intra2net.com/de/produkte/opensource/ftdi/) is required to build libnifalcon")
-ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND)
+IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT_LIBUSB_1_FOUND)
+  MESSAGE(FATAL_ERROR "Either ftd2xx, libftdi, or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
+ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT_LIBUSB_1_FOUND)
 
 SET(PROJECT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
