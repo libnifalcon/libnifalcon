@@ -16,7 +16,7 @@
 #define FALCONDEVICEBOOSTTHREADS_H
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
-#include "core/FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 
 namespace libnifalcon
 {

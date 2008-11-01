@@ -1,6 +1,6 @@
 //Original code by Kevin Ouellet
 //kouellet@users.sourceforge.net
-#include "JacobianMatrix.h"
+#include "falcon/kinematic/stamper/JacobianMatrix.h"
 
 using namespace gmtl;
 using namespace gmtl::Math;

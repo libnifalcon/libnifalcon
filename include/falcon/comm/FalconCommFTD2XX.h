@@ -15,7 +15,7 @@
 #ifndef FALCONFTD2XXCOMM_H
 #define FALCONFTD2XXCOMM_H
 
-#include "core/FalconComm.h"
+#include "falcon/core/FalconComm.h"
 #include "ftd2xx.h"
 
 namespace libnifalcon

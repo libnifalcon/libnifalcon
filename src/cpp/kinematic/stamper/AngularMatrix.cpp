@@ -12,10 +12,10 @@
  *
  */
 
-#include "AngularMatrix.h"
-#include "StamperUtils.h"
+#include "falcon/kinematic/stamper/AngularMatrix.h"
+#include "falcon/kinematic/stamper/StamperUtils.h"
 
-#include "core/FalconGeometry.h"
+#include "falcon/core/FalconGeometry.h"
 #include <iostream>
 
 namespace libnifalcon

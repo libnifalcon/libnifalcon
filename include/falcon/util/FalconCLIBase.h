@@ -15,7 +15,7 @@
 #define FALCONCLIBASE_H
 
 #include <boost/program_options.hpp>
-#include "core/FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 
 namespace libnifalcon
 {

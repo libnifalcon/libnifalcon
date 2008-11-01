@@ -14,7 +14,7 @@
 #ifndef FALCONGRIPFOURBUTTON_H
 #define FALCONGRIPFOURBUTTON_H
 
-#include "core/FalconGrip.h"
+#include "falcon/core/FalconGrip.h"
 
 namespace libnifalcon
 {

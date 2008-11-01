@@ -16,18 +16,18 @@
 #include <string>
 #include <csignal>
 #include <boost/program_options.hpp>
-#include "core/FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 #ifdef LIBFTD2XX
-#include "comm/FalconCommFTD2XX.h"
+#include "falcon/comm/FalconCommFTD2XX.h"
 #endif
 #ifdef LIBFTDI
-#include "comm/FalconCommLibFTDI.h"
+#include "falcon/comm/FalconCommLibFTDI.h"
 #endif
 #ifdef LIBUSB
-#include "comm/FalconCommLibUSB.h"
+#include "falcon/comm/FalconCommLibUSB.h"
 #endif
-#include "firmware/FalconFirmwareNovintSDK.h"
-#include "util/FalconCLIBase.h"
+#include "falcon/firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/util/FalconCLIBase.h"
 #include "sys/time.h"
 
 using namespace libnifalcon;

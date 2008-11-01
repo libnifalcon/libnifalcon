@@ -14,10 +14,10 @@
 #ifndef INVERSEKINEMATIC_H_
 #define INVERSEKINEMATIC_H_
 
-#include "gmtl/gmtl.h"
+#include "falcon/gmtl/gmtl.h"
 
-#include "core/FalconGeometry.h"
-#include "StamperUtils.h"
+#include "falcon/core/FalconGeometry.h"
+#include "falcon/kinematic/stamper/StamperUtils.h"
 
 namespace libnifalcon
 {

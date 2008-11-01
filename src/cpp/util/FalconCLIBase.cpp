@@ -12,17 +12,17 @@
  *
  */
 
-#include "FalconCLIBase.h"
+#include "falcon/util/FalconCLIBase.h"
 #ifdef LIBFTD2XX
-#include "comm/FalconCommFTD2XX.h"
+#include "falcon/comm/FalconCommFTD2XX.h"
 #endif
 #ifdef LIBFTDI
-#include "comm/FalconCommLibFTDI.h"
+#include "falcon/comm/FalconCommLibFTDI.h"
 #endif
 #ifdef LIBUSB
-#include "comm/FalconCommLibUSB.h"
+#include "falcon/comm/FalconCommLibUSB.h"
 #endif
-#include "firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
 
 namespace libnifalcon

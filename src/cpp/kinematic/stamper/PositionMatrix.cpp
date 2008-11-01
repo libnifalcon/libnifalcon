@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "PositionMatrix.h"
+#include "falcon/kinematic/stamper/PositionMatrix.h"
 
 namespace libnifalcon
 {

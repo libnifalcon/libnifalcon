@@ -17,11 +17,11 @@
 
 #include <iostream>
 #include <string>
-#include "FalconCore.h"
-#include "FalconComm.h"
-#include "FalconFirmware.h"
-#include "FalconKinematic.h"
-#include "FalconGrip.h"
+#include "falcon/core/FalconCore.h"
+#include "falcon/core/FalconComm.h"
+#include "falcon/core/FalconFirmware.h"
+#include "falcon/core/FalconKinematic.h"
+#include "falcon/core/FalconGrip.h"
 
 namespace libnifalcon
 {

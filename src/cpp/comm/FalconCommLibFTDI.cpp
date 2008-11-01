@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "FalconCommLibFTDI.h"
+#include "falcon/comm/FalconCommLibFTDI.h"
 
 namespace libnifalcon {
 

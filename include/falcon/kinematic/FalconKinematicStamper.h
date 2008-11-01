@@ -16,9 +16,9 @@
 #define FALCONSTAMPERKINEMATIC_H
 
 #include <stdint.h>
-#include "core/FalconKinematic.h"
-#include "stamper/DirectKinematic.h"
-#include "stamper/InverseKinematic.h"
+#include "falcon/core/FalconKinematic.h"
+#include "falcon/kinematic/stamper/DirectKinematic.h"
+#include "falcon/kinematic/stamper/InverseKinematic.h"
 
 namespace libnifalcon
 {

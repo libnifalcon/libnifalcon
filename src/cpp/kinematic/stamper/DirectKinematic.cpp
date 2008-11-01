@@ -11,10 +11,10 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "DirectKinematic.h"
+#include "falcon/kinematic/stamper/DirectKinematic.h"
 
-#include "InverseKinematic.h"
-#include "JacobianMatrix.h"
+#include "falcon/kinematic/stamper/InverseKinematic.h"
+#include "falcon/kinematic/stamper/JacobianMatrix.h"
 
 namespace libnifalcon
 {

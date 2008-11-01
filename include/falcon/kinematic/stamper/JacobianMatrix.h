@@ -14,10 +14,10 @@
 #ifndef JACOBIANMATRIX_H_
 #define JACOBIANMATRIX_H_
 
-#include "gmtl/gmtl.h"
+#include "falcon/gmtl/gmtl.h"
 
-#include "InverseKinematic.h"
-#include "core/FalconGeometry.h"
+#include "falcon/kinematic/stamper/InverseKinematic.h"
+#include "falcon/core/FalconGeometry.h"
 
 namespace libnifalcon
 {

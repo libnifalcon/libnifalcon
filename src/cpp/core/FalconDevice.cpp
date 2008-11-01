@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 #include <iostream>
 namespace libnifalcon
 {

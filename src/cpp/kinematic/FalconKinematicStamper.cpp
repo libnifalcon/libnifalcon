@@ -12,8 +12,8 @@
  *
  */
 
-#include "FalconKinematicStamper.h"
-#include "stamper/JacobianMatrix.h"
+#include "falcon/kinematic/FalconKinematicStamper.h"
+#include "falcon/kinematic/stamper/JacobianMatrix.h"
 namespace libnifalcon
 {
 	FalconKinematicStamper::FalconKinematicStamper(bool init_now)

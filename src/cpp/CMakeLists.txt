@@ -11,40 +11,19 @@ SET(LIBRARY_SRCS
   kinematic/stamper/InverseKinematic.cpp 
   kinematic/FalconKinematicStamper.cpp)
 
-INCLUDE_DIRECTORIES(. ${GMTL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${PROJECT_INCLUDE_DIR})
 
-INSTALL(DIRECTORY ${GMTL_INCLUDE_DIR}/gmtl DESTINATION ${INCLUDE_INSTALL_DIR}/falcon)
+INSTALL(DIRECTORY 
+  ${PROJECT_INCLUDE_DIR}/falcon/gmtl 
+  ${PROJECT_INCLUDE_DIR}/falcon/core
+  ${PROJECT_INCLUDE_DIR}/falcon/firmware
+  ${PROJECT_INCLUDE_DIR}/falcon/kinematic
+  ${PROJECT_INCLUDE_DIR}/falcon/grip
+  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon
+  REGEX ".svn" EXCLUDE
+  REGEX ".git" EXCLUDE
+  )
 
-INSTALL(FILES 
-  core/FalconComm.h 
-  core/FalconCore.h  
-  core/FalconDevice.h
-  core/FalconFirmware.h
-  core/FalconGeometry.h
-  core/FalconGrip.h
-  core/FalconKinematic.h
-  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/core)
-
-INSTALL(FILES 
-  firmware/FalconFirmwareNovintSDK.h 
-  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/firmware)
-
-INSTALL(FILES 
-  kinematic/FalconKinematicStamper.h 
-  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic)
-
-INSTALL(FILES 
-  kinematic/stamper/AngularMatrix.h 
-  kinematic/stamper/JacobianMatrix.h 
-  kinematic/stamper/PositionMatrix.h 
-  kinematic/stamper/DirectKinematic.h
-  kinematic/stamper/StamperUtils.h
-  kinematic/stamper/InverseKinematic.h
-  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/kinematic/stamper)
-
-INSTALL(FILES 
-  grip/FalconGripFourButton.h 
-  DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/grip)
 
 BUILD_NIFALCON_LIB(${LIBNIFALCON_CPP} "${BUILD_TYPES}" "${LIBRARY_SRCS}" FALSE FALSE)
 

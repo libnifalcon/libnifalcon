@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "FalconDeviceBoostThread.h"
+#include "falcon/util/FalconDeviceBoostThread.h"
 
 #include <boost/bind.hpp>
 #include <iostream>

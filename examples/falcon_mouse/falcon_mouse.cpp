@@ -17,17 +17,17 @@
 #include <csignal>
 #include <ctime>
 #include <boost/program_options.hpp>
-#include "core/FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 #ifdef LIBFTD2XX
-#include "comm/FalconCommFTD2XX.h"
+#include "falcon/comm/FalconCommFTD2XX.h"
 #endif
 #ifdef LIBFTDI
-#include "comm/FalconCommLibFTDI.h"
+#include "falcon/comm/FalconCommLibFTDI.h"
 #endif
-#include "firmware/FalconFirmwareNovintSDK.h"
-#include "kinematic/FalconKinematicStamper.h"
-#include "util/FalconCLIBase.h"
-#include "util/FalconDeviceBoostThread.h"
+#include "falcon/firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/kinematic/FalconKinematicStamper.h"
+#include "falcon/util/FalconCLIBase.h"
+#include "falcon/util/FalconDeviceBoostThread.h"
 #include "falcon_mouse.h"
 
 using namespace libnifalcon;

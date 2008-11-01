@@ -14,8 +14,8 @@
 #ifndef POSITIONMATRIX_H_
 #define POSITIONMATRIX_H_
 
-#include "gmtl/gmtl.h"
-#include "AngularMatrix.h"
+#include "falcon/gmtl/gmtl.h"
+#include "falcon/kinematic/stamper/AngularMatrix.h"
 
 namespace libnifalcon
 {

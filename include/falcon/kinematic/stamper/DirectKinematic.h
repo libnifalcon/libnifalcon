@@ -14,10 +14,10 @@
 #ifndef DIRECTKINEMATIC_H_
 #define DIRECTKINEMATIC_H_
 
-#include "PositionMatrix.h"
-#include "AngularMatrix.h"
+#include "falcon/kinematic/stamper/PositionMatrix.h"
+#include "falcon/kinematic/stamper/AngularMatrix.h"
 
-#include "gmtl/gmtl.h"
+#include "falcon/gmtl/gmtl.h"
 
 namespace libnifalcon
 {

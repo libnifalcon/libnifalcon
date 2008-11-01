@@ -15,6 +15,7 @@
 #define FALCONGRIP_H
 
 #include <cstdlib>
+#include "falcon/core/FalconCore.h"
 
 namespace libnifalcon
 {	

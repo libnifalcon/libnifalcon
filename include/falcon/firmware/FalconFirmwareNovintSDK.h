@@ -14,7 +14,7 @@
 #ifndef FALCONNOVINTFIRMWARE_H
 #define FALCONNOVINTFIRMWARE_H
 
-#include "core/FalconFirmware.h"
+#include "falcon/core/FalconFirmware.h"
 
 namespace libnifalcon
 {

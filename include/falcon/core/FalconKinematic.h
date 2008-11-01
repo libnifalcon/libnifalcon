@@ -17,8 +17,8 @@
 #include <stdint.h>
 #include <iostream>
 
-#include "FalconCore.h"
-#include "FalconGeometry.h"
+#include "falcon/core/FalconCore.h"
+#include "falcon/core/FalconGeometry.h"
 
 namespace libnifalcon
 {

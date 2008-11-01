@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "InverseKinematic.h"
+#include "falcon/kinematic/stamper/InverseKinematic.h"
 
 using namespace gmtl;
 using namespace gmtl::Math;

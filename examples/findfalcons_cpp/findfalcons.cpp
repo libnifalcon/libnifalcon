@@ -12,15 +12,15 @@
  *
  */
 
-#include "core/FalconDevice.h"
+#include "falcon/core/FalconDevice.h"
 #if defined(LIBUSB)
-#include "comm/FalconCommLibUSB.h"
+#include "falcon/comm/FalconCommLibUSB.h"
 #elif defined(LIBFTDI)
-#include "comm/FalconCommLibFTDI.h"
+#include "falcon/comm/FalconCommLibFTDI.h"
 #elif defined(LIBFTD2XX)
-#include "comm/FalconCommFTD2XX.h"
+#include "falcon/comm/FalconCommFTD2XX.h"
 #endif
-#include "firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/firmware/FalconFirmwareNovintSDK.h"
 //#include "kinematic/FalconKinematicStamper.h"
 #include <sys/time.h>
 #include <iostream>

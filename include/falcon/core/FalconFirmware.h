@@ -19,7 +19,7 @@
 #include <string>
 #include <cstdlib>
 #include <deque>
-#include "FalconComm.h"
+#include "falcon/core/FalconComm.h"
 
 namespace libnifalcon
 {

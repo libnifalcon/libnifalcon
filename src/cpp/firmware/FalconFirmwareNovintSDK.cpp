@@ -11,7 +11,7 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "FalconFirmwareNovintSDK.h"
+#include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
 #include <cstdlib>
 #include <cstring>

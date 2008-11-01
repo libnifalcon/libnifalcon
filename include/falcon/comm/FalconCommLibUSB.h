@@ -14,7 +14,7 @@
 #ifndef FALCONCOMMLIBUSB_H
 #define FALCONCOMMLIBUSB_H
 
-#include "core/FalconComm.h"
+#include "falcon/core/FalconComm.h"
 #include "libusb-1.0/libusb.h"
 
 namespace libnifalcon
