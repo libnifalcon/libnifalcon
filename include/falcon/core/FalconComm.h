@@ -15,7 +15,7 @@
 #define FALCONCOMMBASE_H
 
 #include <stdint.h>
-#include "FalconCore.h"
+#include "falcon/core/FalconCore.h"
 
 namespace libnifalcon 
 {
