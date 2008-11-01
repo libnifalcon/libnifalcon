@@ -21,6 +21,7 @@
 #include "falcon/comm/FalconCommFTD2XX.h"
 #endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/util/FalconFirmwareBinaryNvent.h"
 //#include "kinematic/FalconKinematicStamper.h"
 #include <sys/time.h>
 #include <iostream>
@@ -52,9 +53,8 @@ void runFalconTest(FalconDevice& d)
 	u_int32_t loop_count = 0;
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
-//	dev.setFalconKinematic<FalconKinematicStamper>();
 
-	std::cout << "running" << std::endl;
+
 	f = dev.getFalconFirmware();
 	if(!dev.getDeviceCount(num_falcons))
 	{
@@ -74,17 +74,12 @@ void runFalconTest(FalconDevice& d)
 	}
 	std::cout << "Opened falcon" << std::endl;
 
-	std::cout << "Finding firmware" << std::endl;
 	if(!dev.isFirmwareLoaded())
 	{
-		if(!dev.setFirmwareFile("test_firmware.bin"))
-		{
-			std::cout << "Cannot find firmware" << std::endl;
-		}
-		
+		std::cout << "Loading firmware" << std::endl;
 		for(int i = 0; i < 10; ++i)
 		{
-			if(!dev.loadFirmware(false))
+			if(!dev.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
 			{
 				std::cout << "Could not load firmware" << std::endl;
 			}
@@ -96,41 +91,7 @@ void runFalconTest(FalconDevice& d)
 		}
 	}
 	std::cout << "Firmware found" << std::endl;
-	std::cout << "closing" << std::endl;
 
-	dev.close();
-	std::cout << "reopening" << std::endl;
-	if(!dev.open(0))
-	{
-		std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
-		return;
-	}
-	std::cout << "Opened falcon" << std::endl;
-
-	std::cout << "Finding firmware" << std::endl;
-	if(!dev.isFirmwareLoaded())
-	{
-		std::cout << "Loading firmware!" << std::endl;
-		if(!dev.setFirmwareFile("test_firmware.bin"))
-		{
-			std::cout << "Cannot find firmware" << std::endl;
-		}
-		
-		for(int i = 0; i < 10; ++i)
-		{
-			if(!dev.loadFirmware(false))
-			{
-				std::cout << "Could not load firmware" << std::endl;
-			}
-			else
-			{
-				std::cout <<"Firmware loaded" << std::endl;
-				break;
-			}
-		}
-	}
-	std::cout << "Firmware found" << std::endl;
-	
 	for(int j = 0; j < 3; ++j)
 	{
 		f->setLEDStatus(2 << (j % 3));

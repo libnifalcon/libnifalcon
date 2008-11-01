@@ -209,5 +209,6 @@ ENDIF(SET_BUILD_RPATH)
 
 #the two main source directories
 
+ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(examples)
