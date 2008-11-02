@@ -23,6 +23,8 @@
 #include "falcon/comm/FalconCommLibUSB.h"
 #endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
+#include "falcon/util/FalconFirmwareBinaryTest.h"
+#include "falcon/util/FalconFirmwareBinaryNvent.h"
 #include <iostream>
 
 namespace libnifalcon
@@ -70,7 +72,9 @@ namespace libnifalcon
 		{
 			po::options_description firmware("Firmware Options");
 			firmware.add_options()
-				("firmware", po::value<std::string>(), "Firmware file")
+				("nvent_firmware", "Use 'nVent' firmware (Recommended)")
+				("test_firmware", "Use test firmware")
+				("firmware_file", po::value<std::string>(), "Specify external firmware file (instead of nvent or test)")
 				("force_firmware", "Force firmware download, even if already loaded")
 				("skip_checksum", "Ignore checksum errors when loading firmware (useful for FTD2XX on non-windows platforms)")
 				;
@@ -144,18 +148,47 @@ namespace libnifalcon
 		device.setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
 		bool firmware_loaded;	 
-		if(m_varMap.count("firmware"))
+		if(m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware") && (m_varMap.count("force_firmware") || !device.isFirmwareLoaded()))
 		{
-			//Check for existence of firmware file
-			std::string firmware_file = m_varMap["firmware"].as<std::string>();
-			if(!device.setFirmwareFile(firmware_file))
+			if(m_varMap.count("nvent_firmware"))
 			{
-				std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
-				return false;
+				for(int i = 0; i < 10; ++i)
+				{
+					if(!device.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
+					{
+						std::cout << "Could not load firmware" << std::endl;
+					}
+					else
+					{
+						std::cout <<"Firmware loaded" << std::endl;
+						break;
+					}
+				}
 			}
-			//See if we need to load the firmware, or force it
-			if(m_varMap.count("force_firmware") || !device.isFirmwareLoaded())
+			else if(m_varMap.count("test_firmware"))
 			{
+				for(int i = 0; i < 10; ++i)
+				{
+					if(!device.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_TEST_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE)))
+					{
+						std::cout << "Could not load firmware" << std::endl;
+					}
+					else
+					{
+						std::cout <<"Firmware loaded" << std::endl;
+						break;
+					}
+				}
+			}
+			else if(m_varMap.count("firmware"))
+			{
+				//Check for existence of firmware file
+				std::string firmware_file = m_varMap["firmware"].as<std::string>();
+				if(!device.setFirmwareFile(firmware_file))
+				{
+					std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
+					return false;
+				}
 				if(!device.loadFirmware(10, m_varMap.count("skip_checksum") > 0))
 				{
 					std::cout << "Cannot load firmware to device" << std::endl;

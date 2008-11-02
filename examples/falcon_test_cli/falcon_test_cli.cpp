@@ -93,7 +93,7 @@ public:
 
 			po::options_description tests("Tests");
 			tests.add_options()
-				("loop-time-test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
+				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
 			m_progOptions.add(tests);
 		}
 	}
@@ -119,7 +119,7 @@ public:
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
 		m_falconDevice.runIOLoop();
 
-		if(m_varMap.count("loop-time-test"))
+		if(m_varMap.count("loop_time_test"))
 		{
 			stop = false;
 			while(!stop)
