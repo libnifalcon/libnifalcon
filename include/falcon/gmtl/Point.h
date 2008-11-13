@@ -35,8 +35,8 @@
 #ifndef _GMTL_POINT_H_
 #define _GMTL_POINT_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/VecBase.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/VecBase.h>
 
 namespace gmtl
 {

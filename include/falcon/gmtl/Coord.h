@@ -35,13 +35,13 @@
 #ifndef _GMTL_COORD_H_
 #define _GMTL_COORD_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Vec.h>
-#include <gmtl/AxisAngle.h>
-#include <gmtl/EulerAngle.h>
-#include <gmtl/Quat.h>
-#include <gmtl/Util/Meta.h>
-#include <gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/AxisAngle.h>
+#include <falcon/gmtl/EulerAngle.h>
+#include <falcon/gmtl/Quat.h>
+#include <falcon/gmtl/Util/Meta.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
 namespace gmtl
 {

@@ -46,9 +46,9 @@
 // vertices from a pool.  The return value is 'true' if and only if at least
 // one vertex was valid.
 
-#include <gmtl/Vec3.h>
-#include <gmtl/Point3.h>
-#include <gmtl/Numerics/Eigen.h>
+#include <falcon/gmtl/Vec3.h>
+#include <falcon/gmtl/Point3.h>
+#include <falcon/gmtl/Numerics/Eigen.h>
 
 namespace gmtl
 {

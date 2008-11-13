@@ -35,8 +35,8 @@
 #ifndef _GMTL_AABOXOPS_H_
 #define _GMTL_AABOXOPS_H_
 
-#include <gmtl/AABox.h>
-#include <gmtl/VecOps.h>
+#include <falcon/gmtl/AABox.h>
+#include <falcon/gmtl/VecOps.h>
 
 namespace gmtl
 {

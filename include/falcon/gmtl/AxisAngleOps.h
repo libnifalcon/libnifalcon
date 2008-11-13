@@ -36,7 +36,7 @@
 #ifndef _GMTL_AXIS_ANGLE_OPS_H_
 #define _GMTL_AXIS_ANGLE_OPS_H_
 
-#include <gmtl/AxisAngle.h>
+#include <falcon/gmtl/AxisAngle.h>
 
 namespace gmtl
 {

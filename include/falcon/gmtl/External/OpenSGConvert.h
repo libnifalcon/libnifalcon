@@ -40,8 +40,8 @@
  * Methods to convert between GTML and OpenSG matrix classes.
  */
 
-#include <gmtl/Matrix.h>
-#include <gmtl/Generate.h>
+#include <falcon/gmtl/Matrix.h>
+#include <falcon/gmtl/Generate.h>
 #include <OpenSG/OSGMatrix.h>
 
 namespace gmtl

@@ -35,7 +35,7 @@
 #ifndef _GMTL_METAPROGRAMMING_H
 #define _GMTL_METAPROGRAMMING_H
 
-#include <gmtl/Defines.h>
+#include <falcon/gmtl/Defines.h>
 
 /*** STRINGIZE and JOIN macros */
 /* Taken from boost (see boost.org) */

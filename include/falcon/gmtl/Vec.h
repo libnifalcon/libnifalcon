@@ -35,10 +35,10 @@
 #ifndef _GMTL_VEC_H_
 #define _GMTL_VEC_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Config.h>
-#include <gmtl/VecBase.h>
-#include <gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Config.h>
+#include <falcon/gmtl/VecBase.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
 namespace gmtl
 {

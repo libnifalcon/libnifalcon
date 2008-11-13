@@ -35,9 +35,9 @@
 #ifndef _GMTL_AXISANGLE_H_
 #define _GMTL_AXISANGLE_H_
 
-#include <gmtl/Math.h>     // for rotation order
-#include <gmtl/VecBase.h>  // base class of AxisAngle
-#include <gmtl/Vec.h>      // axis data format
+#include <falcon/gmtl/Math.h>     // for rotation order
+#include <falcon/gmtl/VecBase.h>  // base class of AxisAngle
+#include <falcon/gmtl/Vec.h>      // axis data format
  
 namespace gmtl
 {

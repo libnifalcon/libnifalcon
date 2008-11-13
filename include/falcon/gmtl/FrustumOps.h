@@ -36,9 +36,9 @@
 #ifndef _GMTL_FRUSTUM_OPS_H_
 #define _GMTL_FRUSTUM_OPS_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Frustum.h>
-#include <gmtl/Math.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Frustum.h>
+#include <falcon/gmtl/Math.h>
 
 
 namespace gmtl

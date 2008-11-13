@@ -35,9 +35,9 @@
 #ifndef _GMTL_OOBox_H_
 #define _GMTL_OOBox_H_
 
-#include <gmtl/Vec3.h>
-#include <gmtl/Point3.h>
-#include <gmtl/matVecFuncs.h>
+#include <falcon/gmtl/Vec3.h>
+#include <falcon/gmtl/Point3.h>
+#include <falcon/gmtl/matVecFuncs.h>
 
 namespace gmtl
 {

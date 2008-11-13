@@ -37,11 +37,11 @@
 
 #include <iostream>         // for std::cerr
 #include <algorithm>        // needed for std::swap
-#include <gmtl/Matrix.h>
-#include <gmtl/Math.h>
-#include <gmtl/Vec.h>
-#include <gmtl/VecOps.h>
-#include <gmtl/Util/Assert.h>
+#include <falcon/gmtl/Matrix.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/VecOps.h>
+#include <falcon/gmtl/Util/Assert.h>
 
 namespace gmtl
 {

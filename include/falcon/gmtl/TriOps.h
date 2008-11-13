@@ -35,9 +35,9 @@
 #ifndef _GMTL_TRIOPS_H_
 #define _GMTL_TRIOPS_H_
 
-#include <gmtl/Tri.h>
-#include <gmtl/Generate.h>
-#include <gmtl/VecOps.h>
+#include <falcon/gmtl/Tri.h>
+#include <falcon/gmtl/Generate.h>
+#include <falcon/gmtl/VecOps.h>
 
 namespace gmtl
 {

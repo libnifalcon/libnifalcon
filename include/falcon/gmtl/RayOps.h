@@ -35,7 +35,7 @@
 #ifndef _GMTL_RAYOPS_H_
 #define _GMTL_RAYOPS_H_
 
-#include <gmtl/Ray.h>
+#include <falcon/gmtl/Ray.h>
 
 namespace gmtl {
 

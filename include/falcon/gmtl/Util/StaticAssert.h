@@ -30,8 +30,8 @@ namespace gmtl
 // -- OLD Static assert --- //
 // -- To be used if the new one causes problems -- //
 /*
-#include <gmtl/Defines.h>
-#include <gmtl/Util/Meta.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Util/Meta.h>
 
 #ifdef __BORLANDC__
 //

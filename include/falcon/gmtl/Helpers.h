@@ -35,7 +35,7 @@
 #ifndef _GMTL_HELPERS_H_
 #define _GMTL_HELPERS_H_
 
-#include <gmtl/Config.h>
+#include <falcon/gmtl/Config.h>
 
 // Helper classes
 namespace gmtl

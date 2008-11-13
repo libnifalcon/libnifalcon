@@ -35,7 +35,7 @@
 #ifndef _GMTL_EULERANGLE_H_
 #define _GMTL_EULERANGLE_H_
 
-#include <gmtl/Math.h>     // for rotation order
+#include <falcon/gmtl/Math.h>     // for rotation order
  
 namespace gmtl
 {

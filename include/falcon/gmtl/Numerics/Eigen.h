@@ -38,7 +38,7 @@
 #ifndef _EIGEN_H
 #define _EIGEN_H
 
-#include <gmtl/gmtlConfig.h>
+#include <falcon/gmtl/gmtlConfig.h>
 
 namespace gmtl
 {

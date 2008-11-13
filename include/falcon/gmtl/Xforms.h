@@ -35,15 +35,15 @@
 #ifndef _GMTL_XFORMS_H_
 #define _GMTL_XFORMS_H_
 
-#include <gmtl/Point.h>
-#include <gmtl/Vec.h>
-#include <gmtl/Matrix.h>
-#include <gmtl/MatrixOps.h>
-#include <gmtl/Quat.h>
-#include <gmtl/QuatOps.h>
-#include <gmtl/Ray.h>
-#include <gmtl/LineSeg.h>
-#include <gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Point.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/Matrix.h>
+#include <falcon/gmtl/MatrixOps.h>
+#include <falcon/gmtl/Quat.h>
+#include <falcon/gmtl/QuatOps.h>
+#include <falcon/gmtl/Ray.h>
+#include <falcon/gmtl/LineSeg.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
 namespace gmtl
 {

@@ -35,7 +35,7 @@
 #ifndef _GMTL_VEC_OPS_META_H
 #define _GMTL_VEC_OPS_META_H
 
-#include <gmtl/Util/Meta.h>
+#include <falcon/gmtl/Util/Meta.h>
 
 /** Meta programming classes for vec operations
  */

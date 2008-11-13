@@ -35,8 +35,8 @@
 #ifndef _GMTL_QUAT_H_
 #define _GMTL_QUAT_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Vec.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Vec.h>
  
 namespace gmtl
 {

@@ -35,12 +35,12 @@
 #ifndef _GMTL_VECBASE_H_
 #define _GMTL_VECBASE_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Util/Assert.h>
-#include <gmtl/Util/StaticAssert.h>
-#include <gmtl/Util/Meta.h>
-#include <gmtl/Config.h>
-#include <gmtl/Helpers.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Util/Assert.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Util/Meta.h>
+#include <falcon/gmtl/Config.h>
+#include <falcon/gmtl/Helpers.h>
 
 
 namespace gmtl

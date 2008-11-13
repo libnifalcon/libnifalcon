@@ -39,7 +39,7 @@
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/range_c.hpp>
 #include <boost/lambda/lambda.hpp>
-#include <gmtl/Matrix.h>
+#include <falcon/gmtl/Matrix.h>
 
 
 namespace gmtl

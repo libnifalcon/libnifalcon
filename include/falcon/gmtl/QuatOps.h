@@ -35,8 +35,8 @@
 #ifndef _GMTL_QUAT_OPS_H_
 #define _GMTL_QUAT_OPS_H_
 
-#include <gmtl/Math.h>
-#include <gmtl/Quat.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Quat.h>
 
 namespace gmtl
 {

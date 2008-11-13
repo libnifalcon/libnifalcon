@@ -36,18 +36,18 @@
 #define _GMTL_OUTPUT_H_
 
 #include <iostream>
-#include <gmtl/Util/Assert.h>
-#include <gmtl/VecBase.h>
-#include <gmtl/Matrix.h>
-#include <gmtl/Quat.h>
-#include <gmtl/Tri.h>
-#include <gmtl/Plane.h>
-#include <gmtl/Sphere.h>
-#include <gmtl/EulerAngle.h>
-#include <gmtl/AABox.h>
-#include <gmtl/Ray.h>
-#include <gmtl/LineSeg.h>
-#include <gmtl/Coord.h>
+#include <falcon/gmtl/Util/Assert.h>
+#include <falcon/gmtl/VecBase.h>
+#include <falcon/gmtl/Matrix.h>
+#include <falcon/gmtl/Quat.h>
+#include <falcon/gmtl/Tri.h>
+#include <falcon/gmtl/Plane.h>
+#include <falcon/gmtl/Sphere.h>
+#include <falcon/gmtl/EulerAngle.h>
+#include <falcon/gmtl/AABox.h>
+#include <falcon/gmtl/Ray.h>
+#include <falcon/gmtl/LineSeg.h>
+#include <falcon/gmtl/Coord.h>
 
 namespace gmtl
 {

@@ -35,7 +35,7 @@
 #ifndef _GMTL_SPHERE_H_
 #define _GMTL_SPHERE_H_
 
-#include <gmtl/Point.h>
+#include <falcon/gmtl/Point.h>
 
 namespace gmtl
 {

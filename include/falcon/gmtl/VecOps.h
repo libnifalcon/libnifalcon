@@ -35,12 +35,12 @@
 #ifndef _GMTL_VEC_OPS_H_
 #define _GMTL_VEC_OPS_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Math.h>
-#include <gmtl/Vec.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Vec.h>
 #ifndef GMTL_NO_METAPROG
-#include <gmtl/VecOpsMeta.h>
-#include <gmtl/VecExprMeta.h>
+#include <falcon/gmtl/VecOpsMeta.h>
+#include <falcon/gmtl/VecExprMeta.h>
 #endif
 
 namespace gmtl

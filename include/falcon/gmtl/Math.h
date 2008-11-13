@@ -37,8 +37,8 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <gmtl/Defines.h>
-#include <gmtl/Util/Assert.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Util/Assert.h>
 
 namespace gmtl
 {

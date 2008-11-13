@@ -37,17 +37,17 @@
 
 #include <algorithm>
 #include <limits>
-#include <gmtl/AABox.h>
-#include <gmtl/Point.h>
-#include <gmtl/Sphere.h>
-#include <gmtl/Vec.h>
-#include <gmtl/Plane.h>
-#include <gmtl/VecOps.h>
-#include <gmtl/Math.h>
-#include <gmtl/Ray.h>
-#include <gmtl/LineSeg.h>
-#include <gmtl/Tri.h>
-#include <gmtl/PlaneOps.h>
+#include <falcon/gmtl/AABox.h>
+#include <falcon/gmtl/Point.h>
+#include <falcon/gmtl/Sphere.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/Plane.h>
+#include <falcon/gmtl/VecOps.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Ray.h>
+#include <falcon/gmtl/LineSeg.h>
+#include <falcon/gmtl/Tri.h>
+#include <falcon/gmtl/PlaneOps.h>
 
 namespace gmtl
 {

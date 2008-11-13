@@ -35,9 +35,9 @@
 #ifndef _GMTL_PLANE_H
 #define _GMTL_PLANE_H
 
-#include <gmtl/Vec.h>
-#include <gmtl/Point.h>
-#include <gmtl/VecOps.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/Point.h>
+#include <falcon/gmtl/VecOps.h>
 
 namespace gmtl
 {

@@ -35,22 +35,22 @@
 #ifndef _GMTL_GENERATE_H_
 #define _GMTL_GENERATE_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Util/Assert.h>
-#include <gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Util/Assert.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
-#include <gmtl/Vec.h>    // for Vec
-#include <gmtl/VecOps.h> // for lengthSquared
-#include <gmtl/Quat.h>
-#include <gmtl/QuatOps.h>
-#include <gmtl/Coord.h>
-#include <gmtl/Matrix.h>
-#include <gmtl/Util/Meta.h>
-#include <gmtl/Math.h>
-#include <gmtl/Xforms.h>
+#include <falcon/gmtl/Vec.h>    // for Vec
+#include <falcon/gmtl/VecOps.h> // for lengthSquared
+#include <falcon/gmtl/Quat.h>
+#include <falcon/gmtl/QuatOps.h>
+#include <falcon/gmtl/Coord.h>
+#include <falcon/gmtl/Matrix.h>
+#include <falcon/gmtl/Util/Meta.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Xforms.h>
 
-#include <gmtl/EulerAngle.h>
-#include <gmtl/AxisAngle.h>
+#include <falcon/gmtl/EulerAngle.h>
+#include <falcon/gmtl/AxisAngle.h>
 
 namespace gmtl
 {

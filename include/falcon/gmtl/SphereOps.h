@@ -35,9 +35,9 @@
 #ifndef _GMTL_SPHEREOPS_H_
 #define _GMTL_SPHEREOPS_H_
 
-#include <gmtl/Sphere.h>
-#include <gmtl/VecOps.h>
-#include <gmtl/Math.h>
+#include <falcon/gmtl/Sphere.h>
+#include <falcon/gmtl/VecOps.h>
+#include <falcon/gmtl/Math.h>
 
 namespace gmtl
 {

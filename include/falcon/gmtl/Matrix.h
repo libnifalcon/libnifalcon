@@ -35,10 +35,10 @@
 #ifndef _GMTL_MATRIX_H_
 #define _GMTL_MATRIX_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Math.h>
-#include <gmtl/Util/Assert.h>
-#include <gmtl/Util/StaticAssert.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Math.h>
+#include <falcon/gmtl/Util/Assert.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
 namespace gmtl
 {

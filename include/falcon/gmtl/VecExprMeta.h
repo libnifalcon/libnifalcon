@@ -35,9 +35,9 @@
 #ifndef _GMTL_VEC_EXPR_META_H
 #define _GMTL_VEC_EXPR_META_H
 
-#include <gmtl/Util/Meta.h>
-#include <gmtl/VecOpsMeta.h>
-#include <gmtl/VecBase.h>
+#include <falcon/gmtl/Util/Meta.h>
+#include <falcon/gmtl/VecOpsMeta.h>
+#include <falcon/gmtl/VecBase.h>
 
 /** Expression template classes for vec operations
  */

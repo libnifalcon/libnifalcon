@@ -36,9 +36,9 @@
 #ifndef _GMTL_FRUSTUM_H_
 #define _GMTL_FRUSTUM_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Plane.h>
-#include <gmtl/MatrixOps.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Plane.h>
+#include <falcon/gmtl/MatrixOps.h>
 
 
 namespace gmtl

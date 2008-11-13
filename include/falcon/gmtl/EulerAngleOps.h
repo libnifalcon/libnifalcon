@@ -35,7 +35,7 @@
 #ifndef _GMTL_EULER_ANGLE_OPS_H_
 #define _GMTL_EULER_ANGLE_OPS_H_
 
-#include <gmtl/EulerAngle.h>
+#include <falcon/gmtl/EulerAngle.h>
 
 namespace gmtl
 {

@@ -35,8 +35,8 @@
 #ifndef _GMTL_LINESEGOPS_H_
 #define _GMTL_LINESEGOPS_H_
 
-#include <gmtl/LineSeg.h>
-#include <gmtl/RayOps.h>
+#include <falcon/gmtl/LineSeg.h>
+#include <falcon/gmtl/RayOps.h>
 
 namespace gmtl {
 

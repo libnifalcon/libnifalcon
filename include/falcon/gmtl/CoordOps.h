@@ -35,7 +35,7 @@
 #ifndef _GMTL_COORD_OPS_H_
 #define _GMTL_COORD_OPS_H_
 
-#include <gmtl/Coord.h>
+#include <falcon/gmtl/Coord.h>
 
 namespace gmtl
 {

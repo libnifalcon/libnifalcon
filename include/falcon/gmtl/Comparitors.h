@@ -41,8 +41,8 @@
 // operations (or for anything else you may want to use them for...)
 //
 
-#include <gmtl/Vec3.h>
-#include <gmtl/Point3.h>
+#include <falcon/gmtl/Vec3.h>
+#include <falcon/gmtl/Point3.h>
 
 namespace gmtl
 {

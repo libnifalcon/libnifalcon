@@ -37,18 +37,18 @@
 
 // new stuff
 #include <vector>
-#include <gmtl/Sphere.h>
-#include <gmtl/AABox.h>
-#include <gmtl/Frustum.h>
-#include <gmtl/Tri.h>
-#include <gmtl/VecOps.h>
+#include <falcon/gmtl/Sphere.h>
+#include <falcon/gmtl/AABox.h>
+#include <falcon/gmtl/Frustum.h>
+#include <falcon/gmtl/Tri.h>
+#include <falcon/gmtl/VecOps.h>
 
 // old stuff
-//#include <gmtl/OOBox.h>
-//#include <gmtl/AABox.h>
-//#include <gmtl/Fit/GaussPointsFit.h>
-//#include <gmtl/matVecFuncs.h>
-//#include <gmtl/Quat.h>
+//#include <falcon/gmtl/OOBox.h>
+//#include <falcon/gmtl/AABox.h>
+//#include <falcon/gmtl/Fit/GaussPointsFit.h>
+//#include <falcon/gmtl/matVecFuncs.h>
+//#include <falcon/gmtl/Quat.h>
 
 namespace gmtl
 {

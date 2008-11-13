@@ -35,10 +35,10 @@
 #ifndef _GMTL_LINESEG_H_
 #define _GMTL_LINESEG_H_
 
-#include <gmtl/Point.h>
-#include <gmtl/Vec.h>
-#include <gmtl/VecOps.h>
-#include <gmtl/Ray.h>
+#include <falcon/gmtl/Point.h>
+#include <falcon/gmtl/Vec.h>
+#include <falcon/gmtl/VecOps.h>
+#include <falcon/gmtl/Ray.h>
 
 namespace gmtl {
 

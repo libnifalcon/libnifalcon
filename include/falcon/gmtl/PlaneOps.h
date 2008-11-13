@@ -35,9 +35,9 @@
 #ifndef _GMTL_PLANEOPS_H_
 #define _GMTL_PLANEOPS_H_
 
-#include <gmtl/Defines.h>
-#include <gmtl/Plane.h>
-#include <gmtl/Math.h>
+#include <falcon/gmtl/Defines.h>
+#include <falcon/gmtl/Plane.h>
+#include <falcon/gmtl/Math.h>
 
 namespace gmtl
 {
