@@ -83,10 +83,11 @@ namespace libnifalcon {
 				return false;
 			}
 		}
-		for(i = 0, current = dev_list; current != NULL && i < device_index; current = dev_list->next, ++i);
-		if((m_deviceErrorCode = ftdi_usb_open_dev(&(m_falconDevice), current->dev)) < 0)
+		for(i = 0, current = dev_list; current != NULL && i < device_index; current = current->next, ++i);
+		if(current==NULL || (m_deviceErrorCode = ftdi_usb_open_dev(&(m_falconDevice), current->dev)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			ftdi_list_free(&dev_list);
 			return false;
 		}
 		setNormalMode();

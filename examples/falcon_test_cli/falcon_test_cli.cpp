@@ -26,6 +26,7 @@
 #ifdef LIBUSB
 #include "falcon/comm/FalconCommLibUSB.h"
 #endif
+#include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
 #include "sys/time.h"
@@ -93,7 +94,8 @@ public:
 
 			po::options_description tests("Tests");
 			tests.add_options()
-				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)");
+				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
+				("cube_test", "Presents a cube-shaped surface to touch");
 			m_progOptions.add(tests);
 		}
 	}
@@ -134,6 +136,94 @@ public:
 				std::cout << "Loop time (in seconds): " << tval() << std::endl;
 			}
 		}
+
+		if(m_varMap.count("cube_test"))
+        {
+			m_falconDevice.getFalconFirmware()->setHomingMode(true);
+            m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
+
+            double cornerA[3] = { -30, -30, 95 };
+            double cornerB[3] = { 30, 30, 155 };
+            double force[3];
+            
+            // TODO: for stability, stiffness should be a function of
+            // the sample rate.  Also, we can add damping.
+            double stiffness = 5;
+
+            std::cout << "Cube Test" << std::endl << std::endl;
+			stop = false;
+			bool homing = false;
+			bool homing_reset = false;
+			int count = 0;
+			while(!stop)
+			{
+				if(!count) tstart();
+                if(!m_falconDevice.runIOLoop()) continue;
+				if(!m_falconDevice.getFalconFirmware()->isHomed())
+				{
+					if(!homing)
+					{
+						m_falconDevice.getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::RED_LED);
+						std::cout << "Falcon not currently homed. Move control all the way out then push straight all the way in." << std::endl;
+					}
+					homing = true;
+					continue;
+				}
+				if(homing)
+				{
+					m_falconDevice.getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::BLUE_LED);
+					std::cout << "Falcon homed. Move control all the way in or out to start simulation." << std::endl;
+					homing_reset = true;
+				}
+				homing = false;
+                double *pos = m_falconDevice.getPosition();
+				if(homing_reset)
+				{
+					if(pos[2] < cornerA[2] || pos[2] > cornerB[2])
+					{
+						m_falconDevice.getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::GREEN_LED);
+						std::cout << "Starting cube simulation." << std::endl;
+						homing_reset = false;						
+					}
+					continue;
+				}
+
+                double dist = 10000;
+                int closest = -1, outside=3, axis;
+
+                // For each axis, check if the end effector is inside
+                // the cube.  Record the distance to the closest wall.
+
+                for (axis=0; axis<3; axis++)
+                {
+                    force[axis] = 0;
+                    if (pos[axis] > cornerA[axis] && pos[axis] < cornerB[axis])
+                    {
+                        double dA = pos[axis]-cornerA[axis];
+                        double dB = pos[axis]-cornerB[axis];
+                        if (abs(dA) < abs(dist)) { dist = dA; closest = axis; }
+                        if (abs(dB) < abs(dist)) { dist = dB; closest = axis; }
+                        outside--;
+                    }
+                }
+
+                // If so, add a proportional force to kick it back
+                // outside from the nearest wall.
+
+                if (closest > -1 && !outside)
+                    force[closest] = -stiffness*dist;
+
+                m_falconDevice.setForce(force);
+				++count;
+				if(count == 1000)
+				{
+					tend();
+					std::cout << "Loop time (in seconds): " << tval() << std::endl;
+					count = 0;
+				}
+            }
+        }
+
 		return true;
 	}
 };

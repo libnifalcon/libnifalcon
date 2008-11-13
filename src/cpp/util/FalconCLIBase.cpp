@@ -122,6 +122,13 @@ namespace libnifalcon
 			device.setFalconComm<FalconCommFTD2XX>();
 		}
 #endif
+        else
+		{
+            std::cout << "No communication method selected." << std::endl;
+            return false;
+        }
+
+
 		//Device count check
 		if(m_varMap.count("device_count"))
 		{
