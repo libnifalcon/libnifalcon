@@ -8,8 +8,6 @@ Nonpolynomial Labs - http://www.nonpolynomial.com
 Kinematics by Kevin Ouellet
 http://sourceforge.net/users/kouellet/
 
-NOTE: This file needs to be updated somemore, but I just want to get the beta done. :)
-
 ===========
 Description
 ===========
@@ -39,57 +37,61 @@ Library Requirements
 -----
 cmake
 -----
+
 http://www.cmake.org
 
-------
-ftd2xx
-------
-http://www.ftdichip.com/Drivers/D2XX.htm
-
-AND/OR
-
--------
-libftdi
--------
-
-http://www.intra2net.com/de/produkte/opensource/ftdi/
-
------------------------------------------
-GMTL (optional, for kinematics libraries)
------------------------------------------
-
-http://ggt.sourceforge.net/
-
-----------------------------------------------
-Boost (optional, for examples and utilities)
----------------------------------------------=
+-----
+Boost
+-----
 
 http://www.boost.org/
 
+--------------------------------
+ftd2xx (Recommended for Windows)
+--------------------------------
+http://www.ftdichip.com/Drivers/D2XX.htm
 
+OR
 
+-----------------------------
+libftdi (Recommended for Mac)
+-----------------------------
 
-=====================
-ftd2xx versus libftdi
-=====================
+http://www.intra2net.com/de/produkte/opensource/ftdi/
 
-libnifalcon can use one of two libraries to access the falcon: ftd2xx, distributed by the FTDI company, or libftdi, an open source version of the FTDI drivers. 
+OR
 
-FTD2XX:
-Windows: Fine
+----------------------------------
+libusb 1.0 (Recommended for Linux)
+----------------------------------
+
+http://libusb.wiki.sourceforge.net/Libusb1.0
+
+=======================================
+ftd2xx versus libftdi versus libusb 1.0
+=======================================
+
+libnifalcon can use three libraries to access the falcon:
+
+FTD2XX - Library distributed by FTDI themselves
+Windows: Fine - RECOMMENDED
 Linux: Fine
 64-bit Linux: No 64-bit drivers available
 OS X: Okish?
 
 libftdi:
 Windows: Untested (Recommended to use FTD2XX)
-Linux: Fine
+Linux: Fine 
 64-bit Linux: Fine
-OS X: Fine
+OS X: Fine - RECOMMENDED
 
-So, basically, ftd2xx is stable on windows and linux, iffy on OS X. libftdi is somewhat slower, but works everywhere. This is being worked on right now, see the following blog post for more details:
+libusb-1.0:
+Windows: Not Available for Windows
+Linux: Fine - HIGHLY RECOMMENDED
+64-bit Linux: Fine - HIGHLY RECOMMENDED
+OS X: Not Available for OS X
 
-http://www.nonpolynomial.com/archives/2008/04/libusb-libftdi-latency-and-my-own-stupid.php
+Note that libnifalcon has been written in such a way that which comm library you use should have little effect on the cross-platform performance of your code. However, this is more of a hope than a promise.
 
 ==================
 Platform Specifics
@@ -106,14 +108,11 @@ Windows
 Linux
 -----
 
-- Either ftd2xx or libftdi can be used on linux.
-- 64-BIT USERS: There are no versions of ftd2xx drivers for 64-bit linux. libftdi has been tested and found to work fine with libnifalcon on 64-bit platforms.
-- IF USING FTD2XX, make sure to read the instructions that come with it on setting up the proc system properly.
-- Some installations of libftdi using debian apt-get seem to be a little unstable with libnifalcon (this has mainly been found on 64-bit machines). If you have installed libftdi from a prepackaged install and have stability issues accessing the falcon, it is recommended that you try compiling libftdi yourself.
-- Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root.
+- libusb-1.0, while still beta, provides very fast non-blocking communications for Linux. Use it. 
+- Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root. There's a sample udev file in the "linux" directory of the distribution that can help.
 
 ---
 OSX
 ---
 
-- As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. Kyle still uses libftdi.
+- As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. libnifalcon developers prefer libftdi for the time being.
