@@ -98,7 +98,7 @@ namespace libnifalcon
 			m_rawDataSize = m_falconComm->getBytesAvailable();
 			//hack to make libftdi work for the time being
 			//always read the maximum amount available from the endpoint to make sure we don't lose anything
-			if(m_rawDataSize <= 0 && !m_falconComm->requiresPoll()) m_rawDataSize = 64;
+			if(m_rawDataSize <= 0 && !m_falconComm->requiresPoll()) m_rawDataSize = 16;
 			if(m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize))
 			{
 				formatOutput();
