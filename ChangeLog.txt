@@ -1,8 +1,7 @@
 libnifalcon ChangeLog
 =====================
 
-
-2008-11-01 Kyle Machulis <kyle@nonpolynomial.com>
+2008-11-16 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 1
 	* Added libusb-1.0 support for linux
 	* Rewrote packet building function in FirmwareNovintSDK class to deal with partial packets
@@ -13,9 +12,12 @@ libnifalcon ChangeLog
 	* Fixed RPATH sets in cmake
 	* Added <cstring> includes for memcpy so builds work on Fedora
 	* Added loop timing test to falcon_test_cli
+	* Added cube test to falcon_test_cli (Thanks to Stephen Sinclair)
+	* Fixed stability issues in falcon_test_cli (Thanks to Stephen Sinclair)
 	* Added firmware loading from memory
 	* Added firmware as header includes
 	* Added bin2h python utility for firmware conversion
+	* Added nvent extracted firmware (considered to be 'release' firmware)
 	* Moved includes to include directory to mirror final install state
 	* Updated all libnifalcon includes to reflect proper full path
 2008-10-19 Kyle Machulis <kyle@nonpolynomial.com>
