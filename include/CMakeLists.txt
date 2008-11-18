@@ -5,13 +5,12 @@ INSTALL(DIRECTORY
   ${PROJECT_INCLUDE_DIR}/falcon/kinematic
   ${PROJECT_INCLUDE_DIR}/falcon/grip
   DESTINATION ${INCLUDE_INSTALL_DIR}/falcon
-  REGEX ".svn" EXCLUDE
-  REGEX ".git" EXCLUDE
   )
 
 INSTALL(FILES
   ${PROJECT_INCLUDE_DIR}/falcon/util/FalconFirmwareBinaryTest.h
   ${PROJECT_INCLUDE_DIR}/falcon/util/FalconFirmwareBinaryNvent.h
+  CONFIGURATIONS Debug Release
   DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util
 )
 
