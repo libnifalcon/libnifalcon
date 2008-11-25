@@ -61,11 +61,6 @@ namespace libnifalcon
 		m_tv.tv_usec = 100;
 		m_requiresPoll = true;
 		initLibUSB();
-#if defined(LIBUSB_DEBUG)
-		//Spam libusb messages
-		//Between 0-3 for libusb 1.0
-		libusb_set_debug(NULL, 3);
-#endif
 
 	}
 	
@@ -77,6 +72,19 @@ namespace libnifalcon
 	
 	bool FalconCommLibUSB::initLibUSB()
 	{
+		if((m_deviceErrorCode = libusb_init(&m_usbContext)) < 0)
+		{
+			std::cout << "failed to initialise libusb" << std::endl;
+			return false;
+		}
+#if defined(LIBUSB_DEBUG)
+		//Spam libusb messages
+		//Between 0-3 for libusb 1.0
+		libusb_set_debug(m_usbContext, 3);
+#else
+		libusb_set_debug(m_usbContext, 0);
+#endif
+		
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
@@ -85,16 +93,9 @@ namespace libnifalcon
 		struct libusb_device **devs;
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
-		struct libusb_context *context;
 		size_t i = 0;		
 		int r;
 		count = 0;
-
-		if((m_deviceErrorCode = libusb_init(&context)) < 0)
-		{
-			std::cout << "failed to initialise libusb" << std::endl;
-			return false;
-		}
 		
 		if (libusb_get_device_list(m_usbContext, &devs) < 0)
 			return NULL;
@@ -114,7 +115,6 @@ namespace libnifalcon
 		}
 
 		libusb_free_device_list(devs, 1);
-		libusb_exit(context);
 		return true;
 	}
 
@@ -128,11 +128,6 @@ namespace libnifalcon
 		size_t i = 0;
 		int count = 0;
 
-		if((m_deviceErrorCode = libusb_init(&m_usbContext)) < 0)
-		{
-			std::cout << "failed to initialise libusb" << std::endl;
-			return false;
-		}
 
 		if ((m_deviceErrorCode = libusb_get_device_list(m_usbContext, &devs)) < 0)
 		{
