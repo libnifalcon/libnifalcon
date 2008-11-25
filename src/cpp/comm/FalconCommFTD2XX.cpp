@@ -13,6 +13,7 @@
  */
 #include "falcon/comm/FalconCommFTD2XX.h"
 #include <cstring>
+#include <iostream>
 
 namespace libnifalcon
 {
@@ -49,6 +50,7 @@ namespace libnifalcon
 		for(i = 0; i < MAX_DEVICES; i++) {
 			pcBufLD[i] = cBufLD[i];
 		}
+
 		if((m_deviceErrorCode = FT_ListDevices(pcBufLD, &device_count, FT_LIST_ALL | FT_OPEN_BY_DESCRIPTION)) != FT_OK)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
@@ -149,6 +151,16 @@ namespace libnifalcon
 		return true;
 	}
 
+	void FalconCommFTD2XX::poll()
+	{
+		if(!m_isCommOpen)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
+			return;
+		}
+		if((m_deviceErrorCode = FT_GetQueueStatus(m_falconDevice, (DWORD*)&m_bytesAvailable)) != FT_OK) return;
+		m_hasBytesAvailable = (m_bytesAvailable > 0);
+	}
 	bool FalconCommFTD2XX::setFirmwareMode()
 	{
 		uint32_t bytes_written, bytes_read;

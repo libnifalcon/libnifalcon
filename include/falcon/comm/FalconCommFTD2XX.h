@@ -23,9 +23,10 @@ namespace libnifalcon
 	class FalconCommFTD2XX : public FalconComm
 	{
 	public:
-		FalconCommFTD2XX() {}
+		FalconCommFTD2XX() { m_requiresPoll = true; }
 		virtual ~FalconCommFTD2XX();
 		virtual bool getDeviceCount(int8_t& );
+		virtual void poll();
 		virtual bool open(uint8_t );
 		virtual bool close();
 		virtual bool read(uint8_t*, uint32_t);
