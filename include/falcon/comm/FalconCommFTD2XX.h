@@ -16,16 +16,16 @@
 #define FALCONFTD2XXCOMM_H
 
 #include "falcon/core/FalconComm.h"
-#include "ftd2xx.h"
 
 namespace libnifalcon
 {
 	class FalconCommFTD2XX : public FalconComm
 	{
 	public:
-		FalconCommFTD2XX() {}
+		FalconCommFTD2XX() { m_requiresPoll = true; }
 		virtual ~FalconCommFTD2XX();
 		virtual bool getDeviceCount(int8_t& );
+		virtual void poll();
 		virtual bool open(uint8_t );
 		virtual bool close();
 		virtual bool read(uint8_t*, uint32_t);
@@ -35,7 +35,10 @@ namespace libnifalcon
 	protected:
 		const static char* FALCON_DESCRIPTION;
 		int8_t openDeviceFTD2XX(uint8_t , bool );
-		FT_HANDLE m_falconDevice;
+		//This would usually be a FT_HANDLE, but FT_HANDLE
+		//is just a void*, so this saves us having to deal
+		//with the include at this level.
+		void* m_falconDevice;
 	};
 };
 

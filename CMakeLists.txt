@@ -88,9 +88,9 @@ OPTION(SET_BUILD_RPATH "Use different RPATH for build tree and install (requires
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
 
 
-IF(WINDOWS OR FORCE_FTD2XX_BUILD)
+IF(WIN32 OR FORCE_FTD2XX_BUILD)
   FIND_PACKAGE(libftd2xx)
-ENDIF(WINDOWS OR FORCE_FTD2XX_BUILD)
+ENDIF(WIN32 OR FORCE_FTD2XX_BUILD)
 
 IF(NOT LIBFTD2XX_FOUND)
   FIND_PACKAGE(libusb)
