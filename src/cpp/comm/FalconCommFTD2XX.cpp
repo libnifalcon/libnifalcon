@@ -12,6 +12,14 @@
  *
  */
 #include "falcon/comm/FalconCommFTD2XX.h"
+
+#ifdef FTD2XX_WINDOWS
+#include <windows.h>
+#else
+#include <WinTypes.h>
+#endif
+#include "ftd2xx.h"
+
 #include <cstring>
 #include <iostream>
 

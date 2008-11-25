@@ -16,7 +16,6 @@
 #define FALCONFTD2XXCOMM_H
 
 #include "falcon/core/FalconComm.h"
-#include "ftd2xx.h"
 
 namespace libnifalcon
 {
@@ -36,7 +35,10 @@ namespace libnifalcon
 	protected:
 		const static char* FALCON_DESCRIPTION;
 		int8_t openDeviceFTD2XX(uint8_t , bool );
-		FT_HANDLE m_falconDevice;
+		//This would usually be a FT_HANDLE, but FT_HANDLE
+		//is just a void*, so this saves us having to deal
+		//with the include at this level.
+		void* m_falconDevice;
 	};
 };
 
