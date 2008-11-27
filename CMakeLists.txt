@@ -102,8 +102,11 @@ IF(NOT LIBFTD2XX_FOUND)
   ENDIF(LIBUSB_1_FOUND)
 ENDIF(NOT LIBFTD2XX_FOUND)
 
-
 FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
+IF(NOT Boost_FOUND)
+  MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
+ENDIF(NOT Boost_FOUND)
+
 
 IF(DEBUG_BUILD)
   SET(CMAKE_BUILD_TYPE "Debug")
