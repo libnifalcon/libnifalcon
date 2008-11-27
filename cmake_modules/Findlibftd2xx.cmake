@@ -24,7 +24,6 @@ else (LIBFTD2XX_LIBRARIES AND LIBFTD2XX_INCLUDE_DIRS)
   find_path(LIBFTD2XX_INCLUDE_DIR
     NAMES
       ftd2xx.h
-	  WinTypes.h
     PATHS
       /usr/include
       /usr/local/include

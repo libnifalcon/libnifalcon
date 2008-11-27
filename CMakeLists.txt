@@ -89,6 +89,7 @@ OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static
 
 
 IF(WIN32 OR FORCE_FTD2XX_BUILD)
+  MESSAGE(STATUS "Looking for FTD2XX")
   FIND_PACKAGE(libftd2xx)
 ENDIF(WIN32 OR FORCE_FTD2XX_BUILD)
 

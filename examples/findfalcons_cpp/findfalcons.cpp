@@ -48,9 +48,9 @@ void runFalconTest(FalconDevice& d)
 	double position[3];
 	int8_t num_falcons;
 	int status, i;
-	u_int8_t count;
-	u_int32_t error_count = 0;
-	u_int32_t loop_count = 0;
+	uint8_t count;
+	uint32_t error_count = 0;
+	uint32_t loop_count = 0;
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
 
@@ -111,7 +111,9 @@ void runFalconTest(FalconDevice& d)
 int main(int argc, char** argv)
 {
 	signal(SIGINT, sigproc);
+#ifndef WIN32
 	signal(SIGQUIT, sigproc);
+#endif
 #if defined(LIBUSB)
 	std::cout << "Running libusb test" << std::endl;
 	dev.setFalconComm<FalconCommLibUSB>();

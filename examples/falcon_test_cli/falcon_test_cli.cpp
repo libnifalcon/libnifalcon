@@ -309,7 +309,9 @@ int main(int argc, char** argv)
 {
 
 	signal(SIGINT, sigproc);
+#ifndef WIN32
 	signal(SIGQUIT, sigproc);
+#endif
 	FalconCLITest f;
 	f.addOptions(FalconCLITest::LED_OPTIONS | FalconCLITest::DEVICE_OPTIONS | FalconCLITest::COMM_OPTIONS | FalconCLITest::FIRMWARE_OPTIONS);	
 	if(!f.parseOptions(argc, argv))
