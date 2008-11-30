@@ -12,14 +12,15 @@
  *
  */
 #include "falcon/comm/FalconCommLibFTDI.h"
+#include "ftdi.h"
 
 namespace libnifalcon {
-
-	
 	
 	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false)
 	{
+		m_falconDevice = new ftdi_context;
+
 		//No way to poll, so we act like we always have something available
 		m_hasBytesAvailable = true;
 		initLibFTDI();
@@ -28,7 +29,8 @@ namespace libnifalcon {
 	FalconCommLibFTDI::~FalconCommLibFTDI() 
 	{
 		close();
-		ftdi_deinit(&(m_falconDevice));
+		ftdi_deinit((m_falconDevice));
+		delete m_falconDevice;
 	}
 			
 	bool FalconCommLibFTDI::initLibFTDI()
@@ -37,7 +39,7 @@ namespace libnifalcon {
 		//Spam libusb messages
 		usb_set_debug(10);
 #endif
-		if((m_deviceErrorCode = ftdi_init(&(m_falconDevice))) < 0)
+		if((m_deviceErrorCode = ftdi_init((m_falconDevice))) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
@@ -54,7 +56,7 @@ namespace libnifalcon {
 			return false;
 		}
 		struct ftdi_device_list* dev_list[128];
-		device_count = ftdi_usb_find_all(&(m_falconDevice), dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
+		device_count = ftdi_usb_find_all((m_falconDevice), dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
 		ftdi_list_free(dev_list);
 		return true;
 	}
@@ -70,7 +72,7 @@ namespace libnifalcon {
 		struct ftdi_device_list *dev_list, *current;
 		if(m_isCommOpen) close();
 
-		count = ftdi_usb_find_all(&(m_falconDevice), &dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
+		count = ftdi_usb_find_all((m_falconDevice), &dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
 		if(count <= 0 || device_index > count)
 		{
 			ftdi_list_free(&dev_list);
@@ -86,7 +88,7 @@ namespace libnifalcon {
 			}
 		}
 		for(i = 0, current = dev_list; current != NULL && i < device_index; current = current->next, ++i);
-		if(current==NULL || (m_deviceErrorCode = ftdi_usb_open_dev(&(m_falconDevice), current->dev)) < 0)
+		if(current==NULL || (m_deviceErrorCode = ftdi_usb_open_dev((m_falconDevice), current->dev)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			ftdi_list_free(&dev_list);
@@ -95,7 +97,7 @@ namespace libnifalcon {
 		setNormalMode();
 		ftdi_list_free(&dev_list);
 		m_isCommOpen = true;
-		if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
+		if((m_deviceErrorCode = ftdi_usb_purge_buffers((m_falconDevice))) < 0) return false;
 		setNormalMode();
 		return true;
 	}
@@ -107,7 +109,7 @@ namespace libnifalcon {
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
-		if((m_deviceErrorCode = ftdi_usb_close(&m_falconDevice)) < 0)
+		if((m_deviceErrorCode = ftdi_usb_close(m_falconDevice)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
@@ -126,7 +128,7 @@ namespace libnifalcon {
 			return false;
 		}
 
-		m_lastBytesRead = ftdi_read_data(&(m_falconDevice), str, size);
+		m_lastBytesRead = ftdi_read_data((m_falconDevice), str, size);
 		if(m_lastBytesRead < 0)
 		{
 			m_deviceErrorCode = m_lastBytesRead;
@@ -149,7 +151,7 @@ namespace libnifalcon {
 			return false;
 		}
 
-		m_lastBytesWritten = ftdi_write_data(&(m_falconDevice), str, size);
+		m_lastBytesWritten = ftdi_write_data((m_falconDevice), str, size);
 		if(m_lastBytesWritten < 0)
 		{
 			m_deviceErrorCode = m_lastBytesRead;
@@ -184,13 +186,13 @@ namespace libnifalcon {
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 		
 		//Clear out current buffers to make sure we have a fresh start
-		if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
+		if((m_deviceErrorCode = ftdi_usb_purge_buffers((m_falconDevice))) < 0) return false;
 
 		//Reset the device
-		if((m_deviceErrorCode = ftdi_usb_reset(&(m_falconDevice))) < 0) return false;
+		if((m_deviceErrorCode = ftdi_usb_reset((m_falconDevice))) < 0) return false;
 
 		//Make sure our latency timer is at 16ms, otherwise firmware checks tend to always fail
-		if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 16)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_latency_timer((m_falconDevice), 16)) < 0) return false;
 	
 		//Set to:
 		// 9600 baud
@@ -198,12 +200,12 @@ namespace libnifalcon {
 		// No Flow Control
 		// RTS Low
 		// DTR High	
-		if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 9600)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_set_line_property(&(m_falconDevice), BITS_8, STOP_BIT_1, NONE)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_setflowctrl(&(m_falconDevice), SIO_DISABLE_FLOW_CTRL)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_setrts(&(m_falconDevice), 0)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice), 0)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice), 1)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 9600)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_line_property((m_falconDevice), BITS_8, STOP_BIT_1, NONE)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_setflowctrl((m_falconDevice), SIO_DISABLE_FLOW_CTRL)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_setrts((m_falconDevice), 0)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_setdtr((m_falconDevice), 0)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_setdtr((m_falconDevice), 1)) < 0) return false;
 
 		//Send 3 bytes: 0x0a 0x43 0x0d
 		if(!write(check_msg_1_send, 3)) return false;
@@ -212,8 +214,8 @@ namespace libnifalcon {
 		//Set to:
 		// DTR Low
 		// 140000 baud (0x15 clock ticks per signal)
-		if((m_deviceErrorCode = ftdi_setdtr(&(m_falconDevice),0)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 140000)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_setdtr((m_falconDevice),0)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 140000)) < 0) return false;
 
 		//Send "A" character
 		if(!write(check_msg_2, 1)) return false;
@@ -233,8 +235,8 @@ namespace libnifalcon {
 			return false;
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 1)) < 0) return false;
-		if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 1456312)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_latency_timer((m_falconDevice), 1)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 1456312)) < 0) return false;
 		m_errorCode = 0;
 		return true;
 	}

@@ -26,6 +26,7 @@ namespace libnifalcon
 	
 	void FalconFirmwareNovintSDK::formatOutput()
 	{
+		m_rawData[m_rawDataSize] = 0;
 		for(int i = 0; i < m_rawDataSize; ++i)
 		{
 			m_rawOutputInternal[m_currentOutputIndex] = m_rawData[i];

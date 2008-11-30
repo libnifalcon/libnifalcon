@@ -15,7 +15,8 @@
 #define FALCONLIBFTDICOMM_H
 
 #include "falcon/core/FalconComm.h"
-#include "ftdi.h"
+
+struct ftdi_context;
 
 namespace libnifalcon
 {
@@ -33,7 +34,7 @@ namespace libnifalcon
 		virtual bool setNormalMode();
 	protected:
 		bool initLibFTDI();
-		ftdi_context m_falconDevice;
+		ftdi_context* m_falconDevice;
 		bool m_isInitialized;
 	};
 };
