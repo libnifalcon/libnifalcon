@@ -15,6 +15,8 @@
 
 namespace libnifalcon {
 
+	
+	
 	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false)
 	{

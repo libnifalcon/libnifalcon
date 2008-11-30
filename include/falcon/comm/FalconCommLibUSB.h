@@ -15,10 +15,15 @@
 #define FALCONCOMMLIBUSB_H
 
 #include "falcon/core/FalconComm.h"
-#include "libusb.h"
+
+struct timeval;
+struct libusb_device_handle;
+struct libusb_transfer;
+struct libusb_context;
 
 namespace libnifalcon
 {
+	
 	class FalconCommLibUSB : public FalconComm
 	{
 	public:
@@ -27,8 +32,8 @@ namespace libnifalcon
 		virtual bool getDeviceCount(int8_t& );
 		virtual bool open(uint8_t );
 		virtual bool close();
-		virtual bool read(uint8_t*, u_int32_t);
-		virtual bool write(uint8_t*, u_int32_t);
+		virtual bool read(uint8_t*, uint32_t);
+		virtual bool write(uint8_t*, uint32_t);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 		static void cb_in(struct libusb_transfer *transfer);
@@ -43,7 +48,7 @@ namespace libnifalcon
 
 		bool m_isWriteAllocated;
 		bool m_isReadAllocated;
-		struct timeval m_tv;
+		struct timeval* m_tv;
 		libusb_device_handle* m_falconDevice;
 		unsigned char input[128], output[128];
 		struct libusb_transfer* in_transfer;

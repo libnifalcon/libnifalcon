@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
+#include "libusb.h"
 
 //Taken from LibFTDI
 //I just don't want to wait for the libusb 1.0 port of libftdi
@@ -57,8 +58,9 @@ namespace libnifalcon
 		m_isWriteAllocated(false),
 		m_isReadAllocated(false)
 	{
-		m_tv.tv_sec = 0;
-		m_tv.tv_usec = 100;
+		m_tv = new timeval;
+		m_tv->tv_sec = 0;
+		m_tv->tv_usec = 100;
 		m_requiresPoll = true;
 		initLibUSB();
 
@@ -67,7 +69,8 @@ namespace libnifalcon
 	FalconCommLibUSB::~FalconCommLibUSB()
 	{
 		libusb_free_transfer(in_transfer);
-		libusb_free_transfer(out_transfer);		
+		libusb_free_transfer(out_transfer);
+		delete m_tv;
 	}
 	
 	bool FalconCommLibUSB::initLibUSB()
@@ -231,7 +234,7 @@ namespace libnifalcon
 		m_hasBytesAvailable = true;
 	}
 	
-	bool FalconCommLibUSB::read(uint8_t* buffer, u_int32_t size)
+	bool FalconCommLibUSB::read(uint8_t* buffer, uint32_t size)
 	{
 		if(!m_isCommOpen)
 		{
@@ -247,7 +250,7 @@ namespace libnifalcon
 		return true;
 	}
 	
-	bool FalconCommLibUSB::write(uint8_t* buffer, u_int32_t size)
+	bool FalconCommLibUSB::write(uint8_t* buffer, uint32_t size)
 	{
 		if(!m_isCommOpen)
 		{
@@ -380,7 +383,7 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::poll()
 	{
-		libusb_handle_events_timeout(NULL, &m_tv);
+		libusb_handle_events_timeout(NULL, m_tv);
 	}
 	
 	void FalconCommLibUSB::reset()
