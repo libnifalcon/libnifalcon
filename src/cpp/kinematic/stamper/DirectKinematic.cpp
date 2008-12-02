@@ -22,8 +22,8 @@ namespace libnifalcon
 	{
 		void DirectKinematic::initialize()
 		{
-			gmtl::Vec3f positionCenter(0,0,150); // center of workspace
-			float positionRange = 200; // range of the workspace
+			gmtl::Vec3f positionCenter(0,0,0.150); // center of workspace
+			float positionRange = 0.200; // range of the workspace
 			basePositionMatrix = new PositionMatrix(positionCenter, positionRange, 64);
 	
 			gmtl::Vec3f angularCenter(gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f)); // minimum -45 degrees, maximum 135 degrees

@@ -41,13 +41,13 @@ namespace libnifalcon
 	
 			delta = range/size;
 	
-			minimumPosition[0] = 100;
-			minimumPosition[1] = 100;
-			minimumPosition[2] = 250;
+			minimumPosition[0] = .100;
+			minimumPosition[1] = .100;
+			minimumPosition[2] = .250;
 
-			maximumPosition[0] = -100;
-			maximumPosition[1] = -100;
-			maximumPosition[2] = 50;
+			maximumPosition[0] = -.100;
+			maximumPosition[1] = -.100;
+			maximumPosition[2] = 0.050;
 	
 			for (int i=0; i<size; i++)
 				for (int j=0; j<size; j++)

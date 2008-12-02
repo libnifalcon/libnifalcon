@@ -29,17 +29,7 @@ namespace libnifalcon
 		m_dir.initialize();
 	}
 
-	gmtl::Point3f FalconKinematicStamper::translatePointToWorkspace(gmtl::Point3f p)
-	{
-		return gmtl::Point3f();
-	}
-	
-	gmtl::Point3f FalconKinematicStamper::translatePointFromWorkspace(gmtl::Point3f p)
-	{
-		return gmtl::Point3f();
-	}
-
-	bool FalconKinematicStamper::getForces(double position[3], double cart_force[3], int16_t enc_force[3])
+	bool FalconKinematicStamper::getForces(double position[3], double cart_force[3], int16_t (&enc_force)[3])
 	{
 		double ang[3];
 		StamperKinematicImpl::Angle a;

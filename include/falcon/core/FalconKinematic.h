@@ -40,7 +40,7 @@ namespace libnifalcon
 		{
 			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
 		}
-		virtual bool getForces(double position[3], double cart_force[3], int16_t enc_force[3]) = 0;
+		virtual bool getForces(double position[3], double cart_force[3], int16_t (&enc_force)[3]) = 0;
 		virtual bool getAngles(double position[3], double angles[3]) = 0;
 		virtual bool getPosition(int16_t encoders[3], double position[3]) = 0;
 		void setWorkspaceBounds(WorkspaceBounds b) { m_workspaceBounds = b; }
