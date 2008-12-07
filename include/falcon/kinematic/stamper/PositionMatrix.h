@@ -25,15 +25,15 @@ namespace libnifalcon
 		class PositionMatrix
 		{
 		public:
-			PositionMatrix(gmtl::Vec3f center, float range, int density);
+			PositionMatrix(const double (&center)[3], const float& range, const uint32_t density);
 			virtual ~PositionMatrix();
-			void populate(AngularMatrix *angularMatrix);
+			void populate(AngularMatrix& angularMatrix);
 			float getRange();
 		private:
-			gmtl::Vec3f center;
-			float range;
-			float delta;
-			int density;
+			double m_matrixCenter[3];
+			float m_matrixRange;
+			float m_matrixDelta;
+			int m_matrixDensity;
 		};
 	}
 }

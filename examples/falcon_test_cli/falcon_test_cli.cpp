@@ -142,7 +142,7 @@ public:
             
             // TODO: for stability, stiffness should be a function of
             // the sample rate.  Also, we can add damping.
-            double stiffness = 500000;
+            double stiffness = 1000;
 
             std::cout << "Cube Test" << std::endl << std::endl;
 			stop = false;

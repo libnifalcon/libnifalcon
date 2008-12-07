@@ -18,32 +18,32 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		PositionMatrix::PositionMatrix(gmtl::Vec3f center, float range, int density)
+		PositionMatrix::PositionMatrix(const double (&center)[3], const float& range, const uint32_t density) :
+			m_matrixRange(range),
+			m_matrixDensity(density),
+			m_matrixDelta(range/(float)density)
 		{
-			this->center = center;
-			this->range = range;
-			this->density = density;
-	
-			delta = range/((float)density);
+			for(int i = 0; i < 3; ++i)
+				m_matrixCenter[i] = center[i];
 		}
 
 		PositionMatrix::~PositionMatrix()
 		{
 		}
 
-		void PositionMatrix::populate(AngularMatrix *angularMatrix)
+		void PositionMatrix::populate(AngularMatrix& angularMatrix)
 		{
-			for (int i=-(density/2); i<=(density/2); i++)
-				for (int j=-(density/2); j<=(density/2); j++)
-					for (int k=-(density/2); k<=(density/2); k++)
+			for (int i=-(m_matrixDensity/2); i<=(m_matrixDensity/2); i++)
+				for (int j=-(m_matrixDensity/2); j<=(m_matrixDensity/2); j++)
+					for (int k=-(m_matrixDensity/2); k<=(m_matrixDensity/2); k++)
 					{
-						angularMatrix->setPosition(gmtl::Vec3f(center[0]+(i*delta),center[1]+(j*delta),center[2]+(k*delta)));
+						angularMatrix.setPosition(gmtl::Vec3f(m_matrixCenter[0]+(i*m_matrixDelta),m_matrixCenter[1]+(j*m_matrixDelta),m_matrixCenter[2]+(k*m_matrixDelta)));
 					}
 		}
 
 		float PositionMatrix::getRange()
 		{
-			return range;
+			return m_matrixRange;
 		}
 
 	}

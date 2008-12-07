@@ -10,7 +10,7 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		gmtl::Vec3f JacobianMatrix::calculate(Angle angle, gmtl::Vec3f cartesian)
+		gmtl::Vec3f JacobianMatrix::calculate(const Angle& angle, const gmtl::Vec3f& cartesian)
 		{
 			gmtl::Matrix33f matrixJ = calculateJacobian(angle);
 	
@@ -24,7 +24,7 @@ namespace libnifalcon
 			return matrixJ * cartesian;//gmtl::Vec3f(solution[0][0], solution[1][0], solution[2][0]);
 		}
 
-		gmtl::Vec3f JacobianMatrix::calculateInverse(Angle angle, gmtl::Vec3f angular)
+		gmtl::Vec3f JacobianMatrix::calculateInverse(const Angle& angle, const gmtl::Vec3f& angular)
 		{
 			gmtl::Matrix33f matrixJ = calculateJacobian(angle);
 	
@@ -38,24 +38,30 @@ namespace libnifalcon
 			return invert(matrixJ) * angular;//gmtl::Vec3f(solution[0][0], solution[1][0], solution[2][0]);
 		}
 
-		gmtl::Matrix33f JacobianMatrix::calculateJacobian(Angle angle)
+		gmtl::Matrix33f JacobianMatrix::calculateJacobian(const Angle& angle)
 		{
 			gmtl::Matrix33f matrixJF;
-			calculateJFi(ARM_1, angle, &matrixJF);
-			calculateJFi(ARM_2, angle, &matrixJF);
-			calculateJFi(ARM_3, angle, &matrixJF);
-	
+			calculateJFi(ARM_1, angle, matrixJF);
+			calculateJFi(ARM_2, angle, matrixJF);
+			calculateJFi(ARM_3, angle, matrixJF);
+			//std::cout << "JF:" << std::endl;
+			//std::cout << matrixJF << std::endl;
+
 			gmtl::Matrix33f matrixJI;
-			calculateJIi(ARM_1, angle, &matrixJI);
-			calculateJIi(ARM_2, angle, &matrixJI);
-			calculateJIi(ARM_3, angle, &matrixJI);
-	
+			calculateJIi(ARM_1, angle, matrixJI);
+			calculateJIi(ARM_2, angle, matrixJI);
+			calculateJIi(ARM_3, angle, matrixJI);
+			//std::cout << "JI:" << std::endl;
+			//std::cout << matrixJI << std::endl;
+			
 			gmtl::Matrix33f matrixJ = invert(matrixJI) * matrixJF;
-	
+
+			//std::cout << "J:" << std::endl;
+			//std::cout << matrixJ << std::endl;
 			return matrixJ;
 		}
 
-		void JacobianMatrix::calculateJFi(arm_id arm, Angle angle, gmtl::Matrix33f *matrix)
+		void JacobianMatrix::calculateJFi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			float JFi1 = cos(angle.theta2[arm])*sin(angle.theta3[arm])*cos(phy[arm])-
 				cos(angle.theta3[arm])*sin(phy[arm]);
@@ -65,16 +71,15 @@ namespace libnifalcon
 	
 			float JFi3 = sin(angle.theta2[arm])*sin(angle.theta3[arm]);
 	
-			(*matrix)[arm][0] = JFi1;
-			(*matrix)[arm][1] = JFi2;
-			(*matrix)[arm][2] = JFi3;
+			matrix[arm][0] = JFi1;
+			matrix[arm][1] = JFi2;
+			matrix[arm][2] = JFi3;
 		}
 
-		void JacobianMatrix::calculateJIi(arm_id arm, Angle angle, gmtl::Matrix33f *matrix)
+		void JacobianMatrix::calculateJIi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			float JIi = a*sin(angle.theta2[arm]-angle.theta1[arm])*sin(angle.theta3[arm]);
-	
-			(*matrix)[arm][arm] = JIi;
+			matrix[arm][arm] = JIi;
 		}
 	}
 }

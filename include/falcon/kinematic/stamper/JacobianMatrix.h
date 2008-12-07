@@ -28,18 +28,13 @@ namespace libnifalcon
 		{
 		public:
 			JacobianMatrix() {}
-			virtual ~JacobianMatrix() {}
-	
-			static gmtl::Vec3f calculate(Angle angle, gmtl::Vec3f cartesian);
-	
-			static gmtl::Vec3f calculateInverse(Angle angle, gmtl::Vec3f angular);
-	
+			virtual ~JacobianMatrix() {}   
+			static gmtl::Vec3f calculate(const Angle& angle, const gmtl::Vec3f& cartesian);	
+			static gmtl::Vec3f calculateInverse(const Angle& angle, const gmtl::Vec3f& angular);	
 		private:
-			static gmtl::Matrix33f calculateJacobian(Angle angle);
-	
-			static void calculateJFi(arm_id arm, Angle angle, gmtl::Matrix33f *matrix);
-	
-			static void calculateJIi(arm_id arm, Angle angle, gmtl::Matrix33f *matrix);
+			static gmtl::Matrix33f calculateJacobian(const Angle& angle);	
+			static void calculateJFi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix);	
+			static void calculateJIi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix);
 		};
 
 	}

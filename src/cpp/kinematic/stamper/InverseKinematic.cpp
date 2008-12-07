@@ -21,16 +21,16 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		Angle InverseKinematic::calculate(gmtl::Point3f position)
+		Angle InverseKinematic::calculate(const gmtl::Point3f& position)
 		{
 			Angle angle;
-			calulateArm(ARM_1, position, &angle);
-			calulateArm(ARM_2, position, &angle);
-			calulateArm(ARM_3, position, &angle);
+			calulateArm(ARM_1, position, angle);
+			calulateArm(ARM_2, position, angle);
+			calulateArm(ARM_3, position, angle);
 			return angle;
 		}
 
-		void InverseKinematic::calulateArm(arm_id arm, Point3f position, Angle *angle)
+		void InverseKinematic::calulateArm(const arm_id arm, const gmtl::Point3f& position, Angle& angle)
 		{
 			float pu = -r+cos(phy[arm])*position[X]+sin(phy[arm])*position[Y];
 			float pv = -(s-cos(phy[arm])*position[Y]+sin(phy[arm])*position[X]);
@@ -52,9 +52,9 @@ namespace libnifalcon
 	
 			float theta2 = aCos(-(a*cos(theta1)-c-pu)/(b*sin(theta3)+d+e));
 	
-			angle->theta1[arm] = theta1;
-			angle->theta2[arm] = theta2;
-			angle->theta3[arm] = theta3;
+			angle.theta1[arm] = theta1;
+			angle.theta2[arm] = theta2;
+			angle.theta3[arm] = theta3;
 		}
 	}
 }

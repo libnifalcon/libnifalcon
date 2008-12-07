@@ -11,8 +11,9 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
-#include "falcon/kinematic/stamper/DirectKinematic.h"
 
+#include "falcon/core/FalconGeometry.h"
+#include "falcon/kinematic/stamper/DirectKinematic.h"
 #include "falcon/kinematic/stamper/InverseKinematic.h"
 #include "falcon/kinematic/stamper/JacobianMatrix.h"
 
@@ -20,35 +21,37 @@ namespace libnifalcon
 {
 	namespace StamperKinematicImpl
 	{
+		const float DirectKinematic::POSITION_RANGE;
+		const uint32_t DirectKinematic::POSITION_MATRIX_DENSITY;
+		
+		DirectKinematic::DirectKinematic() :
+			m_basePositionMatrix(POSITION_CENTER, POSITION_RANGE, POSITION_MATRIX_DENSITY),
+			m_baseAngularMatrix(gmtl::Vec3f(gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f)), gmtl::Math::deg2Rad(130.0f), 16)
+		{
+			
+		}
+		
 		void DirectKinematic::initialize()
 		{
-			gmtl::Vec3f positionCenter(0,0,0.150); // center of workspace
-			float positionRange = 0.200; // range of the workspace
-			basePositionMatrix = new PositionMatrix(positionCenter, positionRange, 64);
-	
-			gmtl::Vec3f angularCenter(gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f)); // minimum -45 degrees, maximum 135 degrees
-			float angularRange = gmtl::Math::deg2Rad(130.0f); // range of 130 degrees
-			baseAngularMatrix = new AngularMatrix(angularCenter, angularRange, 16);
-		
-			basePositionMatrix->populate(baseAngularMatrix);
-			std::cout << baseAngularMatrix->isComplete() << std::endl;
+			m_basePositionMatrix.populate(m_baseAngularMatrix);
+			std::cout << m_baseAngularMatrix.isComplete() << std::endl;
 	
 			epsilonAngle = gmtl::Math::deg2Rad(0.05f);
 			epsilonPosition = 1;
 		}
 		
-		gmtl::Point3f DirectKinematic::calculate(gmtl::Vec3f angle)
+		gmtl::Point3f DirectKinematic::calculate(gmtl::Vec3f& angle)
 		{
 			iteration = 0;
 			gmtl::Point3f position;
-			baseAngularMatrix->getPosition(angle, position);
+			m_baseAngularMatrix.getPosition(angle, position);
 			return newtonRaphsonMethod(angle, position);
 		}
 
-		gmtl::Point3f DirectKinematic::newtonRaphsonMethod(gmtl::Vec3f angle, gmtl::Point3f approxPosition)
+		gmtl::Point3f DirectKinematic::newtonRaphsonMethod(gmtl::Vec3f& angle, gmtl::Point3f& approxPosition)
 		{
 			Angle approxAngle = InverseKinematic::calculate(approxPosition);	
-			gmtl::Vec3f newPosition = approxPosition + JacobianMatrix::calculate(approxAngle, (angle-gmtl::Vec3f(approxAngle.theta1[0], approxAngle.theta1[1], approxAngle.theta1[2])));
+			gmtl::Point3f newPosition = approxPosition + JacobianMatrix::calculate(approxAngle, (angle-gmtl::Vec3f(approxAngle.theta1[0], approxAngle.theta1[1], approxAngle.theta1[2])));
 
 			if (iteration++ < 10)
 			{

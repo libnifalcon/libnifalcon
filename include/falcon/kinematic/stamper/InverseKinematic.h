@@ -30,10 +30,10 @@ namespace libnifalcon
 			InverseKinematic() {}
 			virtual ~InverseKinematic() {}
 
-			static Angle calculate(gmtl::Point3f position);	
+			static Angle calculate(const gmtl::Point3f& position);
 
 		private:
-			static void calulateArm(arm_id arm, gmtl::Point3f position, Angle *angle);
+			static void calulateArm(const arm_id arm, const gmtl::Point3f& position, Angle& angle);
 		};
 	}
 }

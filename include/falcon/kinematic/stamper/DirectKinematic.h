@@ -27,20 +27,23 @@ namespace libnifalcon
 		class DirectKinematic
 		{
 		public:
-			DirectKinematic() {}
+			DirectKinematic();
 			virtual ~DirectKinematic() {}
 
 			void initialize();			
-			gmtl::Point3f calculate(gmtl::Vec3f angle);
+			gmtl::Point3f calculate(gmtl::Vec3f &angle);
 		private:
-			gmtl::Point3f newtonRaphsonMethod(gmtl::Vec3f angle, gmtl::Point3f approxPosition);
+			gmtl::Point3f newtonRaphsonMethod(gmtl::Vec3f &angle, gmtl::Point3f &approxPosition);
 	
-			PositionMatrix *basePositionMatrix;
-			AngularMatrix *baseAngularMatrix;
+			PositionMatrix m_basePositionMatrix;
+			AngularMatrix m_baseAngularMatrix;
 	
 			float epsilonAngle;
 			float epsilonPosition;
 			int iteration;
+
+			const static float POSITION_RANGE = 0.200;
+			const static uint32_t POSITION_MATRIX_DENSITY = 64;
 		};
 
 	}

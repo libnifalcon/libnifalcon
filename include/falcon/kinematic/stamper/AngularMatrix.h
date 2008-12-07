@@ -26,19 +26,20 @@ namespace libnifalcon
 		class AngularMatrix
 		{ 
 		public:
-			AngularMatrix(gmtl::Vec3f center, float range, unsigned int size);
+			AngularMatrix(const gmtl::Vec3f &center, const float &range, const uint32_t size);
 			virtual ~AngularMatrix();
-			bool setPosition(gmtl::Point3f position);
+			bool setPosition(const gmtl::Point3f &position);
 			float isComplete();
 			float getRange();
-			bool getPosition(gmtl::Vec3f angle, gmtl::Point3f &position);
+			bool getPosition(const gmtl::Vec3f &angle, gmtl::Point3f &position);
 			float getDelta();
 			float getMaximumPositionDelta();
 			typedef boost::multi_array<float, 4> angular_array;
 			typedef angular_array::index angular_array_index;
 		private:
-			void setVec(unsigned int a, unsigned int b, unsigned int c, gmtl::Vec3f vector);
-			gmtl::Vec3f getVec(unsigned int a, unsigned int b, unsigned int c);
+			void setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Vec3f &vector);
+			void setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Point3f &vector);
+			gmtl::Vec3f getVec(uint32_t a, uint32_t b, uint32_t c);
 
 			angular_array matrix;
 			gmtl::Vec3f center;

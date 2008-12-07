@@ -23,7 +23,7 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		AngularMatrix::AngularMatrix(gmtl::Vec3f center, float range, unsigned int size)
+		AngularMatrix::AngularMatrix(const gmtl::Vec3f& center, const float& range, uint32_t size)
 		{
 			this->center = center;
 			this->range = range;
@@ -31,13 +31,13 @@ namespace libnifalcon
 	
 			matrix.resize(boost::extents[size][size][size][3]);
 	
-			minimum[0] = center[0]-(range/2);
-			minimum[1] = center[1]-(range/2);
-			minimum[2] = center[2]-(range/2);
+			minimum[0] = center[0]-(range/2.0f);
+			minimum[1] = center[1]-(range/2.0f);
+			minimum[2] = center[2]-(range/2.0f);
 
-			maximum[0] = center[0]+(range/2);
-			maximum[1] = center[1]+(range/2);
-			maximum[2] = center[2]+(range/2);
+			maximum[0] = center[0]+(range/2.0f);
+			maximum[1] = center[1]+(range/2.0f);
+			maximum[2] = center[2]+(range/2.0f);
 	
 			delta = range/size;
 	
@@ -48,12 +48,14 @@ namespace libnifalcon
 			maximumPosition[0] = -.100;
 			maximumPosition[1] = -.100;
 			maximumPosition[2] = 0.050;
-	
-			for (int i=0; i<size; i++)
-				for (int j=0; j<size; j++)
-					for (int k=0; k<size; k++)
+
+			gmtl::Vec3f zero_vec(0,0,0);
+			
+			for (uint32_t i=0; i<size; i++)
+				for (uint32_t j=0; j<size; j++)
+					for (uint32_t k=0; k<size; k++)
 					{
-						setVec(i,j,k,gmtl::Vec3f(0,0,0));
+						setVec(i,j,k,zero_vec);
 					}
 		}
 
@@ -61,7 +63,7 @@ namespace libnifalcon
 		{
 		}
 
-		bool AngularMatrix::setPosition(gmtl::Point3f position)
+		bool AngularMatrix::setPosition(const gmtl::Point3f& position)
 		{
 			Angle allAngle = InverseKinematic::calculate(position);
 	
@@ -101,7 +103,7 @@ namespace libnifalcon
 			return false;
 		}
 
-		bool AngularMatrix::getPosition(gmtl::Vec3f angle, gmtl::Point3f &position)
+		bool AngularMatrix::getPosition(const gmtl::Vec3f& angle, gmtl::Point3f &position)
 		{
 			if (angle[0]>=minimum[0] && angle[0]<=maximum[0] && 
 				angle[1]>=minimum[1] && angle[1]<=maximum[1] &&
@@ -154,14 +156,21 @@ namespace libnifalcon
 				return deltaY;
 		}
 
-		void AngularMatrix::setVec(unsigned int a, unsigned int b, unsigned int c, gmtl::Vec3f vector)
+		void AngularMatrix::setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Vec3f& vector)
 		{
 			matrix[a][b][c][0]=vector[0];
 			matrix[a][b][c][1]=vector[1];
 			matrix[a][b][c][2]=vector[2];
 		}
 
-		gmtl::Vec3f AngularMatrix::getVec(unsigned int a, unsigned int b, unsigned int c)
+		void AngularMatrix::setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Point3f& vector)
+		{
+			matrix[a][b][c][0]=vector[0];
+			matrix[a][b][c][1]=vector[1];
+			matrix[a][b][c][2]=vector[2];
+		}
+		
+		gmtl::Vec3f AngularMatrix::getVec(const uint32_t a, const uint32_t b, const uint32_t c)
 		{
 			return gmtl::Vec3f(matrix[a][b][c][0],matrix[a][b][c][1],matrix[a][b][c][2]);
 		}
