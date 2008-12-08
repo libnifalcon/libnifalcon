@@ -1,6 +1,18 @@
 libnifalcon ChangeLog
 =====================
 
+2008-12-06 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1 beta 2
+	* Changed units in stamper kinematic core position readings from millimeters to meters
+	* Changed units in stamper kinematic core force values to newtons (now matches HDAL)
+	* Changed units in FalconGeometry to meters
+	* Updated falcon_test_cli to reflect unit changes
+	* Added many more comments, though still nothing in depth
+	* Removed falcon_mouse demo (many people have difficulty building and it doesn't work right, moved to own repository, http://www.github.com/qdot/libnifalcon_mouse)
+	* Fixed some const/reference passing arguments
+	* Changed comm libraries to use pointers and prototypes to remove necessity for comm includes in lib headers
+	* Fixed FTD2XX compatibility (comm driver hadn't been working in the past few releases)
+	* Fixed compilation and compatibility for windows (now using mingw as test compiler)
 2008-11-16 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 1
 	* Added libusb-1.0 support for linux
