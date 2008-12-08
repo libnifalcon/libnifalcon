@@ -40,6 +40,9 @@ namespace libnifalcon
 
 		gmtl::Matrix33f JacobianMatrix::calculateJacobian(const Angle& angle)
 		{
+			//This is the two step jacobian laid out in chapter 4 of the Stamper paper
+
+			//JF represents the jacobian with respect to joint velocities
 			gmtl::Matrix33f matrixJF;
 			calculateJFi(ARM_1, angle, matrixJF);
 			calculateJFi(ARM_2, angle, matrixJF);
@@ -47,22 +50,21 @@ namespace libnifalcon
 			//std::cout << "JF:" << std::endl;
 			//std::cout << matrixJF << std::endl;
 
+			//JI represents the jacobian with respect to angles of the legs
 			gmtl::Matrix33f matrixJI;
 			calculateJIi(ARM_1, angle, matrixJI);
 			calculateJIi(ARM_2, angle, matrixJI);
 			calculateJIi(ARM_3, angle, matrixJI);
 			//std::cout << "JI:" << std::endl;
 			//std::cout << matrixJI << std::endl;
-			
-			gmtl::Matrix33f matrixJ = invert(matrixJI) * matrixJF;
 
-			//std::cout << "J:" << std::endl;
-			//std::cout << matrixJ << std::endl;
-			return matrixJ;
+			//Combine to make the final jacobian
+			return invert(matrixJI) * matrixJF;
 		}
 
 		void JacobianMatrix::calculateJFi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
+			//Following equation (4.12) in the stamper paper
 			float JFi1 = cos(angle.theta2[arm])*sin(angle.theta3[arm])*cos(phy[arm])-
 				cos(angle.theta3[arm])*sin(phy[arm]);
 	
@@ -78,6 +80,7 @@ namespace libnifalcon
 
 		void JacobianMatrix::calculateJIi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
+			//Following equation (4.12) in the stamper paper
 			float JIi = a*sin(angle.theta2[arm]-angle.theta1[arm])*sin(angle.theta3[arm]);
 			matrix[arm][arm] = JIi;
 		}

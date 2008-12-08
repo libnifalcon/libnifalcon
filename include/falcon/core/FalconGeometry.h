@@ -37,7 +37,6 @@ namespace libnifalcon
 	const static double PI = 3.14159265; /*!< PI Constant, to save having to include one */
 	const static double OFFSET_ANGLE = (PI/12); /*!< Offset of each axis from the desk plane (15 degrees) */
 	const static float phy[] = { PI/2 + OFFSET_ANGLE, -PI/6 + OFFSET_ANGLE, -5*PI/6  + OFFSET_ANGLE}; /*!< Angles of each of the three legs, in radians */
-	const static double POSITION_CENTER[] = {0.0, 0.0, 0.150}; /*!< Center of the workspace, in relation to the fixed frame origin, in meters */
 }
 
 #endif /*FALCONGEOMETRY_H_*/

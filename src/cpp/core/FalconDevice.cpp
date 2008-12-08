@@ -80,7 +80,7 @@ namespace libnifalcon
 		}
 	}
 	
-	bool FalconDevice::setFirmwareFile(std::string filename)
+	bool FalconDevice::setFirmwareFile(const std::string& filename)
     {
 		if(m_falconFirmware == NULL)
 		{

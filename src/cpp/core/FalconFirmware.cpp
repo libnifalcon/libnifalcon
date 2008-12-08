@@ -21,7 +21,7 @@ namespace libnifalcon
 		m_encoderValues[2] = 0;			
 	}
 	
-	bool FalconFirmware::setFirmwareFile(std::string filename)
+	bool FalconFirmware::setFirmwareFile(const std::string& filename)
     {
 		std::fstream test_file(filename.c_str(),  std::fstream::in | std::fstream::binary);
 		if(!test_file.is_open())
@@ -73,7 +73,7 @@ namespace libnifalcon
 		return success;
 	}
 	
-	bool FalconFirmware::loadFirmware(bool skip_checksum, long firmware_size, uint8_t* buffer)
+	bool FalconFirmware::loadFirmware(bool skip_checksum, const long& firmware_size, uint8_t* buffer)
 	{
 		if(m_falconComm == NULL)
 		{
@@ -95,7 +95,7 @@ namespace libnifalcon
 		int bytes_read, total_read = 0;
 
 		//58 is an odd number to use for this, isn't it?
-		//Well, full speed can only take 64 bytes
+		//Well, full speed USB packets can only take 64 bytes
 		//The FTDI tacks 2 bytes onto that for its status
 		//If you send 60-62, libusb-1.0 freaks out
 		//So, 58 it is. Happy medium

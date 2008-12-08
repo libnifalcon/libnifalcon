@@ -14,6 +14,7 @@
 
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/kinematic/stamper/JacobianMatrix.h"
+
 namespace libnifalcon
 {
 	inline float clamp(float x, float a, float b)

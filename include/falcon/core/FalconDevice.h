@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <string>
+#include <boost/array.hpp>
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconComm.h"
 #include "falcon/core/FalconFirmware.h"
@@ -48,8 +49,8 @@ namespace libnifalcon
 		 * Constructor
 		 *
 		 */
-
 		FalconDevice();
+		
 		/** 
 		 * Destructor
 		 *
@@ -57,6 +58,7 @@ namespace libnifalcon
 		 * behavior objects (comm, firmware, grips, kinematics)
 		 */
 		~FalconDevice();
+		
 		/** 
 		 * Checks to see if firmware is loaded by running IO loop 10 times, returning true on first success
 		 * Will automatically return false is setFalconFirmware() has not been called.
@@ -64,6 +66,7 @@ namespace libnifalcon
 		 * @return true if firmware is loaded, false otherwise
 		 */
 		bool isFirmwareLoaded();
+		
 		/** 
 		 * Sets the firmware file to load to the falcon
 		 *
@@ -71,7 +74,8 @@ namespace libnifalcon
 		 *
 		 * @return true if file exists and is openable, false otherwise
 		 */		
-		bool setFirmwareFile(std::string filename);
+		bool setFirmwareFile(const std::string& filename);
+		
 		/** 
 		 * Conveinence function, calls loadFirmware with a certain number of retries
 		 *
@@ -81,6 +85,7 @@ namespace libnifalcon
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */		
 		bool loadFirmware(int retries, bool skip_checksum = false);
+		
 		/** 
 		 * Tries to load the firmware that was specified by the setFirmwareFile function. For the moment, skip_checksum should be used
 		 * on non-windows platforms when using the ftd2xx communications core, as there is a bug that causes bad checksum returns on
@@ -91,6 +96,7 @@ namespace libnifalcon
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */				
 		bool loadFirmware(bool skip_checksum);
+		
 		/** 
 		 * Returns the number of falcons currectly connected to the system
 		 *
@@ -99,6 +105,7 @@ namespace libnifalcon
 		 * @return true if count is successfully returned, false otherwise
 		 */				
 		bool getDeviceCount(int8_t& count);
+		
 		/** 
 		 * Opens the falcon at the specified index
 		 *
@@ -107,6 +114,7 @@ namespace libnifalcon
 		 * @return true if falcon opened successfully, false otherwise
 		 */				
 		bool open(uint8_t index);
+		
 		/** 
 		 * Closes the falcon, if open
 		 *
@@ -139,6 +147,7 @@ namespace libnifalcon
 		 */			
 		template<class T>
 		void setFalconComm();
+		
 		/**
 		 * Set firmware behavior type, and create a new internal object from it.
 		 * Also passes communications behavior to firmware, if it exists.
@@ -147,6 +156,7 @@ namespace libnifalcon
 		 */			
 		template<class T>
 		void setFalconFirmware();
+		
 		/**
 		 * Set grip behavior, and create a new internal object from it.
 		 *
@@ -154,6 +164,7 @@ namespace libnifalcon
 		 */			
 		template<class T>
 		void setFalconGrip();
+		
 		/**
 		 * Set communications behavior, and create a new internal object from it.
 		 *
@@ -161,12 +172,14 @@ namespace libnifalcon
 		 */			
 		template<class T>
 		void setFalconKinematic();
+
 		/**
 		 * Return the position given by the kinematic behavior.
 		 *
 		 * @return Array of 3 doubles, representing 3D cartesian coordinate
 		 */					
 		double* getPosition() { return m_position; }
+
 		/**
 		 * Set the instantanious force for the next I/O loop
 		 *
@@ -178,30 +191,35 @@ namespace libnifalcon
 			m_forceVec[1] = force[1];
 			m_forceVec[2] = force[2];
 		}
+		
 		/**
 		 * Get communication behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon communications object
 		 */
 		FalconComm* getFalconComm() { return m_falconComm; }
+		
 		/**
 		 * Get firmware behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon firmware object
 		 */					
 		FalconFirmware* getFalconFirmware() { return m_falconFirmware; }
+		
 		/**
 		 * Get grip behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon grip object
 		 */					
 		FalconGrip* getFalconGrip() { return m_falconGrip; }
+		
 		/**
 		 * Get kinematic behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon kinematic object
 		 */					
 		FalconKinematic* getFalconKinematic() { return m_falconKinematic; }
+		
 		/**
 		 * Checks whether the falcon communications are open
 		 *
@@ -215,6 +233,7 @@ namespace libnifalcon
 			}
 			return false;
 		}
+		
 		/**
 		 * Deletes the interal pointer to the falcon communications object
 		 *
@@ -227,6 +246,7 @@ namespace libnifalcon
 				m_falconComm = NULL;
 			}			
 		}
+		
 		/**
 		 * Deletes the interal pointer to the falcon firmware object
 		 *
@@ -239,6 +259,7 @@ namespace libnifalcon
 				m_falconFirmware = NULL;
 			}
 		}
+		
 		/**
 		 * Deletes the interal pointer to the falcon grip object
 		 *
@@ -251,6 +272,7 @@ namespace libnifalcon
 				m_falconGrip = NULL;
 			}
 		}
+		
 		/**
 		 * Deletes the interal pointer to the falcon grip object
 		 *
@@ -263,6 +285,7 @@ namespace libnifalcon
 				m_falconKinematic = NULL;
 			}
 		}
+		
 		/**
 		 * Get the number of total errors generated by the I/O loop
 		 *

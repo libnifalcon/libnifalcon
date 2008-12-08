@@ -27,25 +27,61 @@ namespace libnifalcon
 		class DirectKinematic
 		{
 		public:
+			/** 
+			 * Constructor
+			 * 
+			 */
 			DirectKinematic();
+
+			/** 
+			 * Destructor
+			 * 
+			 * 
+			 */
 			virtual ~DirectKinematic() {}
 
-			void initialize();			
+			/** 
+			 * Initializes the lookup tables. Can take a while on some machines.
+			 * 
+			 */
+			void initialize();
+
+			/** 
+			 * Given a set of angles, return the position of the end effector they represent
+			 * 
+			 * @param angle Angle of the legs, in radians
+			 * 
+			 * @return Cartesian position of the end effector, in meters
+			 */
 			gmtl::Point3f calculate(gmtl::Vec3f &angle);
+
+			const static double POSITION_CENTER[3]; /**< Origin of the workspace (offset from the fixed frame origin */
+			const static float POSITION_RANGE = 0.200; /**< Range of each axis of the workspace */
+			const static uint32_t POSITION_MATRIX_DENSITY = 64; /**< Density of the positional lookup table */
+
 		private:
+
+			/** 
+			 * Used for position approximation.
+			 * Given an angle and an approximate position, refine the position by finding the closest position available
+			 * in the lookup table and refining it.
+			 *
+			 * @param angle Angle of the legs to calculate a position for
+			 * @param approxPosition Current guess of the approximation
+			 * 
+			 * @return Final result once positional error falls below a certain value
+			 */
 			gmtl::Point3f newtonRaphsonMethod(gmtl::Vec3f &angle, gmtl::Point3f &approxPosition);
 	
-			PositionMatrix m_basePositionMatrix;
-			AngularMatrix m_baseAngularMatrix;
+			PositionMatrix m_basePositionMatrix; /**< Position lookup table */
+			AngularMatrix m_baseAngularMatrix; /**< Angle lookup table */
 	
-			float epsilonAngle;
-			float epsilonPosition;
-			int iteration;
+			float epsilonAngle;	/**< Error in angle approximation */
+			float epsilonPosition; /**< Error in position approximation */
+			int iteration;		/**< Iteration counter for newton raphson method */
 
-			const static float POSITION_RANGE = 0.200;
-			const static uint32_t POSITION_MATRIX_DENSITY = 64;
 		};
-
-	}
+	}	
 }
+
 #endif /*DIRECTKINEMATIC_H_*/

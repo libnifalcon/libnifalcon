@@ -30,9 +30,23 @@ namespace libnifalcon
 			InverseKinematic() {}
 			virtual ~InverseKinematic() {}
 
+			/** 
+			 * Given the Cartesian position of the end effector (in meters), return the leg angles required to achieve that position
+			 * 
+			 * @param position Cartesian position of the end effector
+			 * 
+			 * @return Angle requires to achieve position requested
+			 */
 			static Angle calculate(const gmtl::Point3f& position);
 
 		private:
+			/** 
+			 * Calculates the inverse kinematics for a single leg
+			 * 
+			 * @param arm Index of the arm to use
+			 * @param position Position to find
+			 * @param angle Angle to store return value
+			 */
 			static void calulateArm(const arm_id arm, const gmtl::Point3f& position, Angle& angle);
 		};
 	}

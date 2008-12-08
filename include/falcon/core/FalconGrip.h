@@ -24,37 +24,105 @@ namespace libnifalcon
 	public:
 
 		enum {
-			FALCON_GRIP_INDEX_OUT_OF_RANGE = 4000
+			FALCON_GRIP_INDEX_OUT_OF_RANGE = 4000 /**< Returned if button index requested is out of range for the current grip */
 		};
+
+
+		/** 
+		 * Constructor. Defines the grip capabilities.
+		 * 
+		 * @param digital_inputs Number of digital inputs on the grip
+		 * @param analog_inputs Number of analog inputs on the grip
+		 * 
+		 */
 		FalconGrip(int32_t digital_inputs, int32_t analog_inputs) :
 			m_numDigitalInputs(digital_inputs),
 			m_numAnalogInputs(analog_inputs),
 			m_digitalInputs(0)
 		{
 		}
+
+		/** 
+		 * Destructor
+		 * 
+		 * 
+		 */
 		virtual ~FalconGrip()
 		{
 		}
+
+		/** 
+		 * Parses input/output for grip related data (button states, etc...)
+		 * 
+		 * @param size Amount of data in the buffer being passed in
+		 * @param data Buffer of button data
+		 * 
+		 * @return true if parsing successful, false otherwise
+		 */
 		virtual bool runGripLoop(int size, uint8_t* data) = 0;
-		int32_t getNumDigitalInputs() const { return m_numDigitalInputs; }
-		int32_t getNumAnalogInputs() const { return m_numAnalogInputs; }
-		bool getDigitalInput(int index) const
+
+		/** 
+		 * Returns the number of digital inputs available on the current grip
+		 * 
+		 * 
+		 * @return Number of digital inputs available on the grip
+		 */
+		uint32_t getNumDigitalInputs() const { return m_numDigitalInputs; }
+		
+		/** 
+		 * Returns the number of analog inputs available on the current grip
+		 * 
+		 * 
+		 * @return Number of analog inputs available on the grip
+		 */
+		uint32_t getNumAnalogInputs() const { return m_numAnalogInputs; }
+
+		/** 
+		 * Returns the value of the requested digital input
+		 * 
+		 * @param index Index of the digital input to return
+		 * 
+		 * @return true if digital input requested is high, false otherwise (or if index is out of range)
+		 */
+		bool getDigitalInput(int index)
 		{
-			if(index > m_numDigitalInputs) return false;
+			if(index > m_numDigitalInputs)
+			{
+				m_errorCode = FALCON_GRIP_INDEX_OUT_OF_RANGE;
+				return false;
+			}
 			return m_digitalInputs & (1 << index);
 		}
-		int32_t getDigitalInputs() const { return m_digitalInputs; }
-		int32_t getAnalogInput(int index) const
+
+		/** 
+		 * Returns the bitfield used to store all digital inputs
+		 * 
+		 * @return Bitfield of digital inputs
+		 */
+		uint32_t getDigitalInputs() const { return m_digitalInputs; }
+
+		/** 
+		 * Returns the value of the requested analog input
+		 * 
+		 * @param index Index of the analog input to return
+		 * 
+		 * @return Value of analog input requested, (0 if index is out of range)
+		 */
+		int32_t getAnalogInput(int index)
 		{
-			if(index > m_numAnalogInputs) return 0;
+			if(index > m_numAnalogInputs)
+			{
+				m_errorCode = FALCON_GRIP_INDEX_OUT_OF_RANGE;
+				return 0;
+			}
 			return m_analogInputs[index];
 		}
 	protected:
-		int m_numDigitalInputs;
-		int m_numAnalogInputs;
+		uint32_t m_numDigitalInputs; /**< Number of digital inputs available on the grip */
+		uint32_t m_numAnalogInputs; /**< Number of analog inputs available on the grip */
 		//I think assuming 32 digital inputs and 128 analog is enough
-		int32_t m_digitalInputs;
-		int32_t m_analogInputs[128];
+		uint32_t m_digitalInputs; /**< Bitfield to hold digital input values */
+		int32_t m_analogInputs[128]; /**< Array of analog input values */
 	};
 }
 

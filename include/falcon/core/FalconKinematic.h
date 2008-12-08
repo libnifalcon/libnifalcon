@@ -25,29 +25,77 @@ namespace libnifalcon
 	class FalconKinematic : public FalconCore
 	{
 	public:
-		struct WorkspaceBounds
-		{
-			double X[2];
-			double Y[2];
-			double Z[2];
-		};
 		enum {
-			FALCON_KINEMATIC_OUT_OF_RANGE = 5000
+			FALCON_KINEMATIC_OUT_OF_RANGE = 5000 /**< Returned if value requested is out of workspace range */
 		};
-		FalconKinematic() { }
-		~FalconKinematic() { }
+
+		/** 
+		 * Constructor
+		 * 
+		 * 
+		 */
+		FalconKinematic() {}
+
+		/** 
+		 * Destructor
+		 * 
+		 * 
+		 */
+		virtual ~FalconKinematic() {}
+
+		/** 
+		 * Given an encoder value, return the angle (in degrees) the leg is at (in the leg's local reference frame)
+		 * 
+		 * @param encoder_value Encoder ticks for a leg
+		 * 
+		 * @return Angle (in degrees) the leg is at
+		 */
 		float getTheta(int16_t encoder_value)
 		{
 			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
 		}
-		virtual bool getForces(const double (&position)[3], const double (&cart_force)[3], int16_t (&enc_force)[3]) = 0;
+
+		/** 
+		 * Given a caretesian position (in meters), return the angle of the legs requires to achieve the positions
+		 *
+		 * @param position Position to get the angles for (in cartesian coordinates, meters)
+		 * @param angles Array to write result into
+		 *
+		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
+		 */
 		virtual bool getAngles(const double (&position)[3], double (&angles)[3]) = 0;
+
+		/** 
+		 * Given a set of encoder values, return the cartesian position (in meters) of the end effector in relation to the origin.
+		 * Note: Origin subject to change based on kinematics system. Use the workspaceOrigin() function to get what the system thinks
+		 * its origin is.
+		 *
+		 * @param encoders Encoder values for the 3 legs
+		 * @param position Array to write result into
+		 *
+		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
+		 */
 		virtual bool getPosition(const int16_t (&encoders)[3], double (&position)[3]) = 0;
-		void setWorkspaceBounds(WorkspaceBounds b) { m_workspaceBounds = b; }
-		WorkspaceBounds getWorkspaceBounds() {return m_workspaceBounds;}
-	protected:
-		//Bounds for the x, y, and z axis
-		WorkspaceBounds m_workspaceBounds;
+
+		/** 
+		 * Returns the center point of the workspace. May not always be [0,0,0].
+		 *
+		 * @param origin Array to store values in
+		 */
+		virtual void getWorkspaceOrigin(double (&origin)[3]) = 0;
+
+		/** 
+		 * Given a caretesian position (in meters), and force vector (in newtons),
+		 * return the force values that need to be sent to the firmware. Force values are capped at 4096.
+		 *
+		 * @param position Current position of the end effector
+		 * @param cart_force Force vector to apply to the end effector
+		 * @param enc_force Force to be sent to the firmware
+		 *
+		 * @return true if forces are generated, false otherwise.
+		 */
+
+		virtual bool getForces(const double (&position)[3], const double (&cart_force)[3], int16_t (&enc_force)[3]) = 0;
 	};
 }
 
