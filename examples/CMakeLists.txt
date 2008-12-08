@@ -25,10 +25,3 @@ IF(Boost_PROGRAM_OPTIONS_FOUND)
 ELSE(Boost_PROGRAM_OPTIONS_FOUND)
   MESSAGE("Cannot compile falcon_test_cli - Missing Boost Program Options")
 ENDIF(Boost_PROGRAM_OPTIONS_FOUND)
-
-IF(Boost_PROGRAM_OPTIONS_FOUND)
-  ADD_SUBDIRECTORY(falcon_mouse)
-ELSE(Boost_PROGRAM_OPTIONS_FOUND)
-  MESSAGE("Cannot compile falcon_mouse - Missing Boost Program Options")
-ENDIF(Boost_PROGRAM_OPTIONS_FOUND)
-
