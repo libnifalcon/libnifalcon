@@ -17,7 +17,6 @@
 
 #include <iostream>
 #include <string>
-#include <boost/array.hpp>
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconComm.h"
 #include "falcon/core/FalconFirmware.h"
