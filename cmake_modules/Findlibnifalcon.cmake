@@ -25,6 +25,10 @@
 
 MESSAGE(STATUS "Finding libnifalcon")
 
+if(NOT LIBNIFALCON_SEARCH_DIR)
+	   SET(LIBNIFALCON_SEARCH_DIR ".")
+endif(NOT LIBNIFALCON_SEARCH_DIR)
+
 if (LIBNIFALCON_C_INCLUDE_DIRS)
   set(LIBNIFALCON_C_FOUND TRUE)
 else (LIBNIFALCON_C_INCLUDE_DIRS)
@@ -36,6 +40,7 @@ else (LIBNIFALCON_C_INCLUDE_DIRS)
     /usr/local/include/
     /opt/local/include/
     /sw/include/
+	${LIBNIFALCON_SEARCH_DIR}/include/
 	)
   
   find_library(LIBNIFALCON_C_FTD2XX_LIBRARY
@@ -46,6 +51,7 @@ else (LIBNIFALCON_C_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
 
   find_library(LIBNIFALCON_C_LIBFTDI_LIBRARY
@@ -56,6 +62,7 @@ else (LIBNIFALCON_C_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
   
   set(LIBNIFALCON_C_INCLUDE_DIRS
@@ -92,16 +99,6 @@ endif (LIBNIFALCON_C_INCLUDE_DIRS)
 if (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
   set(LIBNIFALCON_FOUND TRUE)
 else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
-  find_path(LIBNIFALCON_INCLUDE_FILE
-    NAMES
-    falcon/core/FalconDevice.h
-    PATHS	  
-    /usr/include/
-    /usr/local/include/
-    /opt/local/include/
-    /sw/include/
-	)
-  
   find_path(LIBNIFALCON_INCLUDE_DIR
 	NAMES
 	falcon
@@ -110,6 +107,7 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
     /usr/local/include/
     /opt/local/include/
     /sw/include/
+	${LIBNIFALCON_SEARCH_DIR}/include/
 	)
   
   find_library(LIBNIFALCON_LIBRARY
@@ -120,26 +118,7 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
-	)
-
-  find_library(LIBNIFALCON_COMM_FTD2XX_LIBRARY
-    NAMES
-    nifalcon_comm_ftd2xx
-    PATHS
-    /usr/lib
-    /usr/local/lib
-    /opt/local/lib
-    /sw/lib
-	)
-
-  find_library(LIBNIFALCON_COMM_LIBFTDI_LIBRARY
-    NAMES
-    nifalcon_comm_libftdi
-    PATHS
-    /usr/lib
-    /usr/local/lib
-    /opt/local/lib
-    /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
 
   find_library(LIBNIFALCON_COMM_LIBUSB_1_LIBRARY
@@ -150,6 +129,30 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
+	)
+
+
+  find_library(LIBNIFALCON_COMM_FTD2XX_LIBRARY
+    NAMES
+    nifalcon_comm_ftd2xx
+    PATHS
+    /usr/lib
+    /usr/local/lib
+    /opt/local/lib
+    /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
+	)
+
+  find_library(LIBNIFALCON_COMM_LIBFTDI_LIBRARY
+    NAMES
+    nifalcon_comm_libftdi
+    PATHS
+    /usr/lib
+    /usr/local/lib
+    /opt/local/lib
+    /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
 
   find_library(LIBNIFALCON_CLI_BASE_LIBRARY
@@ -160,6 +163,7 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
 
   find_library(LIBNIFALCON_DEVICE_BOOST_THREAD_LIBRARY
@@ -170,6 +174,7 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
     /usr/local/lib
     /opt/local/lib
     /sw/lib
+	${LIBNIFALCON_SEARCH_DIR}/lib/
 	)
 
   set(LIBNIFALCON_INCLUDE_DIRS
@@ -181,16 +186,16 @@ else (LIBNIFALCON_LIBRARIES AND LIBNIFALCON_INCLUDE_DIRS)
 	)
 
   if(LIBNIFALCON_COMM_LIBUSB_1_LIBRARY)
-	set(LIBNIFALCON_COMM_LIBRARIES ${LIBNIFALCON_COMM_LIBUSB_LIBRARY})
-  elseif(${LIBNIFALCON_COMM_LIBFTDI_LIBRARY})
+	set(LIBNIFALCON_COMM_LIBRARIES ${LIBNIFALCON_COMM_LIBUSB_1_LIBRARY})
+  elseif(LIBNIFALCON_COMM_LIBFTDI_LIBRARY)
 	set(LIBNIFALCON_COMM_LIBRARIES ${LIBNIFALCON_COMM_LIBFTDI_LIBRARY})
-  elseif(${LIBNIFALCON_COMM_FTD2XX_LIBRARY})
+  elseif(LIBNIFALCON_COMM_FTD2XX_LIBRARY)
 	set(LIBNIFALCON_COMM_LIBRARIES ${LIBNIFALCON_COMM_FTD2XX_LIBRARY})
   endif(LIBNIFALCON_COMM_LIBUSB_1_LIBRARY)
 
-  if (LIBNIFALCON_INCLUDE_FILE AND LIBNIFALCON_INCLUDE_DIRS AND LIBNIFALCON_LIBRARIES AND LIBNIFALCON_COMM_LIBRARIES)
+  if (LIBNIFALCON_INCLUDE_DIRS AND LIBNIFALCON_LIBRARIES AND LIBNIFALCON_COMM_LIBRARIES)
     set(LIBNIFALCON_FOUND TRUE)
-  endif (LIBNIFALCON_INCLUDE_FILE AND LIBNIFALCON_INCLUDE_DIRS AND LIBNIFALCON_LIBRARIES AND LIBNIFALCON_COMM_LIBRARIES)
+  endif (LIBNIFALCON_INCLUDE_DIRS AND LIBNIFALCON_LIBRARIES AND LIBNIFALCON_COMM_LIBRARIES)
 
   if (LIBNIFALCON_FOUND)
     if (NOT libnifalcon_FIND_QUIETLY)
