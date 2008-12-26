@@ -26,6 +26,7 @@ namespace libnifalcon
 		boost::program_options::variables_map m_varMap;
 		virtual void addOptions(int value);	
 		virtual bool parseOptions(FalconDevice& device, int argc, char** argv);
+		void outputProgramOptions();
 	public:
 		FalconCLIBase();
 		~FalconCLIBase()
