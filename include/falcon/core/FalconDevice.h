@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <string>
+#include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconComm.h"
 #include "falcon/core/FalconFirmware.h"
@@ -300,6 +301,8 @@ namespace libnifalcon
 		FalconGrip* m_falconGrip; /**< Falcon grip object */
 		double m_position[3];	/**< Current position in 3D cartesian coordinates */
 		double m_forceVec[3];	/**< Current force in 3D cartesian coordinates */
+	private:
+		DECLARE_LOGGER();
 	};
 
 	template<class T>

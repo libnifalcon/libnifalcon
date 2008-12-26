@@ -12,6 +12,7 @@
  *
  */
 
+#include "falcon/core/FalconLogging.h"
 #include "falcon/core/FalconDevice.h"
 #if defined(LIBUSB)
 #include "falcon/comm/FalconCommLibUSB.h"
@@ -22,12 +23,32 @@
 #endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
-//#include "kinematic/FalconKinematicStamper.h"
 #include <sys/time.h>
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <csignal>
+
+#ifdef ENABLE_LOGGING
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/consoleappender.h>
+static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
+
+/**
+ * Statically initialize the log4cxx library.
+ */
+void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
+  log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
+  log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
+  log4cxx::BasicConfigurator::configure(appender);
+  log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
+  rootlogger->setLevel(level);
+}
+#endif
+
 
 using namespace libnifalcon;
 
@@ -63,7 +84,7 @@ void runFalconTest(FalconDevice& d)
 
 	count = 0;
 
-	std::cout << "Falcons found: " << num_falcons << std::endl;
+	std::cout << "Falcons found: " << (int)num_falcons << std::endl;
 
 	std::cout << "Opening falcon" << std::endl;
 	
@@ -114,6 +135,13 @@ int main(int argc, char** argv)
 #ifndef WIN32
 	signal(SIGQUIT, sigproc);
 #endif
+
+#ifdef ENABLE_LOGGING
+	std::string logPattern(TTCC_CONVERSION_PATTERN);
+	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
+	configureLogging(logPattern, logLevel);
+#endif
+
 #if defined(LIBUSB)
 	std::cout << "Running libusb test" << std::endl;
 	dev.setFalconComm<FalconCommLibUSB>();

@@ -22,7 +22,8 @@ namespace libnifalcon
 		m_falconComm(NULL),
 		m_falconKinematic(NULL),
 		m_falconGrip(NULL),
-		m_falconFirmware(NULL)
+		m_falconFirmware(NULL),
+		INIT_LOGGER("FalconDevice")
 	{
 	}
 
@@ -30,6 +31,7 @@ namespace libnifalcon
 	{
 		if(m_cleanupObjects)
 		{
+			LOG_INFO("Cleaning up pointers");
 			removeFalconGrip();
 			removeFalconKinematic();
 			removeFalconFirmware();
@@ -41,10 +43,11 @@ namespace libnifalcon
 	{
 		if(m_falconComm == NULL)
 		{
+			LOG_ERROR("Cannot get device count - Communications not established");
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return false;
 		}
-		return m_falconComm->getDeviceCount(count);		
+		return m_falconComm->getDeviceCount(count);
 	}
 
     bool FalconDevice::open(uint8_t index)

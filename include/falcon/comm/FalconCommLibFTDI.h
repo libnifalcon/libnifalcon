@@ -14,6 +14,7 @@
 #ifndef FALCONLIBFTDICOMM_H
 #define FALCONLIBFTDICOMM_H
 
+#include "falcon/core/FalconLogging.h"
 #include "falcon/core/FalconComm.h"
 
 struct ftdi_context;
@@ -36,6 +37,7 @@ namespace libnifalcon
 		bool initLibFTDI();
 		ftdi_context* m_falconDevice;
 		bool m_isInitialized;
+		DECLARE_LOGGER();
 	};
 };
 

@@ -11,13 +11,15 @@
  * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
+
 #include "falcon/comm/FalconCommLibFTDI.h"
 #include "ftdi.h"
 
 namespace libnifalcon {
 	
 	FalconCommLibFTDI::FalconCommLibFTDI() :
-		m_isInitialized(false)
+		m_isInitialized(false),
+		INIT_LOGGER("FalconCommLibFTDI")
 	{
 		m_falconDevice = new ftdi_context;
 
@@ -52,6 +54,7 @@ namespace libnifalcon {
 	{
 		if(!m_isInitialized)
 		{
+			LOG_ERROR("Cannot get device count - not initialized");
 			m_errorCode = FALCON_COMM_NOT_INITIALIZED;
 			return false;
 		}
@@ -65,6 +68,7 @@ namespace libnifalcon {
 	{
 		if(!m_isInitialized)
 		{
+			LOG_ERROR("Cannot open device - not initialized");
 			m_errorCode = FALCON_COMM_NOT_INITIALIZED;
 			return false;
 		}
@@ -78,11 +82,13 @@ namespace libnifalcon {
 			ftdi_list_free(&dev_list);
 			if(count == 0)
 			{
+				LOG_ERROR("Cannot open device - no devices found");
 				m_errorCode = FALCON_COMM_DEVICE_NOT_FOUND_ERROR;
 				return false;
 			}
 			else if(device_index > count)
 			{
+				LOG_ERROR("Cannot open device - device out of range");
 				m_errorCode = FALCON_COMM_DEVICE_INDEX_OUT_OF_RANGE_ERROR;
 				return false;
 			}
