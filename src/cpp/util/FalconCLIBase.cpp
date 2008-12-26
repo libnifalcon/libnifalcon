@@ -82,14 +82,19 @@ namespace libnifalcon
 		}
 	}
 
+	void FalconCLIBase::outputProgramOptions()
+	{
+		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
+		std::cout << m_progOptions << std::endl;
+	}
+	
 	bool FalconCLIBase::parseOptions(FalconDevice& device, int argc, char** argv)
 	{
 		po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
 		po::notify(m_varMap);    
 		
 		if (m_varMap.count("help")) {
-			std::cout << "Usage: falcon_test_cli [args]" << std::endl;
-			std::cout << m_progOptions << std::endl;
+			outputProgramOptions();
 			return false;
 		}
 		
@@ -98,7 +103,8 @@ namespace libnifalcon
 		//First off, see if we have a communication method
 		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
 		{
-			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;		
+			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;
+			return false;
 		}
 		//This is an either/or choice, since we can't link against both. Prefer libftdi. Thanks for the static linking against old libusb binaries, FTDI!
 
@@ -125,6 +131,7 @@ namespace libnifalcon
         else
 		{
             std::cout << "No communication method selected." << std::endl;
+			outputProgramOptions();
             return false;
         }
 
