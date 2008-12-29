@@ -12,7 +12,7 @@
  *
  */
 
-#include "falcon/core/FalconLogging.h"
+#include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconDevice.h"
 #if defined(LIBUSB)
 #include "falcon/comm/FalconCommLibUSB.h"
