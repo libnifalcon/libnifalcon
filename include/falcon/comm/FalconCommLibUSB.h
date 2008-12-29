@@ -45,7 +45,6 @@ namespace libnifalcon
 		void poll();
 		void reset();
 	protected:
-
 		bool m_isWriteAllocated;
 		bool m_isReadAllocated;
 		struct timeval* m_tv;
@@ -54,6 +53,7 @@ namespace libnifalcon
 		struct libusb_transfer* in_transfer;
 		struct libusb_transfer* out_transfer;
 		struct libusb_context* m_usbContext;
+		DECLARE_LOGGER();
 	};
 };
 

@@ -38,6 +38,7 @@ namespace libnifalcon
 		ftdi_context* m_falconDevice;
 		bool m_isInitialized;
 		DECLARE_LOGGER();
+
 	};
 };
 

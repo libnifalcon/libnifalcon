@@ -15,6 +15,8 @@
 #ifndef FALCONCORE_H
 #define FALCONCORE_H
 
+#include "falcon/core/FalconLogger.h"
+
 namespace libnifalcon
 {
 	class FalconCore
