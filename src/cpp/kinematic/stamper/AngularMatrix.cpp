@@ -63,6 +63,24 @@ namespace libnifalcon
 		{
 		}
 
+
+	    void AngularMatrix::copyLookupTable(const float lookup[16][16][16][3])
+		{
+			//memcpy(matrix, lookup, 16*16*16*sizeof(float));
+			for (int i=0; i<16; i++)
+			{
+				for (int j=0; j<16; j++)
+				{
+					for (int k=0; k<16; k++)
+					{
+						matrix[i][j][k][0] = lookup[i][j][k][0];
+						matrix[i][j][k][1] = lookup[i][j][k][1];
+						matrix[i][j][k][2] = lookup[i][j][k][2];
+					}
+				}
+			}
+		}
+		
 		bool AngularMatrix::setPosition(const gmtl::Point3f& position)
 		{
 			Angle allAngle = InverseKinematic::calculate(position);
@@ -83,7 +101,6 @@ namespace libnifalcon
 					   (int)((angle[1]-minimum[1])/delta),
 					   (int)((angle[2]-minimum[2])/delta),
 					   position);
-		
 				if (position[0] < minimumPosition[0]) 
 					minimumPosition[0] = position[0];
 				if (position[1] < minimumPosition[1]) 

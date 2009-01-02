@@ -93,6 +93,9 @@ namespace libnifalcon
 			
 			typedef boost::multi_array<float, 4> angular_array; 
 			typedef angular_array::index angular_array_index;
+
+			gmtl::Vec3f getVec(uint32_t a, uint32_t b, uint32_t c);
+			void copyLookupTable(const float lookup[16][16][16][3]);
 		private:
 			/** 
 			 * Copies the value of vector into a cell into the current matrix
@@ -118,7 +121,6 @@ namespace libnifalcon
 			 * 
 			 * @return Position at the given encoder values
 			 */
-			gmtl::Vec3f getVec(uint32_t a, uint32_t b, uint32_t c);
 
 			angular_array matrix; /**< The lookup table */
 			gmtl::Vec3f center; /**< The center of the workspace */

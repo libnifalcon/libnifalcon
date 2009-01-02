@@ -15,6 +15,7 @@
 #define POSITIONMATRIX_H_
 
 #include "falcon/gmtl/gmtl.h"
+#include "falcon/core/FalconLogger.h"
 #include "falcon/kinematic/stamper/AngularMatrix.h"
 
 namespace libnifalcon
@@ -34,6 +35,7 @@ namespace libnifalcon
 			float m_matrixRange;
 			float m_matrixDelta;
 			int m_matrixDensity;
+			DECLARE_LOGGER();
 		};
 	}
 }

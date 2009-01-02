@@ -343,6 +343,4 @@ namespace libnifalcon
 	
 }
 
-
-
 #endif
