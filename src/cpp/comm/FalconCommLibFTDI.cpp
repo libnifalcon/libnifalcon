@@ -137,7 +137,7 @@ namespace libnifalcon {
 
 	bool FalconCommLibFTDI::read(uint8_t* str, uint32_t size)
 	{
-		LOG_INFO("Reading " << size << " bytes of data");
+		LOG_DEBUG("Reading " << size << " bytes of data");
 		unsigned long bytes_rx;
 
 		if(!m_isCommOpen)

@@ -27,17 +27,41 @@
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
 #include <iostream>
 
+#ifdef ENABLE_LOGGING
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/consoleappender.h>
+static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
+
+/**
+ * Statically initialize the log4cxx library.
+ */
+void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
+  log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
+  log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
+  log4cxx::BasicConfigurator::configure(appender);
+  log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
+  rootlogger->setLevel(level);
+}
+#endif
+
 namespace libnifalcon
 {
 	namespace po = boost::program_options;
 	FalconCLIBase::FalconCLIBase()
 	{
+#ifdef ENABLE_LOGGING
+		std::string logPattern(TTCC_CONVERSION_PATTERN);
+		log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("FATAL");
+		configureLogging(logPattern, logLevel);
+#endif
 		po::options_description program("Program Options");
 		program.add_options()
 			("help", "show this help message");
 		m_progOptions.add(program);
 	}
-
 
 	void FalconCLIBase::addOptions(int value)
 	{
@@ -80,6 +104,15 @@ namespace libnifalcon
 				;
 			m_progOptions.add(firmware);
 		}
+
+#ifdef ENABLE_LOGGING
+		po::options_description debug("Debug Message Options");
+		debug.add_options()
+			("debug_level", po::value<std::string>(), "Level of debug messages to print (FATAL, ERROR, WARN, INFO, DEBUG) (Default: FATAL)")
+			;
+//		("output_file", po::value<std::string>(), "File to output debug messages to (outputs to stdout otherwise")
+		m_progOptions.add(debug);		
+#endif
 	}
 
 	void FalconCLIBase::outputProgramOptions()
@@ -97,6 +130,15 @@ namespace libnifalcon
 			outputProgramOptions();
 			return false;
 		}
+
+#ifdef ENABLE_LOGGING
+		if(m_varMap.count("debug_level"))
+		{
+			std::string logPattern(TTCC_CONVERSION_PATTERN);
+			log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel(m_varMap["debug_level"].as<std::string>());
+			configureLogging(logPattern, logLevel);
+		}
+#endif
 		
 		device.setFalconFirmware<FalconFirmwareNovintSDK>();
 		
@@ -106,7 +148,8 @@ namespace libnifalcon
 			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
-		//This is an either/or choice, since we can't link against both. Prefer libftdi. Thanks for the static linking against old libusb binaries, FTDI!
+		
+		//This is an either/or choice, since we have problems with static linking and ftd2xx. Prefer libusb1, then libftdi. Thanks for the static linking against old libusb binaries, FTDI!
 
 #if defined(LIBUSB)
 		else if (m_varMap.count("libusb"))
