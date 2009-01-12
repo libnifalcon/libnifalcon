@@ -291,7 +291,7 @@ namespace libnifalcon {
 			LOG_ERROR("Cannot set DTR properties (3) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 140000)) < 0) return false;
+		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 140000)) < 0)
 		{
 			LOG_ERROR("Cannot set baudrate for firmware load - Device error " << m_deviceErrorCode);
 			return false;

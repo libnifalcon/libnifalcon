@@ -14,7 +14,7 @@
 #ifndef FALCONLIBFTDICOMM_H
 #define FALCONLIBFTDICOMM_H
 
-#include "falcon/core/FalconLogging.h"
+#include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconComm.h"
 
 struct ftdi_context;

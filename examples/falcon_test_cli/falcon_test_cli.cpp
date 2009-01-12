@@ -87,7 +87,6 @@ public:
 	};
 	FalconCLITest()
 	{
-		m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
 	}
 	~FalconCLITest()
 	{
