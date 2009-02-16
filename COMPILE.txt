@@ -26,8 +26,8 @@ Test Machines
 
 All NP labs libraries are compiled and tested on the following platforms:
 
-- Windows (XP Pro, mingw and Visual Studio 2005)
-- OS X (10.5.5, Intel, gcc 4)
-- Linux (Ubuntu 8.04, gcc 4.2)
+- Windows (XP Pro, mingw (gcc 3.4.5) and/or Visual Studio 2005)
+- OS X (10.5, Intel, gcc 4)
+- Linux (Ubuntu 8.04, gcc 4.3)
 
 There is no guarentee a library will work on all platforms, or there may be different dependencies for different platforms. Compatibility issues with outside libraries may exist. If these happen, they will be listed in the README.txt file under "Platform Specific Issues". 
