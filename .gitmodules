@@ -1,0 +1,3 @@
+[submodule "cmake_modules"]
+	path = cmake_modules
+	url = git@github.com:qdot/cmake_modules.git
