@@ -1,7 +1,10 @@
-#cmake directives
+######################################################################################
+# CMake directives
+######################################################################################
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
-SET(CMAKE_MODULE_PATH "./cmake_modules/")
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules/")
+INCLUDE( ${CMAKE_MODULE_PATH}/NPCMakeLib.cmake )
 
 #setting link directory policy
 
@@ -9,110 +12,35 @@ IF(COMMAND cmake_policy)
   CMAKE_POLICY(SET CMP0003 NEW)
 ENDIF(COMMAND cmake_policy)
 
-#taken from http://www.cmake.org/pipermail/cmake/2006-February/008334.html
+######################################################################################
+# Project declaration and options
+######################################################################################
 
-MACRO(SET_COMPILE_FLAGS TARGET)
-  SET(FLAGS)
-  FOREACH(flag ${ARGN})
-    SET(FLAGS "${FLAGS} ${flag}")
-  ENDFOREACH(flag)
-  SET_TARGET_PROPERTIES(${TARGET} PROPERTIES COMPILE_FLAGS "${FLAGS}")
-ENDMACRO(SET_COMPILE_FLAGS)
-
-#Generalized library building function for all C++ libraries
-FUNCTION(BUILD_NIFALCON_LIB LIB_NAME LIB_TYPES SRCS LINK_LIBS CXX_DEFINES)
-  FOREACH(LIB_TYPE ${LIB_TYPES})
-    SET(CURRENT_LIB ${LIB_NAME}_${LIB_TYPE})
-    ADD_LIBRARY (${CURRENT_LIB} ${LIB_TYPE} ${SRCS})
-
-    SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES OUTPUT_NAME ${LIB_NAME}${LIBNIFALCON_POSTFIX})
-    SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-    SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES VERSION ${LIBNIFALCON_VERSION})
-
-	IF(NOT CXX_DEFINES)
-	  SET(CXX_DEFINES)
-	ENDIF(NOT CXX_DEFINES)
-
-	IF(NOT LINK_LIBS)
-	  SET(LINK_LIBS)
-	ENDIF(NOT LINK_LIBS)
-
-	IF(DEBUG_LOGGING)
-	  SET(CXX_DEFINES ${CXX_DEFINES} "-DENABLE_LOGGING")
-	  SET(LINK_LIBS ${LINK_LIBS} ${LOG4CXX_LIBRARIES})
-	ENDIF(DEBUG_LOGGING)
-
-    #optional arguments
-    IF(LINK_LIBS)
-      FOREACH(LINK_LIB ${LINK_LIBS})
-		TARGET_LINK_LIBRARIES(${CURRENT_LIB} ${LINK_LIB})
-      ENDFOREACH(LINK_LIB)
-    ENDIF(LINK_LIBS)
-
-    #cpp defines
-    IF(CXX_DEFINES)
-      SET_COMPILE_FLAGS(${CURRENT_LIB} ${CXX_DEFINES})
-    ENDIF(CXX_DEFINES)
-
-	#installation for non-windows platforms
-    IF(NOT WIN32)
-      INSTALL(TARGETS ${CURRENT_LIB} LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR} ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR})
-    ENDIF(NOT WIN32)
-
-    #rewrite of install_name_dir in apple binaries
-    IF(APPLE)
-      SET_TARGET_PROPERTIES(${CURRENT_LIB} PROPERTIES INSTALL_NAME_DIR ${LIBRARY_INSTALL_DIR})
-    ENDIF(APPLE)
-  ENDFOREACH(LIB_TYPE)
-ENDFUNCTION(BUILD_NIFALCON_LIB)
-
-FUNCTION(BUILD_NIFALCON_EXE EXE_NAME SRCS LINK_LIBS LINK_FLAGS DEFINES SHOULD_INSTALL)
-  ADD_EXECUTABLE(${EXE_NAME} ${SRCS})
-  SET_TARGET_PROPERTIES (${EXE_NAME} PROPERTIES OUTPUT_NAME ${EXE_NAME}${LIBNIFALCON_POSTFIX})
-  IF(NOT DEFINES)
-	SET(DEFINES)
-  ENDIF(NOT DEFINES)
-  
-  IF(NOT LINK_LIBS)
-	SET(LINK_LIBS)
-  ENDIF(NOT LINK_LIBS)
-  
-  IF(DEBUG_LOGGING)
-	SET(DEFINES ${DEFINES} "-DENABLE_LOGGING")
-	SET(LINK_LIBS ${LINK_LIBS} ${LOG4CXX_LIBRARIES})
-  ENDIF(DEBUG_LOGGING)
-	
-  IF(DEFINES)
-    SET_COMPILE_FLAGS(${EXE_NAME} ${DEFINES})
-  ENDIF(DEFINES)
-  IF(LINK_FLAGS)
-    SET_TARGET_PROPERTIES(${EXE_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS})
-  ENDIF(LINK_FLAGS)
-
-  TARGET_LINK_LIBRARIES(${EXE_NAME} ${LINK_LIBS})
-  IF(NOT WIN32 AND SHOULD_INSTALL)
-    INSTALL(TARGETS ${EXE_NAME} RUNTIME DESTINATION ${RUNTIME_INSTALL_DIR})
-  ENDIF(NOT WIN32 AND SHOULD_INSTALL)
-ENDFUNCTION(BUILD_NIFALCON_EXE)
-
-SET(BUILD_TYPES STATIC SHARED)
-
-#project definition
+#Project declaration
 
 PROJECT(LIBNIFALCON)
+INITIALIZE_BUILD()
 
-#options
+#Common Options
 
-OPTION(ARCH_OPTS "Use architecture specific optimizations for GCC" OFF)
+OPTION_LIBRARY_BUILD_STATIC(OFF)
+OPTION_LIBRARY_BUILD_SHARED(ON)
+OPTION_FAST_MATH(ON)
+OPTION_ARCH_OPTS(ON)
+OPTION_GPROF(OFF)
+#OPTION_CREATE_VERSION_FILE(ON "${CMAKE_CURRENT_SOURCE_DIR}/src/version.cc")
+
+#Project specific options
+
 OPTION(BUILD_C_LIBNIFALCON "Build the C version of libnifalcon, with findfalcons test utility" OFF)
-OPTION(DEBUG_BUILD "Compile libnifalcon in debug mode" OFF)
-OPTION(ENABLE_GPROF "Enable gprof profiling (-pg option)" OFF)
-OPTION(FAST_MATH "Use -ffast-math for GCC 4.0" OFF)
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
-OPTION(SET_BUILD_RPATH "Use different RPATH for build tree and install (requires relink at install time, handy for development)" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
 OPTION(DEBUG_LOGGING "Use log4cxx to output debug log messages (requires log4cxx library)" OFF)
+
+######################################################################################
+# Project specific package finding
+######################################################################################
 
 IF(DEBUG_LOGGING)
   FIND_PACKAGE(Log4Cxx REQUIRED)
@@ -137,56 +65,13 @@ IF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
 ENDIF(NOT Boost_FOUND)
 
-
-IF(DEBUG_BUILD)
-  SET(CMAKE_BUILD_TYPE "Debug")
-#  SET(LIBNIFALCON_POSTFIX "_d")
-  SET(CMAKE_VERBOSE_MAKEFILE ON)
-  IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    SET(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} "-ggdb")
-  ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-ELSE(DEBUG_BUILD)
-  SET(CMAKE_BUILD_TYPE "Release")
-ENDIF(DEBUG_BUILD)
-
-IF(FAST_MATH)
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ffast-math")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math")   
-ENDIF(FAST_MATH)
-
-IF(ENABLE_GPROF)
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -pg")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -pg") 
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -pg")
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -pg")
-ENDIF(ENABLE_GPROF)
-
-IF(ARCH_OPTS)
-  EXECUTE_PROCESS(COMMAND "${CMAKE_MODULE_PATH}gcccpuopt.sh" RESULT_VARIABLE CPU_RESULT OUTPUT_VARIABLE CPU_OPT ERROR_VARIABLE CPU_ERR OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE)
-  MESSAGE(STATUS "Processor optimizations: ${CPU_OPT}")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${CPU_OPT}")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${CPU_OPT}")
-ENDIF(ARCH_OPTS)
-
-IF(IS_BIG_ENDIAN)
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNIFALCON_BIG_ENDIAN")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNIFALCON_BIG_ENDIAN")
-ENDIF(IS_BIG_ENDIAN)
-
-#finds for libnifalcon building
+######################################################################################
+# Project specific globals
+######################################################################################
 
 IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
   MESSAGE(FATAL_ERROR "Either ftd2xx, libftdi, or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
 ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-
-SET(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-SET(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-#Local output paths
-
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-SET(GMTL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #library definitions
 
@@ -200,51 +85,7 @@ SET(LIBNIFALCON_CPP "nifalcon")
 SET(LIBNIFALCON_CPP_COMM_PREFIX "nifalcon_comm")
 SET(LIBNIFALCON_CPP_CLI_BASE "nifalcon_cli_base")
 SET(LIBNIFALCON_CPP_BOOST_THREAD "nifalcon_device_boost_thread")
-
-#common library additions
-
-IF(UNIX)
-  SET(LIBMATH "m")
-ENDIF(UNIX)
-
-#default install directories
-
-IF(UNIX)
-  IF(NOT PREFIX_DIR)
-    SET(PREFIX_DIR /usr/local)
-  ENDIF(NOT PREFIX_DIR)
-  IF(NOT INCLUDE_INSTALL_DIR)
-    SET(INCLUDE_INSTALL_DIR ${PREFIX_DIR}/include)
-  ENDIF(NOT INCLUDE_INSTALL_DIR)
-  IF(NOT LIBRARY_INSTALL_DIR)
-    SET(LIBRARY_INSTALL_DIR ${PREFIX_DIR}/lib)
-  ENDIF(NOT LIBRARY_INSTALL_DIR)
-  IF(NOT RUNTIME_INSTALL_DIR)
-    SET(RUNTIME_INSTALL_DIR ${PREFIX_DIR}/bin)
-  ENDIF(NOT RUNTIME_INSTALL_DIR)
-ENDIF(UNIX)
-
-MESSAGE(STATUS "Install Directory Prefix: ${PREFIX_DIR}")
-MESSAGE(STATUS "Include Install Directory: ${INCLUDE_INSTALL_DIR}")
-MESSAGE(STATUS "Library Install Directory: ${LIBRARY_INSTALL_DIR}")
-MESSAGE(STATUS "Runtime Install Directory: ${RUNTIME_INSTALL_DIR}")
-
-IF(SET_BUILD_RPATH)
-  # use, i.e. don't skip the full RPATH for the build tree
-  SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-  
-  # when building, don't use the install RPATH already
-  # (but later on when installing)
-  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-  
-  # the RPATH to be used when installing
-  SET(CMAKE_INSTALL_RPATH "${LIBRARY_INSTALL_DIR}")
-  
-  # add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-ENDIF(SET_BUILD_RPATH)
-
+SET(LIBNIFALCON_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 #the two main source directories
 
 ADD_SUBDIRECTORY(include)

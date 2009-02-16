@@ -484,6 +484,7 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::poll()
 	{
+		LOG_INFO("Non-blocking Polling USB");
 		libusb_handle_events_timeout(NULL, m_tv);
 	}
 	
@@ -504,24 +505,24 @@ namespace libnifalcon
 	
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
-		LOG_DEBUG("In transfer received");
+//		LOG_DEBUG("In transfer received");
 		((FalconCommLibUSB*)transfer->user_data)->setSent();
 	}
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
 		//Minus 2. Stupid modem bits.
-		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
+//		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
 		{
-			LOG_DEBUG("Out transfer received");
+//			LOG_DEBUG("Out transfer received");
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
-		else
-		{
-			LOG_DEBUG("Out transfer canceled");
-		}
+//		else
+//		{
+//			LOG_DEBUG("Out transfer canceled");
+//		}
 	}
 
 }

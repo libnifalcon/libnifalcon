@@ -43,9 +43,15 @@
 #   V0.95, 18 Jan 2008, Changes from Conor McDermottroe
 #                         Support for Mac OS X
 #                         Support for FreeBSD base system
+#   V0.96, 17 Dec 2008, Following a report from Alfredo Pons, add support
+#                       for newer intel core2 processors (models 23,26,29,...)
+#                       by assuming models >= 15 are core2.
+#                       Report details of unrecognised CPUs.
+#   V0.97, 19 Dec 2008, Use prescott for Intel Atom (model 28).
+#                       Ensure all errors are output to stderr.
 
 if [ "$1" = "--version" ]; then
-    echo "0.95" && exit
+    echo "0.97" && exit
 fi
 
 # This table shows when -march options were introduced into _official_ gcc releases.
@@ -123,7 +129,7 @@ read_cpu_data_freebsd() {
     local _line _cpu_id
 
     if [ ! -r /var/run/dmesg.boot ]; then
-        echo "/var/run/dmesg.boot does not exist!"
+        echo "Error: /var/run/dmesg.boot does not exist!" >&2
         exit 1;
     fi
 
@@ -152,22 +158,21 @@ read_cpu_data_darwin() {
 
 read_cpu_data() {
     # Default values
-    vendor_id="Unset"
+    vendor_id="NotFound"
     cpu_family="-1"
     cpu_model="-1"
     flags=""
-    if [ "`uname`" = "Linux" ]; then
-        read_cpu_data_linux
-    elif [ "`uname`" = "FreeBSD" ]; then
-        read_cpu_data_freebsd
-    elif [ "`uname | sed 's/\(CYGWIN\).*/\1/'`" = "CYGWIN" ]; then
-        read_cpu_data_linux
-    elif [ "`uname`" = "Darwin" ]; then
-        read_cpu_data_darwin
-    else
-        echo "Error: `uname` is not a supported operating system"
-        exit 1
-    fi
+    case "$(uname)" in
+        Linux|CYGWIN*)
+            read_cpu_data_linux ;;
+        FreeBSD)
+            read_cpu_data_freebsd ;;
+        Darwin)
+            read_cpu_data_darwin ;;
+        *)
+            echo "Error: $(uname) is not a supported operating system" >&2
+            exit 1 ;;
+    esac
 }
 
 read_cpu_data
@@ -239,9 +244,9 @@ elif [ "$vendor_id" = "GenuineIntel" ]; then
             line="pentium2 pentiumpro pentium-mmx pentium i486 i386"
         elif [ \( $cpu_model -eq 9 \) -o \( $cpu_model -eq 13 \) ]; then #centrino
             line="pentium-m pentium4 pentium3 pentium2 pentiumpro pentium-mmx pentium i486 i386"
-        elif [ $cpu_model -eq 14 ]; then #Core
+        elif [ \( $cpu_model -eq 14 \) -o \( $cpu_model -eq 28 \) ]; then #Core or Atom
             line="prescott pentium-m pentium4 pentium3 pentium2 pentiumpro pentium-mmx pentium i486 i386"
-        elif [ $cpu_model -eq 15 ]; then #Core 2
+        elif [ $cpu_model -ge 15 ]; then #Core 2
             line="core2 pentium-m pentium4 pentium3 pentium2 pentiumpro pentium-mmx pentium i486 i386"
         elif [ \( $cpu_model -ge 7 \) -a \( $cpu_model -le 11 \) ]; then
             line="pentium3 pentium2 pentiumpro pentium-mmx pentium i486 i386"
@@ -252,8 +257,13 @@ elif [ "$vendor_id" = "GenuineIntel" ]; then
             line="prescott $line"
         fi
     fi
-else
-    echo "Unknown CPU Vendor: $vendor_id"
+fi
+
+if [ \( -z "$_CFLAGS" \) -a \( -z "$line" \) ]; then
+    echo "\
+Unrecognised CPU. Please email the following to: P@draigBrady.com
+  Vendor:$vendor_id family:$cpu_family model:$cpu_model
+  flags:$flags" >&2
     exit 1
 fi
 
