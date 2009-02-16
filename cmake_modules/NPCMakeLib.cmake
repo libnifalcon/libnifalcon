@@ -201,8 +201,8 @@ MACRO(MACRO_ENSURE_OUT_OF_SOURCE_BUILD)
     STRING(COMPARE EQUAL "${${PROJECT_NAME}_SOURCE_DIR}" "${PARENTDIR}" insourcesubdir)
     IF(insource OR insourcesubdir)
         MESSAGE(FATAL_ERROR 
-		  "${PROJECT_NAME} requires an out of source build (make a build dir and call cmake from that.)\n"
-		  "A script (Makefile or python) should've been included in your build to generate this, check your project root directory.\n"
+		  "${PROJECT_NAME} requires an out of source build (make a build dir and call cmake from that.):\n"
+		  "mkdir build_[platform_name]; cd build_[platform_name]; cmake ..;\n"
 		  "If you get this error from a sub-directory, make sure there is not a CMakeCache.txt in your project root directory."
 		  )
     ENDIF(insource OR insourcesubdir)
