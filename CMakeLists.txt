@@ -2,8 +2,10 @@
 # CMake directives
 ######################################################################################
 
+#Require 2.6 or higher. 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
 
+#See if we've got our cmake modules checked out. If not, advise to do so.
 IF(EXISTS "${CMAKE_SOURCE_DIR}/../cmake_modules")
   SET(NP_MODULE_DIR "${CMAKE_SOURCE_DIR}/../cmake_modules")
   MESSAGE(STATUS "Using outside cmake_modules directory ${NP_MODULE_DIR}")
@@ -51,7 +53,6 @@ OPTION_GPROF(OFF)
 
 #Project specific options
 
-OPTION(BUILD_C_LIBNIFALCON "Build the C version of libnifalcon, with findfalcons test utility" OFF)
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
