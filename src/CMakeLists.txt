@@ -1,4 +1,6 @@
-#Build rules for core libnifalcon C++ library
+######################################################################################
+# Build function for main library
+######################################################################################
 
 SET(LIBRARY_SRCS 
   core/FalconDevice.cpp 

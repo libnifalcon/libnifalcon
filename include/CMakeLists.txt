@@ -1,3 +1,7 @@
+######################################################################################
+# Installation of headers
+######################################################################################
+
 INSTALL(DIRECTORY 
   ${PROJECT_INCLUDE_DIR}/falcon/gmtl 
   ${PROJECT_INCLUDE_DIR}/falcon/core
@@ -13,6 +17,8 @@ INSTALL(FILES
   CONFIGURATIONS Debug Release
   DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util
 )
+
+#Headers for comm or util library specific development
 
 IF(LIBUSB_1_FOUND)
   INSTALL(FILES ${PROJECT_INCLUDE_DIR}/falcon/comm/FalconCommLibUSB.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/comm)

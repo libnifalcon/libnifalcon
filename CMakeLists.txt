@@ -34,6 +34,23 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 ######################################################################################
+# Macro for setting up defines for communications libraries
+######################################################################################
+
+MACRO(LIBNIFALCON_COMM_VAR_SETUP)
+  IF(LIBUSB_1_FOUND)
+	SET(CPP_DEFINES ${CPP_DEFINES} -DLIBUSB)
+	SET(CPP_LINK_LIBS ${CPP_LINK_LIBS} ${LIBNIFALCON_CPP_COMM_PREFIX}_libusb ${LIBUSB_1_LIBRARIES}) 
+  ELSEIF(LIBFTDI_FOUND)
+	SET(CPP_DEFINES ${CPP_DEFINES} -DLIBFTDI)
+	SET(CPP_LINK_LIBS ${CPP_LINK_LIBS} ${LIBNIFALCON_CPP_COMM_PREFIX}_libftdi ${LIBFTDI_LIBRARIES}) 
+  ELSEIF(LIBFTD2XX_FOUND)
+	SET(CPP_DEFINES ${CPP_DEFINES} -DLIBFTD2XX)
+	SET(CPP_LINK_LIBS ${CPP_LINK_LIBS} ${LIBNIFALCON_CPP_COMM_PREFIX}_ftd2xx ${LIBFTD2XX_LIBRARIES})
+  ENDIF(LIBUSB_1_FOUND)
+ENDMACRO(LIBNIFALCON_COMM_VAR_SETUP)
+
+######################################################################################
 # Project declaration and options
 ######################################################################################
 
@@ -49,6 +66,7 @@ OPTION_LIBRARY_BUILD_SHARED(ON)
 OPTION_FAST_MATH(ON)
 OPTION_ARCH_OPTS(ON)
 OPTION_GPROF(OFF)
+OPTION_LOG4CXX(OFF)
 #OPTION_CREATE_VERSION_FILE(ON "${CMAKE_CURRENT_SOURCE_DIR}/src/version.cc")
 
 #Project specific options
@@ -56,18 +74,13 @@ OPTION_GPROF(OFF)
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
-OPTION(DEBUG_LOGGING "Use log4cxx to output debug log messages (requires log4cxx library)" OFF)
 
 ######################################################################################
 # Project specific package finding
 ######################################################################################
 
-IF(DEBUG_LOGGING)
-  FIND_PACKAGE(Log4Cxx REQUIRED)
-ENDIF(DEBUG_LOGGING)
-
+#Find communications libraries
 IF(WIN32 OR FORCE_FTD2XX_BUILD)
-  MESSAGE(STATUS "Looking for FTD2XX")
   FIND_PACKAGE(libftd2xx)
 ENDIF(WIN32 OR FORCE_FTD2XX_BUILD)
 
@@ -80,6 +93,11 @@ IF(NOT LIBFTD2XX_FOUND)
   ENDIF(LIBUSB_1_FOUND)
 ENDIF(NOT LIBFTD2XX_FOUND)
 
+IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
+  MESSAGE(FATAL_ERROR "Either ftd2xx, libftdi, or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
+ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
+
+#Find boost, used all over the place
 FIND_PACKAGE(Boost 1.33 COMPONENTS program_options thread)
 IF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
@@ -89,24 +107,21 @@ ENDIF(NOT Boost_FOUND)
 # Project specific globals
 ######################################################################################
 
-IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-  MESSAGE(FATAL_ERROR "Either ftd2xx, libftdi, or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
-ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-
 #library definitions
 
-SET(LIBNIFALCON_VERSION 1.0.beta2)
+SET(LIBNIFALCON_MAJOR_VERSION 1)
+SET(LIBNIFALCON_MINOR_VERSION 0)
+SET(LIBNIFALCON_BUILD_VERISON beta3)
+
+SET(LIBNIFALCON_VERSION "${LIBNIFALCON_MAJOR_VERSION}.${LIBNIFALCON_MINOR_VERSION}.${LIBNIFALCON_BUILD_VERSION}")
 
 #library name definitions
-
-SET(LIBNIFALCON_C_PREFIX "nifalcon_c")
 
 SET(LIBNIFALCON_CPP "nifalcon")
 SET(LIBNIFALCON_CPP_COMM_PREFIX "nifalcon_comm")
 SET(LIBNIFALCON_CPP_CLI_BASE "nifalcon_cli_base")
 SET(LIBNIFALCON_CPP_BOOST_THREAD "nifalcon_device_boost_thread")
 SET(LIBNIFALCON_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
-#the two main source directories
 
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
