@@ -2,9 +2,6 @@
 # Build function for examples
 ######################################################################################
 
-SET(CPP_DEFINES)
-SET(CPP_LINK_LIBS ${LIBNIFALCON_CPP})
-
 INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIRS})
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH} ${LINK_DIRS})
 
