@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 
 #ifdef ENABLE_LOGGING
 	std::string logPattern(TTCC_CONVERSION_PATTERN);
-	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
+	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("ERROR");
 	configureLogging(logPattern, logLevel);
 #endif
 
