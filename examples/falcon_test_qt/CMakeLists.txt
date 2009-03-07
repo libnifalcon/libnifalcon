@@ -2,11 +2,8 @@
 # Build function for falcon_test_qt
 ######################################################################################
 
-#If we're using a Qt rc, this apparently requires us to explicitly identify it
-LIST(APPEND CMAKE_PREFIX_PATH /usr/local/Trolltech/Qt-4.5.0-rc1)
-#LIST(APPEND CMAKE_PREFIX_PATH /usr/local/Trolltech/)
-
 #This is currently the only package using Qt, so do the find here
+SET(DESIRED_QT_VERSION 4)
 FIND_PACKAGE(Qt)
 IF(QT4_INSTALLED)
   MESSAGE(STATUS "Found QT4!")
@@ -16,7 +13,7 @@ ELSE(QT4_INSTALLED)
 ENDIF(QT4_INSTALLED)
 
 #Probably going to use OpenGL to do the cube rendering demo
-SET(QT_USE_OPENGL 1)
+SET(QT_USE_QTOPENGL 1)
 INCLUDE(${QT_USE_FILE})
 
 #CMake will generate the moc and ui headers in the binary directory, so we'll

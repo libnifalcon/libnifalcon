@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <deque>
 #include "falcon/core/FalconComm.h"
+#include "falcon/core/FalconLogger.h"
 
 namespace libnifalcon
 {
@@ -227,6 +228,9 @@ namespace libnifalcon
 		uint8_t m_homingStatus; /**< Current homing status from the last I/O loop */
 
 		bool m_hasWritten; /**< True if we're waiting for a read return */
+	private:
+		DECLARE_LOGGER();
+
 	};
 }
 #endif

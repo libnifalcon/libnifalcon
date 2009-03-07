@@ -52,11 +52,6 @@ namespace libnifalcon
 	namespace po = boost::program_options;
 	FalconCLIBase::FalconCLIBase()
 	{
-#ifdef ENABLE_LOGGING
-		std::string logPattern(TTCC_CONVERSION_PATTERN);
-		log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("FATAL");
-		configureLogging(logPattern, logLevel);
-#endif
 		po::options_description program("Program Options");
 		program.add_options()
 			("help", "show this help message");
@@ -132,12 +127,15 @@ namespace libnifalcon
 		}
 
 #ifdef ENABLE_LOGGING
+		std::string logPattern(TTCC_CONVERSION_PATTERN);
+		log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("FATAL");
+
 		if(m_varMap.count("debug_level"))
 		{
-			std::string logPattern(TTCC_CONVERSION_PATTERN);
-			log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel(m_varMap["debug_level"].as<std::string>());
-			configureLogging(logPattern, logLevel);
+			logLevel = log4cxx::Level::toLevel(m_varMap["debug_level"].as<std::string>());
 		}
+
+		configureLogging(logPattern, logLevel);
 #endif
 		
 		device.setFalconFirmware<FalconFirmwareNovintSDK>();
@@ -207,11 +205,12 @@ namespace libnifalcon
 		bool firmware_loaded;	 
 		if(m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware") && (m_varMap.count("force_firmware") || !device.isFirmwareLoaded()))
 		{
+			std::cout << "Loading firmware" << std::endl;
 			if(m_varMap.count("nvent_firmware"))
 			{
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!device.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
+					if(!device.getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
 					{
 						std::cout << "Could not load firmware" << std::endl;
 					}
@@ -226,7 +225,7 @@ namespace libnifalcon
 			{
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!device.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_TEST_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE)))
+					if(!device.getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_TEST_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE)))
 					{
 						std::cout << "Could not load firmware" << std::endl;
 					}

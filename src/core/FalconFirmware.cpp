@@ -9,7 +9,8 @@ namespace libnifalcon
 		m_falconComm(NULL),
 		m_homingMode(false),
 		m_isFirmwareLoaded(false),
-		m_hasWritten(false)
+		m_hasWritten(false),
+		INIT_LOGGER("FalconFirmware")
 		//m_packetBufferSize(1)
 	{
 		//Who needs loops!
@@ -127,7 +128,9 @@ namespace libnifalcon
 			}
 			if(!m_falconComm->read(receive_buf, bytes_read))
 			{
+				LOG_DEBUG("Firmware read failed, only returned " << bytes_read << " bytes");
 				m_errorCode = m_falconComm->getErrorCode();
+				
 				return false;
 			}
 
@@ -135,12 +138,17 @@ namespace libnifalcon
 			{
 				for(int i = 0; i < bytes_read; ++i)
 				{
+					LOG_DEBUG("Firmware Comparison: " << (unsigned int)buffer[total_read+i] << " " << (unsigned int)receive_buf[i]);
 					if((buffer[total_read+i]) != receive_buf[i])
 					{
-						m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
-						return false;
+						//m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
+						//return false;
 					}
 				}
+			}
+			else
+			{
+				LOG_DEBUG("Skipping checksum for firmware");
 			}
 			total_read += bytes_read;
 
