@@ -262,7 +262,7 @@ namespace libnifalcon
 	
 	bool FalconCommLibUSB::read(uint8_t* buffer, uint32_t size)
 	{
-		LOG_INFO("Reading " << size << " bytes");
+		LOG_DEBUG("Reading " << size << " bytes");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -280,7 +280,7 @@ namespace libnifalcon
 	
 	bool FalconCommLibUSB::write(uint8_t* buffer, uint32_t size)
 	{
-		LOG_INFO("Writing " << size << " bytes");
+		LOG_DEBUG("Writing " << size << " bytes");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");			
@@ -408,13 +408,13 @@ namespace libnifalcon
 			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		LOG_DEBUG("Sent " << transferred << " bytes for 3 byte initialization");
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 64, &transferred, 1000)) != 0)
+
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 5, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		LOG_DEBUG("Got back " << transferred << " bytes for for 3 byte initialization");
+	
 	
 		//Set to:
 		// DTR Low
@@ -440,17 +440,14 @@ namespace libnifalcon
 			LOG_ERROR("Cannot write check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		LOG_DEBUG("Sent " << transferred << " bytes for 'A'");
-		
 		//Expect back 2 bytes:
 		// 0x13 0x41
 		
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 64, &transferred, 1000)) != 0)
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 5, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		LOG_DEBUG("Got back " << transferred << " bytes for 'A'");
 
 		m_errorCode = 0;
 
@@ -487,13 +484,11 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::poll()
 	{
-		LOG_DEBUG("Non-blocking Polling USB");
 		libusb_handle_events_timeout(NULL, m_tv);
 	}
 	
 	void FalconCommLibUSB::reset()
 	{
-		LOG_INFO("Resetting transfers");
 		if(m_isWriteAllocated)
 		{
 			libusb_cancel_transfer(in_transfer);
@@ -508,24 +503,18 @@ namespace libnifalcon
 	
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
-//		LOG_DEBUG("In transfer received");
 		((FalconCommLibUSB*)transfer->user_data)->setSent();
 	}
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
 		//Minus 2. Stupid modem bits.
-//		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
+		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
 		{
-//			LOG_DEBUG("Out transfer received");
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
-//		else
-//		{
-//			LOG_DEBUG("Out transfer canceled");
-//		}
 	}
 
 }
