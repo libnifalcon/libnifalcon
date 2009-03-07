@@ -103,6 +103,7 @@ void runFalconTest(FalconDevice& d)
 			if(!dev.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
 			{
 				std::cout << "Could not load firmware" << std::endl;
+				return;
 			}
 			else
 			{
@@ -110,8 +111,12 @@ void runFalconTest(FalconDevice& d)
 				break;
 			}
 		}
+		if(!dev.isFirmwareLoaded())
+		{
+			std::cout << "Firmware didn't load correctly. Try running findfalcons again" << std::endl;
+			return;
+		}
 	}
-	std::cout << "Firmware found" << std::endl;
 
 	for(int j = 0; j < 3; ++j)
 	{

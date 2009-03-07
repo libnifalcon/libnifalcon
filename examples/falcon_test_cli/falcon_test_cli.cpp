@@ -88,9 +88,10 @@ public:
 			tests.add_options()
 				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
 				("cube_test", "Presents a cube-shaped surface to touch")
-				("x_wall_test", "Presents a wall surface to touch (wall @ x = 0, force along positive x axis)")
-				("y_wall_test", "Presents a wall surface to touch (wall @ y = 0, force along positive y axis)")
-				("z_wall_test", "Presents a wall surface to touch (wall @ z = 150, force along positive z axis)");
+				//("x_wall_test", "Presents a wall surface to touch (wall @ x = 0, force along positive x axis)")
+				//("y_wall_test", "Presents a wall surface to touch (wall @ y = 0, force along positive y axis)")
+				//("z_wall_test", "Presents a wall surface to touch (wall @ z = 150, force along positive z axis)")
+				;
 			m_progOptions.add(tests);
 		}
 	}
