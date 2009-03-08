@@ -1,6 +1,15 @@
 libnifalcon ChangeLog
 =====================
 
+2009-03-08 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1 beta 3
+	* Overhauled CMake system because I didn't really know what I was doing with it the first time around
+	* Added logging capabilities using Apache's log4cxx library
+	* Removed C code completely, still available in repository (boneyard directory) but no longer distributed in source tarballs
+	* Rearranged src directory to only contain what used to be in cpp directory
+	* Added pregen'd angular matrix LUT header since it currently never changes but takes a bit of time to generate on some systems
+	* Added logging level options to FalconCLIBase
+	* Fixed lots of small bugs in findfalcons_cpp, FalconCLIBase, falcon_test_cli
 2008-12-06 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 2
 	* Changed units in stamper kinematic core position readings from millimeters to meters
