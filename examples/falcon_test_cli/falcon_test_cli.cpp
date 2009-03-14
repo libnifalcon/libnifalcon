@@ -20,7 +20,11 @@
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
+#ifndef _MINGW_
+#ifndef WIN32
 #include "sys/time.h"
+#endif
+#endif
 
 using namespace libnifalcon;
 namespace po = boost::program_options;
@@ -36,7 +40,8 @@ void sigproc(int i)
 	}
 	else exit(0);
 }
-
+#ifndef _MINGW_
+#ifndef WIN32
 static struct timeval _tstart, _tend;
 static struct timezone tz;
 void tstart()
@@ -56,7 +61,8 @@ double tval()
 	t2 =  (double)_tend.tv_sec + (double)_tend.tv_usec/(1000*1000);
 	return t2-t1;
 }
-
+#endif
+#endif
 
 class FalconCLITest : public FalconCLIBase
 {
@@ -86,7 +92,11 @@ public:
 
 			po::options_description tests("Tests");
 			tests.add_options()
+#ifndef _MINGW_
+#ifndef WIN32
 				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
+#endif
+#endif
 				("cube_test", "Presents a cube-shaped surface to touch")
 				//("x_wall_test", "Presents a wall surface to touch (wall @ x = 0, force along positive x axis)")
 				//("y_wall_test", "Presents a wall surface to touch (wall @ y = 0, force along positive y axis)")
@@ -116,7 +126,8 @@ public:
 		}
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
 		m_falconDevice.runIOLoop();
-
+#ifndef _MINGW_
+#ifndef WIN32
 		if(m_varMap.count("loop_time_test"))
 		{
 			stop = false;
@@ -132,8 +143,11 @@ public:
 				std::cout << "Loop time (in seconds): " << tval() << std::endl;
 			}
 		}
+		else
+#endif
+#endif
 
-		else if(m_varMap.count("cube_test"))
+		 if(m_varMap.count("cube_test"))
         {
 			m_falconDevice.getFalconFirmware()->setHomingMode(true);
             m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
@@ -153,7 +167,11 @@ public:
 			int count = 0;
 			while(!stop)
 			{
+#ifndef _MINGW_
+#ifndef WIN32
 				if(!count) tstart();
+#endif
+#endif
                 if(!m_falconDevice.runIOLoop()) continue;
 				if(!m_falconDevice.getFalconFirmware()->isHomed())
 				{
@@ -211,13 +229,17 @@ public:
                     force[closest] = -stiffness*dist;
                 m_falconDevice.setForce(force);
 				++count;
+#ifndef _MINGW_
+#ifndef WIN32
 				if(count == 1000)
 				{
 					tend();
 					std::cout << "Loop time (in seconds): " << tval() << std::endl;
 					count = 0;
 				}
-            }
+#endif
+#endif
+			}
         }
 		return true;
 	}

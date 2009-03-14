@@ -22,9 +22,9 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 		const double DirectKinematic::POSITION_CENTER[3] = {0.0, 0.0, 0.150};
-		const float DirectKinematic::POSITION_RANGE;
-		const uint32_t DirectKinematic::POSITION_MATRIX_DENSITY;
-		
+		const float DirectKinematic::POSITION_RANGE = 0.200;
+		const uint32_t DirectKinematic::POSITION_MATRIX_DENSITY = 64;
+
 		DirectKinematic::DirectKinematic() :
 			m_basePositionMatrix(POSITION_CENTER, POSITION_RANGE, POSITION_MATRIX_DENSITY),
 			m_baseAngularMatrix(gmtl::Vec3f(gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f),gmtl::Math::deg2Rad(35.0f)), gmtl::Math::deg2Rad(130.0f), 16)

@@ -19,7 +19,7 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		PositionMatrix::PositionMatrix(const double (&center)[3], const float& range, const uint32_t density) :
+		PositionMatrix::PositionMatrix(const double* center, const float& range, const unsigned int density) :
 			m_matrixRange(range),
 			m_matrixDensity(density),
 			m_matrixDelta(range/(float)density),

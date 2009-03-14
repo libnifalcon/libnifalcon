@@ -14,6 +14,7 @@
 #ifndef ANGULARMATRIX_H_
 #define ANGULARMATRIX_H_
 
+#include "stdint.h"
 #include "falcon/gmtl/gmtl.h"
 #include "InverseKinematic.h"
 #include "boost/multi_array.hpp"

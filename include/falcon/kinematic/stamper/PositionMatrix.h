@@ -14,6 +14,7 @@
 #ifndef POSITIONMATRIX_H_
 #define POSITIONMATRIX_H_
 
+#include "stdint.h"
 #include "falcon/gmtl/gmtl.h"
 #include "falcon/core/FalconLogger.h"
 #include "falcon/kinematic/stamper/AngularMatrix.h"
@@ -26,7 +27,7 @@ namespace libnifalcon
 		class PositionMatrix
 		{
 		public:
-			PositionMatrix(const double (&center)[3], const float& range, const uint32_t density);
+			PositionMatrix(const double* center, const float& range, const unsigned int density);
 			virtual ~PositionMatrix();
 			void populate(AngularMatrix& angularMatrix);
 			float getRange();

@@ -2,9 +2,6 @@
 //kouellet@users.sourceforge.net
 #include "falcon/kinematic/stamper/JacobianMatrix.h"
 
-using namespace gmtl;
-using namespace gmtl::Math;
-
 namespace libnifalcon
 {
 	namespace StamperKinematicImpl
@@ -65,13 +62,13 @@ namespace libnifalcon
 		void JacobianMatrix::calculateJFi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			//Following equation (4.12) in the stamper paper
-			float JFi1 = cos(angle.theta2[arm])*sin(angle.theta3[arm])*cos(phy[arm])-
-				cos(angle.theta3[arm])*sin(phy[arm]);
+			float JFi1 = gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::cos(phy[arm])-
+				gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
 	
-			float JFi2 = cos(angle.theta3[arm])*cos(phy[arm])+
-				cos(angle.theta2[arm])*sin(angle.theta3[arm])*sin(phy[arm]);
+			float JFi2 = gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::cos(phy[arm])+
+				gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
 	
-			float JFi3 = sin(angle.theta2[arm])*sin(angle.theta3[arm]);
+			float JFi3 = gmtl::Math::sin(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm]);
 	
 			matrix[arm][0] = JFi1;
 			matrix[arm][1] = JFi2;
@@ -81,7 +78,7 @@ namespace libnifalcon
 		void JacobianMatrix::calculateJIi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			//Following equation (4.12) in the stamper paper
-			float JIi = a*sin(angle.theta2[arm]-angle.theta1[arm])*sin(angle.theta3[arm]);
+			float JIi = a*gmtl::Math::sin(angle.theta2[arm]-angle.theta1[arm])*gmtl::Math::sin(angle.theta3[arm]);
 			matrix[arm][arm] = JIi;
 		}
 	}

@@ -23,7 +23,6 @@
 #endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
-#include <sys/time.h>
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
