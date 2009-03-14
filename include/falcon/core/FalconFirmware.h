@@ -150,7 +150,7 @@ namespace libnifalcon
 		 * 
 		 * @return True if all encoders are homed, false otherwise
 		 */
-		bool isHomed() { return ( m_homingStatus & (ENCODER_1_HOMED | ENCODER_2_HOMED | ENCODER_3_HOMED)); }
+		bool isHomed() { return ( (m_homingStatus & (ENCODER_1_HOMED | ENCODER_2_HOMED | ENCODER_3_HOMED)) > 0); }
 		
 		/** 
 		 * Sets the communication object for the firmware to run I/O through

@@ -27,7 +27,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <csignal>
-
+#include "stdint.h"
 #ifdef ENABLE_LOGGING
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
@@ -66,7 +66,7 @@ void runFalconTest(FalconDevice& d)
 	FalconFirmware* f;
 	FalconKinematic* k;
 	double position[3];
-	int num_falcons = 0;
+	int8_t num_falcons = 0;
 	int status, i;
 	unsigned int count;
 	unsigned int error_count = 0;

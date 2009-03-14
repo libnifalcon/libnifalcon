@@ -84,14 +84,14 @@ namespace libnifalcon
 		 * 
 		 * @return true if digital input requested is high, false otherwise (or if index is out of range)
 		 */
-		bool getDigitalInput(int index)
+		bool getDigitalInput(unsigned int index)
 		{
 			if(index > m_numDigitalInputs)
 			{
 				m_errorCode = FALCON_GRIP_INDEX_OUT_OF_RANGE;
 				return false;
 			}
-			return m_digitalInputs & (1 << index);
+			return ((m_digitalInputs & (1 << index)) > 0);
 		}
 
 		/** 
@@ -108,7 +108,7 @@ namespace libnifalcon
 		 * 
 		 * @return Value of analog input requested, (0 if index is out of range)
 		 */
-		int32_t getAnalogInput(int index)
+		int32_t getAnalogInput(unsigned int index)
 		{
 			if(index > m_numAnalogInputs)
 			{

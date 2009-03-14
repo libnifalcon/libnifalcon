@@ -50,7 +50,7 @@ namespace libnifalcon
 		 * 
 		 * @return Angle (in degrees) the leg is at
 		 */
-		float getTheta(int16_t encoder_value)
+		double getTheta(int16_t encoder_value)
 		{
 			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
 		}
