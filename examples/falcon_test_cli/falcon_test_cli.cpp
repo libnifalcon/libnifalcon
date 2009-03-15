@@ -12,6 +12,14 @@
  *
  */
 
+#ifdef WIN32
+#ifdef __MINGW32__
+#define FTC_USE_TIME 1
+#endif
+#else
+#define FTC_USE_TIME 1
+#endif
+
 #include <iostream>
 #include <string>
 #include <csignal>
@@ -20,8 +28,9 @@
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
-#ifndef _MINGW_
-#ifndef WIN32
+
+#ifdef WIN32
+#ifdef __MINGW32__
 #include "sys/time.h"
 #endif
 #endif
@@ -40,8 +49,7 @@ void sigproc(int i)
 	}
 	else exit(0);
 }
-#ifndef _MINGW_
-#ifndef WIN32
+#ifdef FTC_USE_TIME
 static struct timeval _tstart, _tend;
 static struct timezone tz;
 void tstart()
@@ -61,7 +69,6 @@ double tval()
 	t2 =  (double)_tend.tv_sec + (double)_tend.tv_usec/(1000*1000);
 	return t2-t1;
 }
-#endif
 #endif
 
 class FalconCLITest : public FalconCLIBase
@@ -92,10 +99,8 @@ public:
 
 			po::options_description tests("Tests");
 			tests.add_options()
-#ifndef _MINGW_
-#ifndef WIN32
+#ifdef FTC_USE_TIME
 				("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
-#endif
 #endif
 				("cube_test", "Presents a cube-shaped surface to touch")
 				//("x_wall_test", "Presents a wall surface to touch (wall @ x = 0, force along positive x axis)")
@@ -127,8 +132,8 @@ public:
 		}
 		m_falconDevice.getFalconFirmware()->setLEDStatus(led);
 		m_falconDevice.runIOLoop();
-#ifndef _MINGW_
-#ifndef WIN32
+
+#ifdef FTC_USE_TIME
 		if(m_varMap.count("loop_time_test"))
 		{
 			stop = false;
@@ -145,7 +150,6 @@ public:
 			}
 		}
 		else
-#endif
 #endif
 
 			if(m_varMap.count("cube_test"))
@@ -166,10 +170,8 @@ public:
 			int count = 0;
 			while(!stop)
 			{
-#ifndef _MINGW_
-#ifndef WIN32
+#ifdef FTC_USE_TIME
 				if(!count) tstart();
-#endif
 #endif
                 if(!m_falconDevice.runIOLoop()) continue;
 				if(!m_falconDevice.getFalconFirmware()->isHomed())
@@ -231,15 +233,13 @@ public:
                     force[closest] = -stiffness*dist;
                 m_falconDevice.setForce(force);
 				++count;
-#ifndef _MINGW_
-#ifndef WIN32
+#ifdef FTC_USE_TIME
 				if(count == 1000)
 				{
 					tend();
 					std::cout << "Loop time (in seconds): " << tval() << std::endl;
 					count = 0;
 				}
-#endif
 #endif
 			}
         }
