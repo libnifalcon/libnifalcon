@@ -29,10 +29,8 @@
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
 
-#ifdef WIN32
-#ifdef __MINGW32__
+#ifdef FTC_USE_TIME
 #include "sys/time.h"
-#endif
 #endif
 
 using namespace libnifalcon;
