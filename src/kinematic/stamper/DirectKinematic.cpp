@@ -34,7 +34,7 @@ namespace libnifalcon
 		void DirectKinematic::initialize()
 		{
 			m_basePositionMatrix.populate(m_baseAngularMatrix);
-			std::cout << m_baseAngularMatrix.isComplete() << std::endl;
+			//std::cout << m_baseAngularMatrix.isComplete() << std::endl;
 	
 			epsilonAngle = gmtl::Math::deg2Rad(0.05f);
 			epsilonPosition = 1;

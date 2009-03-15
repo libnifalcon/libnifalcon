@@ -14,6 +14,7 @@
 
 #include "falcon/kinematic/stamper/AngularMatrix.h"
 #include "falcon/kinematic/stamper/StamperUtils.h"
+#include "falcon/kinematic/stamper/AngularMatrixLookup.h"
 
 #include "falcon/core/FalconGeometry.h"
 #include <iostream>
@@ -63,8 +64,7 @@ namespace libnifalcon
 		{
 		}
 
-
-	    void AngularMatrix::copyLookupTable(const float lookup[16][16][16][3])
+	    void AngularMatrix::copyLookupTable()
 		{
 			//memcpy(matrix, lookup, 16*16*16*sizeof(float));
 			for (int i=0; i<16; i++)
@@ -73,9 +73,9 @@ namespace libnifalcon
 				{
 					for (int k=0; k<16; k++)
 					{
-						matrix[i][j][k][0] = lookup[i][j][k][0];
-						matrix[i][j][k][1] = lookup[i][j][k][1];
-						matrix[i][j][k][2] = lookup[i][j][k][2];
+						matrix[i][j][k][0] = stamper_lookup_matrix[i][j][k][0];
+						matrix[i][j][k][1] = stamper_lookup_matrix[i][j][k][1];
+						matrix[i][j][k][2] = stamper_lookup_matrix[i][j][k][2];
 					}
 				}
 			}
@@ -83,6 +83,7 @@ namespace libnifalcon
 		
 		bool AngularMatrix::setPosition(const gmtl::Point3f& position)
 		{
+
 			Angle allAngle = InverseKinematic::calculate(position);
 	
 			gmtl::Vec3f angle(allAngle.theta1[0],allAngle.theta1[1],allAngle.theta1[2]);

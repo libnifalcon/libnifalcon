@@ -12,7 +12,6 @@
  *
  */
 #include "falcon/kinematic/stamper/PositionMatrix.h"
-#include "falcon/kinematic/stamper/AngularMatrixLookup.h"
 
 namespace libnifalcon
 {
@@ -27,7 +26,9 @@ namespace libnifalcon
 		{
 			LOG_INFO("Construction...");
 			for(int i = 0; i < 3; ++i)
+			{
 				m_matrixCenter[i] = center[i];
+			}
 		}
 
 		PositionMatrix::~PositionMatrix()
@@ -37,14 +38,18 @@ namespace libnifalcon
 
 		void PositionMatrix::populate(AngularMatrix& angularMatrix)
 		{
+			/*
+			std::cout << "Trying to populate!" << std::endl;
 			LOG_INFO("Populating position matrix for stamper kinematics...");
-			
+
 			for (int i=-(m_matrixDensity/2); i<=(m_matrixDensity/2); i++)
 				for (int j=-(m_matrixDensity/2); j<=(m_matrixDensity/2); j++)
 					for (int k=-(m_matrixDensity/2); k<=(m_matrixDensity/2); k++)
 					{
 						angularMatrix.setPosition(gmtl::Vec3f(m_matrixCenter[0]+(i*m_matrixDelta),m_matrixCenter[1]+(j*m_matrixDelta),m_matrixCenter[2]+(k*m_matrixDelta)));
 					}
+					std::cout << "Populated!" << std::endl;
+			*/
 			/*
 			std::cout << "{";
 			for (int i=0; i<16; i++)
@@ -65,7 +70,7 @@ namespace libnifalcon
 			}
 			std::cout << "}" << std::endl;
 			*/
-			angularMatrix.copyLookupTable(stamper_lookup_matrix);
+			angularMatrix.copyLookupTable();
 		}
 
 		float PositionMatrix::getRange()

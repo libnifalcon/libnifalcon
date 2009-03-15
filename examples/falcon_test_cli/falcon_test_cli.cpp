@@ -107,6 +107,7 @@ public:
 	}
 	bool parseOptions(int argc, char** argv)
 	{
+
 		if(!FalconCLIBase::parseOptions(m_falconDevice, argc, argv)) return false;
 		int led = 0;
 		if(m_varMap.count("led_red"))
@@ -147,11 +148,10 @@ public:
 #endif
 #endif
 
-		 if(m_varMap.count("cube_test"))
-        {
+			if(m_varMap.count("cube_test"))
+		{
 			m_falconDevice.getFalconFirmware()->setHomingMode(true);
-            m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
-
+			m_falconDevice.setFalconKinematic<FalconKinematicStamper>();
             double cornerA[3] = { -.030, -.030, .095 };
             double cornerB[3] = { .030, .030, .155 };
             double force[3];
@@ -159,8 +159,7 @@ public:
             // TODO: for stability, stiffness should be a function of
             // the sample rate.  Also, we can add damping.
             double stiffness = 1000;
-
-            std::cout << "Cube Test" << std::endl << std::endl;
+			
 			stop = false;
 			bool homing = false;
 			bool homing_reset = false;
@@ -188,6 +187,7 @@ public:
 					m_falconDevice.getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::BLUE_LED);
 					std::cout << "Falcon homed. Move control all the way in or out to start simulation." << std::endl;
 					homing_reset = true;
+					
 				}
 				homing = false;
                 double *pos = m_falconDevice.getPosition();
@@ -198,7 +198,9 @@ public:
 					{
 						m_falconDevice.getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::GREEN_LED);
 						std::cout << "Starting cube simulation." << std::endl;
-						homing_reset = false;						
+						homing_reset = false;
+						//Reset our loop count to get proper timing
+						count = 0;
 					}
 					continue;
 				}

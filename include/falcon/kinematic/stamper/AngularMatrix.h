@@ -96,7 +96,7 @@ namespace libnifalcon
 			typedef angular_array::index angular_array_index;
 
 			gmtl::Vec3f getVec(uint32_t a, uint32_t b, uint32_t c);
-			void copyLookupTable(const float lookup[16][16][16][3]);
+			void copyLookupTable();
 		private:
 			/** 
 			 * Copies the value of vector into a cell into the current matrix
