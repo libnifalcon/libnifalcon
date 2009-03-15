@@ -76,7 +76,7 @@ libnifalcon can use three libraries to access the falcon:
 FTD2XX - Library distributed by FTDI themselves
 Windows: Fine - RECOMMENDED
 Linux: Fine
-64-bit Linux: No 64-bit drivers available
+64-bit Linux: Untested (but now available)
 OS X: Okish?
 
 libftdi:
@@ -87,9 +87,9 @@ OS X: Fine - RECOMMENDED
 
 libusb-1.0:
 Windows: Not Available for Windows
-Linux: Fine - HIGHLY RECOMMENDED
-64-bit Linux: Fine - HIGHLY RECOMMENDED
-OS X: Not Available for OS X
+Linux: Fine - RECOMMENDED
+64-bit Linux: Fine - RECOMMENDED
+OS X: Okish - Works great once you get the firmware on, at least
 
 Note that libnifalcon has been written in such a way that which comm library you use should have little effect on the cross-platform performance of your code. However, this is more of a hope than a promise.
 
@@ -103,12 +103,12 @@ Windows
 
 - NovInt uses the stock ftd2xx drivers, and it is recommended to use a ftd2xx version of libnifalcon on windows. If you have installed the drivers from NovInt's website, access through libnifalcon should "just work".
 - libftdi drivers will require a libusb filter driver install. This is not recommended for programs that will be distributed publically, as it will require an uninstall of the usual FTDI drivers.
+- Building under Visual Studio will remove the loop timing tests in the examples, because I'm too lazy to switch from gtod calls to GPC. Live with it.
 
 -----
 Linux
 -----
 
-- libusb-1.0, while still beta, provides very fast non-blocking communications for Linux. Use it. 
 - Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root. There's a sample udev file in the "linux" directory of the distribution that can help.
 
 ---
@@ -116,3 +116,4 @@ OSX
 ---
 
 - As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. libnifalcon developers prefer libftdi for the time being.
+- As of libusb 1.0 dev commit 5fd0e8478240fece646a58a3c6114001a73be99f, libusb 1.0 seems to mostly work with OS X. Firmware loading is very flakey, however.
