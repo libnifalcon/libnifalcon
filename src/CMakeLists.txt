@@ -3,6 +3,7 @@
 ######################################################################################
 
 SET(LIBRARY_SRCS 
+  ${LIBNIFALCON_INCLUDE_FILES}
   core/FalconDevice.cpp 
   core/FalconFirmware.cpp 
   firmware/FalconFirmwareNovintSDK.cpp 
@@ -28,3 +29,19 @@ NP_BUILD_LIB(
 
 ADD_SUBDIRECTORY(comm)
 ADD_SUBDIRECTORY(util)
+
+SET(SRC_GROUPS
+  Core
+  Kinematic
+  GMTL
+  Comm
+  Grip
+  Firmware
+  Util
+)
+
+FOREACH(GROUP ${SRC_GROUPS})
+  STRING(TOLOWER ${GROUP} LOWER_GROUP)
+  SOURCE_GROUP(${GROUP} REGULAR_EXPRESSION "${LOWER_GROUP}")
+ENDFOREACH(GROUP ${SRC_GROUPS})
+	
