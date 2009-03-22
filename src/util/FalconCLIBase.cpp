@@ -118,8 +118,17 @@ namespace libnifalcon
 	
 	bool FalconCLIBase::parseOptions(FalconDevice& device, int argc, char** argv)
 	{
-		po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
-		po::notify(m_varMap);    
+		try
+		{
+			po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
+			po::notify(m_varMap);
+		}
+		catch(...)
+		{
+			std::cout << "Invalid Arguments. Please try again." << std::endl << std::endl;
+			outputProgramOptions();
+			return false;
+		}
 		
 		if (m_varMap.count("help")) {
 			outputProgramOptions();
