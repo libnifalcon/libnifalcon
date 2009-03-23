@@ -15,6 +15,7 @@
 #define FALCONCLIBASE_H
 
 #include <boost/program_options.hpp>
+#include <boost/shared_ptr.hpp>
 #include "falcon/core/FalconDevice.h"
 
 namespace libnifalcon
@@ -22,11 +23,14 @@ namespace libnifalcon
 	class FalconCLIBase
 	{
 	protected:
+		boost::shared_ptr<FalconDevice> m_falconDevice;
 		boost::program_options::options_description m_progOptions;
 		boost::program_options::variables_map m_varMap;
 		virtual void addOptions(int value);	
-		virtual bool parseOptions(FalconDevice& device, int argc, char** argv);
+		virtual bool parseOptions(int argc, char** argv);
 		void outputProgramOptions();
+		bool calibrateDevice();
+		bool m_displayCalibrationMessage;
 	public:
 		FalconCLIBase();
 		~FalconCLIBase()

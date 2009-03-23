@@ -3,6 +3,7 @@
 ######################################################################################
 
 SET(SRCS findfalcons.cpp)
+LIST(APPEND NP_EXE_CPP_LINK_LIBS nifalcon_device_boost_thread)
 NP_BUILD_EXE(
   NAME findfalcons_cpp 
   SOURCES "${SRCS}" 

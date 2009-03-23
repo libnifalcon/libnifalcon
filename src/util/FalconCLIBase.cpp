@@ -12,6 +12,11 @@
  *
  */
 
+
+#include <iostream>
+
+#include <boost/shared_ptr.hpp>
+
 #include "falcon/util/FalconCLIBase.h"
 #ifdef LIBFTD2XX
 #include "falcon/comm/FalconCommFTD2XX.h"
@@ -25,7 +30,7 @@
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryTest.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
-#include <iostream>
+
 
 #ifdef ENABLE_LOGGING
 #include <log4cxx/logger.h>
@@ -50,7 +55,10 @@ void configureLogging(const std::string logString, const log4cxx::LevelPtr level
 namespace libnifalcon
 {
 	namespace po = boost::program_options;
-	FalconCLIBase::FalconCLIBase()
+
+	FalconCLIBase::FalconCLIBase() :
+		m_falconDevice(new FalconDevice()),
+		m_displayCalibrationMessage(true)
 	{
 		po::options_description program("Program Options");
 		program.add_options()
@@ -116,7 +124,7 @@ namespace libnifalcon
 		std::cout << m_progOptions << std::endl;
 	}
 	
-	bool FalconCLIBase::parseOptions(FalconDevice& device, int argc, char** argv)
+	bool FalconCLIBase::parseOptions(int argc, char** argv)
 	{
 		try
 		{
@@ -147,7 +155,7 @@ namespace libnifalcon
 		configureLogging(logPattern, logLevel);
 #endif
 		
-		device.setFalconFirmware<FalconFirmwareNovintSDK>();
+		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 		
 		//First off, see if we have a communication method
 		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
@@ -162,20 +170,20 @@ namespace libnifalcon
 		else if (m_varMap.count("libusb"))
 		{
 			std::cout << "Setting up libusb device" << std::endl;
-			device.setFalconComm<FalconCommLibUSB>();
+			m_falconDevice->setFalconComm<FalconCommLibUSB>();
 		}
 #endif
 #if defined(LIBFTDI)
 		else if (m_varMap.count("libftdi"))
 		{
 			std::cout << "Setting up libftdi device" << std::endl;
-			device.setFalconComm<FalconCommLibFTDI>();
+			m_falconDevice->setFalconComm<FalconCommLibFTDI>();
 		}
 #elif defined(LIBFTD2XX)
 		else if (m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Setting up ftd2xx device" << std::endl;
-			device.setFalconComm<FalconCommFTD2XX>();
+			m_falconDevice->setFalconComm<FalconCommFTD2XX>();
 		}
 #endif
         else
@@ -190,15 +198,15 @@ namespace libnifalcon
 		if(m_varMap.count("device_count"))
 		{
 			int8_t count;
-			device.getDeviceCount(count);
+			m_falconDevice->getDeviceCount(count);
 			std::cout << "Connected Device Count: " << (int)count << std::endl;
 			return false;
 		}		
 		else if(m_varMap.count("device_index"))
 		{
-			if(!device.open(m_varMap["device_index"].as<int>()))
+			if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
 			{
-				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << device.getErrorCode() << " Device Error Code: " << device.getFalconComm()->getDeviceErrorCode() << std::endl;
+				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 				return false;
 			}
 		}
@@ -209,17 +217,17 @@ namespace libnifalcon
 		}
 
 		//There's only one kind of firmware right now, so automatically set that.
-		device.setFalconFirmware<FalconFirmwareNovintSDK>();
+		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
 		bool firmware_loaded;	 
-		if(m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware") && (m_varMap.count("force_firmware") || !device.isFirmwareLoaded()))
+		if(m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware") && (m_varMap.count("force_firmware") || !m_falconDevice->isFirmwareLoaded()))
 		{
 			std::cout << "Loading firmware" << std::endl;
 			if(m_varMap.count("nvent_firmware"))
 			{
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!device.getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
+					if(!m_falconDevice->getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
 					{
 						std::cout << "Could not load firmware" << std::endl;
 					}
@@ -234,7 +242,7 @@ namespace libnifalcon
 			{
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!device.getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_TEST_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE)))
+					if(!m_falconDevice->getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_TEST_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE)))
 					{
 						std::cout << "Could not load firmware" << std::endl;
 					}
@@ -249,29 +257,54 @@ namespace libnifalcon
 			{
 				//Check for existence of firmware file
 				std::string firmware_file = m_varMap["firmware"].as<std::string>();
-				if(!device.setFirmwareFile(firmware_file))
+				if(!m_falconDevice->setFirmwareFile(firmware_file))
 				{
 					std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
 					return false;
 				}
-				if(!device.loadFirmware(10, m_varMap.count("skip_checksum") > 0))
+				if(!m_falconDevice->loadFirmware(10, m_varMap.count("skip_checksum") > 0))
 				{
 					std::cout << "Cannot load firmware to device" << std::endl;
-					std::cout << "Error Code: " << device.getErrorCode() << std::endl;
-					if(device.getErrorCode() == 2000)
+					std::cout << "Error Code: " << m_falconDevice->getErrorCode() << std::endl;
+					if(m_falconDevice->getErrorCode() == 2000)
 					{
-						std::cout << "Device Error Code: " << device.getFalconComm()->getDeviceErrorCode() << std::endl;
+						std::cout << "Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 					}
 					return false;
 				}
 			}
 		}
-		if(!device.isFirmwareLoaded())
+		if(!m_falconDevice->isFirmwareLoaded())
 		{
 			std::cout << "No firmware loaded to device, cannot continue" << std::endl;
 			return false;
 		}
 		
+		return true;
+	}
+
+	bool FalconCLIBase::calibrateDevice()
+	{
+		bool homing = false;
+		m_falconDevice->getFalconFirmware()->setHomingMode(true);
+		m_falconDevice->runIOLoop();
+		if(!m_falconDevice->getFalconFirmware()->isHomed())
+		{
+			if(!homing)
+			{
+				m_falconDevice->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::RED_LED);
+				if(m_displayCalibrationMessage)
+				{
+					std::cout << "Falcon not currently calibrated. Move control all the way out then push straight all the way in." << std::endl;
+					m_displayCalibrationMessage = false;
+				}
+			}
+			homing = true;
+			return false;
+		}
+		std::cout << "Falcon calibrated successfully." << std::endl;
+		m_falconDevice->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::GREEN_LED);
+		homing = false;
 		return true;
 	}
 }

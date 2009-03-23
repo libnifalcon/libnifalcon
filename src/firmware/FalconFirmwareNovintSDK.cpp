@@ -114,7 +114,6 @@ namespace libnifalcon
 		}
 		else if(m_hasWritten && !m_falconComm->hasBytesAvailable())
 		{
-			//std::cout << "Waiting!" << std::endl;
 			return false;
 		}
 		//Send information to the falcon
