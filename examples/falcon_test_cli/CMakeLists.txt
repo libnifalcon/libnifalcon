@@ -10,7 +10,7 @@ ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
 
 INCLUDE_DIRECTORIES(${PROJECT_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
-SET(SRCS falcon_test_cli.cpp FalconTestBase.cpp FalconLoopTimeTest.cpp FalconCubeTest.cpp)
+SET(SRCS falcon_test_cli.cpp FalconTestBase.cpp FalconLoopTimeTest.cpp FalconCubeTest.cpp FalconWallTest.cpp)
 SET(LINK_LIBS ${NP_EXE_CPP_LINK_LIBS} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${LIBNIFALCON_CPP_CLI_BASE} ${LIBNIFALCON_CPP_BOOST_THREAD})
 
 SET(DEPENDS ${LIBNIFALCON_CPP}_DEPEND ${LIBNIFALCON_CPP_CLI_BASE}_DEPEND)

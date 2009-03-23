@@ -3,10 +3,10 @@
 
 void FalconTestBase::run()
 {
+	++m_runCount;
 	if(m_countLimit > 0)
 	{
-		++m_runCount;
-		if(m_countLimit == m_runCount)
+		if(m_runCount % m_countLimit == 0)
 		{
 			tend();
 			std::cout << "Time for " << m_runCount << " loops: " << tval() << std::endl;

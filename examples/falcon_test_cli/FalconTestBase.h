@@ -33,6 +33,8 @@ public:
 		m_countLimit = count;
 	}
 protected:
+	//If you're using your falcon for over 1100 hours straight, you
+	//may experience a slight debounce issue at some point.
 	unsigned int m_runCount;
 	unsigned int m_countLimit;
 	boost::shared_ptr<libnifalcon::FalconDevice> m_falconDevice;

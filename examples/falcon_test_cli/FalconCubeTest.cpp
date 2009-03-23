@@ -40,9 +40,7 @@ void FalconCubeTest::runFunction()
 	}
 		
 	double force[3];
-    
 
-	
 	double dist = 10000;
 	int closest = -1, outside=3, axis;
 	

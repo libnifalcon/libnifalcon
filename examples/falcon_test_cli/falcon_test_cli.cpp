@@ -24,6 +24,7 @@
 #include "falcon/util/FalconCLIBase.h"
 #include "FalconLoopTimeTest.h"
 #include "FalconCubeTest.h"
+#include "FalconWallTest.h"
 
 using namespace libnifalcon;
 namespace po = boost::program_options;
@@ -58,9 +59,9 @@ public:
 			("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
 #endif
 			("cube_test", "Presents a cube-shaped surface to touch")
-			//("x_wall_test", "Presents a wall surface to touch (wall @ x = 0, force along positive x axis)")
-			//("y_wall_test", "Presents a wall surface to touch (wall @ y = 0, force along positive y axis)")
-			//("z_wall_test", "Presents a wall surface to touch (wall @ z = 150, force along positive z axis)")
+			("x_wall_test", "Presents a wall surface to touch (force along x axis)")
+			("y_wall_test", "Presents a wall surface to touch (force along y axis)")
+			("z_wall_test", "Presents a wall surface to touch (force along z axis)")
 			;
 		m_progOptions.add(tests);
 	}
@@ -80,6 +81,24 @@ public:
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running cube test" << std::endl;
 			t.reset(new FalconCubeTest(m_falconDevice));
+		}
+		else if(m_varMap.count("x_wall_test"))
+		{
+			while(!calibrateDevice() && !stop);
+			std::cout << "Running x axis wall test" << std::endl;
+			t.reset(new FalconWallTest(m_falconDevice, 0));
+		}
+		else if(m_varMap.count("y_wall_test"))
+		{
+			while(!calibrateDevice() && !stop);
+			std::cout << "Running y axis wall test" << std::endl;
+			t.reset(new FalconWallTest(m_falconDevice, 1));
+		}
+		else if(m_varMap.count("z_wall_test"))
+		{
+			while(!calibrateDevice() && !stop);
+			std::cout << "Running z axis wall test" << std::endl;
+			t.reset(new FalconWallTest(m_falconDevice, 2));
 		}
 
 		while(!stop)
