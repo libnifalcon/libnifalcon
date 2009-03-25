@@ -151,12 +151,14 @@ if(PKG_CONFIG_EXECUTABLE)
 
   if(LIBUSB_1_FOUND)
     set(PC_REQUIRES "${PC_REQUIRES}libusb-1.0 ")
+    set(PC_LINK_FLAGS "${PC_LINK_FLAGS}-lnifalcon_comm_libusb ")
   endif(LIBUSB_1_FOUND)
   if(LIBFTDI_FOUND)
     set(PC_REQUIRES "${PC_REQUIRES}libftdi ")
+    set(PC_LINK_FLAGS "${PC_LINK_FLAGS}-lnifalcon_comm_libftdi ")
   endif(LIBFTDI_FOUND)
 
-  set(PC_LINK_FLAGS "${lib${PC_LIBRARY_NAME}_LINK_FLAGS}")
+  set(PC_LINK_FLAGS "${lib${PC_LIBRARY_NAME}_LINK_FLAGS} ${PC_LINK_FLAGS}")
   set(PC_LINK_FLAGS "-l${PC_LIBRARY_NAME} ${PC_LINK_FLAGS}")
   set(PC_COMPILE_FLAGS "${lib${PC_LIBRARY_NAME}_COMPILE_FLAGS}")
   set(PC_CONFIGURED_FILE
