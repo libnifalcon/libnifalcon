@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -70,7 +70,7 @@ public:
 	{
 		boost::scoped_ptr<FalconTestBase> t;
 		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
-		
+
 		if(m_varMap.count("loop_time_test"))
 		{
 			std::cout << "Running loop timing test" << std::endl;
@@ -100,6 +100,11 @@ public:
 			std::cout << "Running z axis wall test" << std::endl;
 			t.reset(new FalconWallTest(m_falconDevice, 2));
 		}
+		else
+		{
+			std::cout << "No test chosen, exiting..." << std::endl;
+			return true;
+		}
 
 		while(!stop)
 		{
@@ -108,7 +113,7 @@ public:
 		return true;
 	}
 };
-	
+
 int main(int argc, char** argv)
 {
 
@@ -116,9 +121,9 @@ int main(int argc, char** argv)
 #ifndef WIN32
 	signal(SIGQUIT, sigproc);
 #endif
-	
+
 	FalconCLITest f;
-	f.addOptions(FalconCLITest::LED_OPTIONS | FalconCLITest::DEVICE_OPTIONS | FalconCLITest::COMM_OPTIONS | FalconCLITest::FIRMWARE_OPTIONS);	
+	f.addOptions(FalconCLITest::LED_OPTIONS | FalconCLITest::DEVICE_OPTIONS | FalconCLITest::COMM_OPTIONS | FalconCLITest::FIRMWARE_OPTIONS);
 	if(!f.parseOptions(argc, argv))
 		return 0;
 	return 0;

@@ -219,8 +219,8 @@ namespace libnifalcon
 		//There's only one kind of firmware right now, so automatically set that.
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
-		bool firmware_loaded;	 
-		if(m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware") && (m_varMap.count("force_firmware") || !m_falconDevice->isFirmwareLoaded()))
+		bool firmware_loaded = m_falconDevice->isFirmwareLoaded();	 
+		if((m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware")) && (m_varMap.count("force_firmware") || !firmware_loaded))
 		{
 			std::cout << "Loading firmware" << std::endl;
 			if(m_varMap.count("nvent_firmware"))
@@ -273,6 +273,15 @@ namespace libnifalcon
 					return false;
 				}
 			}
+		}
+		else if(!firmware_loaded)
+		{
+			std::cout << "No firmware loaded to device, and no firmware specified to load (--nvent_firmware, --test_firmware, etc...). Cannot continue" << std::endl;
+			return false;
+		}
+		else
+		{
+			return true;
 		}
 		if(!m_falconDevice->isFirmwareLoaded())
 		{

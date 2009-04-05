@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -54,17 +54,15 @@ using namespace libnifalcon;
 
 #define PACKET_TIMEOUT 1000
 
-FalconDevice dev;
-	
 void sigproc(int i)
 {
 	std::cout << "closing falcon and quitting" << std::endl;
 	exit(0);
 }
 
-void runFalconTest(FalconDevice& d)
+void runFalconTest()
 {
-	FalconFirmware* f;
+	boost::shared_ptr<FalconFirmware> f;
 	FalconKinematic* k;
 	double position[3];
 	int8_t num_falcons = 0;
@@ -72,14 +70,29 @@ void runFalconTest(FalconDevice& d)
 	unsigned int count;
 	unsigned int error_count = 0;
 	unsigned int loop_count = 0;
+	FalconDevice dev;
+
+#if defined(LIBUSB)
+	std::cout << "Running libusb test" << std::endl;
+	dev.setFalconComm<FalconCommLibUSB>();
+#elif defined(LIBFTDI)
+	std::cout << "Running libftdi test" << std::endl;
+	dev.setFalconComm<FalconCommLibFTDI>();
+#elif defined(LIBFTD2XX)
+	std::cout << "Running ftd2xx test" << std::endl;
+	dev.setFalconComm<FalconCommFTD2XX>();
+#else
+	std::cout << "No communication types built. Please rebuild libnifalcon and make sure comm libs are built." << std::endl;
+	return 0;
+#endif
+
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
-
 
 	f = dev.getFalconFirmware();
 	if(!dev.getDeviceCount(num_falcons))
 	{
-		std::cout << "Cannot get device_libftdi count" << std::endl;
+		std::cout << "Cannot get device count" << std::endl;
 		return;
 	}
 
@@ -87,8 +100,14 @@ void runFalconTest(FalconDevice& d)
 
 	std::cout << "Falcons found: " << (int)num_falcons << std::endl;
 
+	if(num_falcons == 0)
+	{
+		std::cout << "No falcons found, exiting..." << std::endl;
+		return;
+	}
+
 	std::cout << "Opening falcon" << std::endl;
-	
+
 	if(!dev.open(0))
 	{
 		std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
@@ -131,7 +150,7 @@ void runFalconTest(FalconDevice& d)
 		}
 	}
 	f->setLEDStatus(0);
-	dev.runIOLoop();	
+	dev.runIOLoop();
 	dev.close();
 }
 
@@ -145,20 +164,10 @@ int main(int argc, char** argv)
 	FalconDeviceBoostThread t;
 #ifdef ENABLE_LOGGING
 	std::string logPattern(TTCC_CONVERSION_PATTERN);
-	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("ERROR");
+	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
 	configureLogging(logPattern, logLevel);
 #endif
 
-#if defined(LIBUSB)
-	std::cout << "Running libusb test" << std::endl;
-	dev.setFalconComm<FalconCommLibUSB>();
-#elif defined(LIBFTDI)
-	std::cout << "Running libftdi test" << std::endl;
-	dev.setFalconComm<FalconCommLibFTDI>();
-#elif defined(LIBFTD2XX)
-	std::cout << "Running ftd2xx test" << std::endl;
-	dev.setFalconComm<FalconCommFTD2XX>();	
-#endif	
-	runFalconTest(dev);
+	runFalconTest();
 	return 0;
 }

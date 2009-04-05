@@ -6,7 +6,6 @@
 namespace libnifalcon
 {
 	FalconFirmware::FalconFirmware() :
-		m_falconComm(NULL),
 		m_homingMode(false),
 		m_isFirmwareLoaded(false),
 		m_hasWritten(false),
@@ -19,9 +18,9 @@ namespace libnifalcon
 		m_forceValues[2] = 0;
 		m_encoderValues[0] = 0;
 		m_encoderValues[1] = 0;
-		m_encoderValues[2] = 0;			
+		m_encoderValues[2] = 0;
 	}
-	
+
 	bool FalconFirmware::setFirmwareFile(const std::string& filename)
     {
 		std::fstream test_file(filename.c_str(),  std::fstream::in | std::fstream::binary);
@@ -66,14 +65,14 @@ namespace libnifalcon
 		file_size = end-begin;
 		firmware_file.seekg (0, std::ios::beg);
 
-		uint8_t* buf = new uint8_t[file_size];		
+		uint8_t* buf = new uint8_t[file_size];
 		firmware_file.read((char*)buf, file_size);
 		bool success = loadFirmware(skip_checksum, file_size, buf);
 		firmware_file.close();
 		delete[] buf;
 		return success;
 	}
-	
+
 	bool FalconFirmware::loadFirmware(bool skip_checksum, const long& firmware_size, uint8_t* buffer)
 	{
 		if(m_falconComm == NULL)
@@ -84,7 +83,7 @@ namespace libnifalcon
 		if(!m_falconComm->isCommOpen())
 		{
 			m_errorCode = FalconComm::FALCON_COMM_DEVICE_NOT_VALID_ERROR;
-			return false;			
+			return false;
 		}
 		if(!m_falconComm->setFirmwareMode())
 		{
@@ -102,7 +101,7 @@ namespace libnifalcon
 		//So, 58 it is. Happy medium
 
 		const int READ_SIZE = 58;
-		
+
 		while(total_read != firmware_size)
 		{
 
@@ -130,7 +129,7 @@ namespace libnifalcon
 			{
 				LOG_DEBUG("Firmware read failed, only returned " << bytes_read << " bytes");
 				m_errorCode = m_falconComm->getErrorCode();
-				
+
 				return false;
 			}
 

@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #include "falcon/core/FalconDevice.h"
@@ -17,26 +17,13 @@ namespace libnifalcon
 {
 
     FalconDevice::FalconDevice() :
-		m_cleanupObjects(true),
 		m_errorCount(0),
-		m_falconComm(NULL),
-		m_falconKinematic(NULL),
-		m_falconGrip(NULL),
-		m_falconFirmware(NULL),
 		INIT_LOGGER("FalconDevice")
 	{
 	}
 
     FalconDevice::~FalconDevice()
 	{
-		if(m_cleanupObjects)
-		{
-			LOG_INFO("Cleaning up pointers");
-			removeFalconGrip();
-			removeFalconKinematic();
-			removeFalconFirmware();
-			removeFalconComm();
-		}
 	}
 
     bool FalconDevice::getDeviceCount(int8_t& count)
@@ -57,7 +44,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return false;
 		}
-		if(!m_falconComm->open(index)) 
+		if(!m_falconComm->open(index))
 		{
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
@@ -82,7 +69,7 @@ namespace libnifalcon
 			m_falconFirmware->resetFirmwareState();
 		}
 	}
-	
+
 	bool FalconDevice::setFirmwareFile(const std::string& filename)
     {
 		if(m_falconFirmware == NULL)
@@ -102,7 +89,7 @@ namespace libnifalcon
 		}
 		return m_falconFirmware->loadFirmware(retries, skip_checksum);
 	}
-	
+
 	bool FalconDevice::loadFirmware(bool skip_checksum)
 	{
 		if(m_falconFirmware == NULL)
@@ -122,14 +109,14 @@ namespace libnifalcon
 		}
 		return m_falconFirmware->isFirmwareLoaded();
 	}
-	
+
 	bool FalconDevice::runIOLoop(uint8_t exe_flags)
 	{
 		if(m_falconFirmware == NULL)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
-		}		
+		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
 			int16_t enc_vec[3];
@@ -147,7 +134,7 @@ namespace libnifalcon
 			if(!m_falconGrip->runGripLoop(m_falconFirmware->getGripInfoSize(), m_falconFirmware->getGripInfo()))
 			{
 				m_errorCode = m_falconGrip->getErrorCode();
-				return false;				
+				return false;
 			}
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
@@ -161,7 +148,7 @@ namespace libnifalcon
 			{
 				++m_errorCount;
 				m_errorCode = m_falconKinematic->getErrorCode();
-				return false;				
+				return false;
 			}
 		}
 		return true;

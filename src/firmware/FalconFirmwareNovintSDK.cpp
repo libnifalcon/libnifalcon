@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
@@ -23,7 +23,11 @@ namespace libnifalcon
 		m_currentOutputIndex(0)
 	{
 	}
-	
+
+	FalconFirmwareNovintSDK::~FalconFirmwareNovintSDK()
+	{
+	}
+
 	void FalconFirmwareNovintSDK::formatOutput()
 	{
 		m_rawData[m_rawDataSize] = 0;
@@ -50,7 +54,7 @@ namespace libnifalcon
 					m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
 				}
 				m_currentOutputIndex = 0;
-			}			
+			}
 		}
 	}
 
@@ -92,7 +96,7 @@ namespace libnifalcon
 		{
 			m_falconComm->poll();
 		}
-		
+
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
@@ -109,6 +113,7 @@ namespace libnifalcon
 			}
 			else
 			{
+				LOG_DEBUG("Couldn't read! " << m_falconComm->getErrorCode());
 				return false;
 			}
 		}
@@ -125,5 +130,5 @@ namespace libnifalcon
 		m_hasWritten = true;
 		return read_successful;
 	}
-	
+
 }
