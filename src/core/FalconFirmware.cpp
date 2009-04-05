@@ -9,6 +9,7 @@ namespace libnifalcon
 		m_homingMode(false),
 		m_isFirmwareLoaded(false),
 		m_hasWritten(false),
+		m_loopCount(0),
 		INIT_LOGGER("FalconFirmware")
 		//m_packetBufferSize(1)
 	{

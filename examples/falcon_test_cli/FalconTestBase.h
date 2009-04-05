@@ -22,21 +22,19 @@ public:
 
 	FalconTestBase(boost::shared_ptr<libnifalcon::FalconDevice> d) :
 		m_falconDevice(d),
-		m_runCount(0),
+		m_lastLoopCount(0),
 		m_countLimit(0)
 	{
 		tstart();
 	}
 	void run();
-	void setPrintOnCount(unsigned int count)
+	void setPrintOnCount(uint64_t count)
 	{
 		m_countLimit = count;
 	}
 protected:
-	//If you're using your falcon for over 1100 hours straight, you
-	//may experience a slight debounce issue at some point.
-	unsigned int m_runCount;
-	unsigned int m_countLimit;
+	uint64_t m_lastLoopCount;
+	uint64_t m_countLimit;
 	boost::shared_ptr<libnifalcon::FalconDevice> m_falconDevice;
 	virtual void runFunction() = 0;
 

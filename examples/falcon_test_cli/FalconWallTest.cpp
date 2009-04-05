@@ -51,21 +51,21 @@ void FalconWallTest::runFunction()
 	{
 		m_buttonDown = false;
 		std::cout << "Flipping force vector..." << std::endl;
-		m_runClickCount = m_runCount;
+		m_runClickCount = m_lastLoopCount;
 		m_positiveForce = !m_positiveForce;
 		m_hasPrintedInitMsg = false;
 		m_isInitializing = true;
 		return;
 	}
-	
+
 	double force[3];
 
 	double dist = 10000;
 	int closest = -1, outside=3;
-	
+
 	// For each axis, check if the end effector is inside
 	// the cube.  Record the distance to the closest wall.
-	
+
 	force[m_axis] = 0;
 	if(((pos[m_axis] < m_axisBounds[m_axis]) && m_positiveForce) || ((pos[m_axis] > m_axisBounds[m_axis]) && !m_positiveForce))
 	{
@@ -73,10 +73,10 @@ void FalconWallTest::runFunction()
 		dist = dA;
 		closest = m_axis;
 	}
-		
+
 	// If so, add a proportional force to kick it back
 	// outside from the nearest wall.
-	
+
 	if (closest > -1)
 		force[closest] = -m_stiffness*dist;
 	m_falconDevice->setForce(force);

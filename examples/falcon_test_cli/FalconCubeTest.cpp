@@ -21,7 +21,7 @@ void FalconCubeTest::runFunction()
 		return;
 
 	double *pos = m_falconDevice->getPosition();
-	
+
 	if(m_isInitializing)
 	{
 		if(!m_hasPrintedInitMsg)
@@ -35,18 +35,18 @@ void FalconCubeTest::runFunction()
 			m_isInitializing = false;
 			tstart();
 		}
-		m_runCount = 0;
+		m_lastLoopCount = m_falconDevice->getFalconFirmware()->getLoopCount();
 		return;
 	}
-		
+
 	double force[3];
 
 	double dist = 10000;
 	int closest = -1, outside=3, axis;
-	
+
 	// For each axis, check if the end effector is inside
 	// the cube.  Record the distance to the closest wall.
-	
+
 	for (axis=0; axis<3; axis++)
 	{
 		force[axis] = 0;
@@ -59,10 +59,10 @@ void FalconCubeTest::runFunction()
 			outside--;
 		}
 	}
-	
+
 	// If so, add a proportional force to kick it back
 	// outside from the nearest wall.
-	
+
 	if (closest > -1 && !outside)
 		force[closest] = -m_stiffness*dist;
 	m_falconDevice->setForce(force);

@@ -215,6 +215,8 @@ namespace libnifalcon
 		{
 			m_hasWritten = false;
 		}
+
+		uint64_t getLoopCount() { return m_loopCount; }
 	protected:
 		boost::shared_ptr<FalconComm> m_falconComm; /**< Communications object for I/O */
 		std::string m_firmwareFilename; /**< Filename of the firmware to load */
@@ -228,7 +230,9 @@ namespace libnifalcon
 		int16_t m_encoderValues[3];	/**< Encoder values from the last I/O loop */
 		uint8_t m_homingStatus; /**< Current homing status from the last I/O loop */
 
+		uint64_t m_loopCount; /**< Number of successful loops that have been run by this firmware instance */
 		bool m_hasWritten; /**< True if we're waiting for a read return */
+	private:
 		DECLARE_LOGGER();
 
 	};

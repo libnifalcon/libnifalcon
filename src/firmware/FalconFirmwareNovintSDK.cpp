@@ -110,6 +110,7 @@ namespace libnifalcon
 				m_hasWritten = false;
 				if(m_rawDataSize <= 0) read_successful = false;
 				else read_successful = true;
+				++m_loopCount;
 			}
 			else
 			{
