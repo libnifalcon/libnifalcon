@@ -26,7 +26,7 @@ public:
 		m_countLimit(0)
 	{
 		tstart();
-	}	
+	}
 	void run();
 	void setPrintOnCount(unsigned int count)
 	{
@@ -44,7 +44,7 @@ protected:
 	struct timeval m_tstart, m_tend;
 	struct timezone m_tz;
 #endif
-	
+
 	void tstart()
 	{
 #ifdef FTC_USE_TIME

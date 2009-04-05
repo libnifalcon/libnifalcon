@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL: https://kmachulis@libnifalcon.svn.sourceforge.net/svnroot/libnifalcon/trunk/libnifalcon/src/cpp/comm/FalconCommLibFTDI.h $
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #ifndef FALCONCOMMLIBUSB_H
@@ -23,7 +23,7 @@ struct libusb_context;
 
 namespace libnifalcon
 {
-	
+
 	class FalconCommLibUSB : public FalconComm
 	{
 	public:
@@ -53,6 +53,7 @@ namespace libnifalcon
 		struct libusb_transfer* in_transfer;
 		struct libusb_transfer* out_transfer;
 		struct libusb_context* m_usbContext;
+	private:
 		DECLARE_LOGGER();
 	};
 };

@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -16,7 +16,7 @@
 #include "ftdi.h"
 
 namespace libnifalcon {
-	
+
 	FalconCommLibFTDI::FalconCommLibFTDI() :
 		m_isInitialized(false),
 		INIT_LOGGER("FalconCommLibFTDI")
@@ -28,14 +28,14 @@ namespace libnifalcon {
 		initLibFTDI();
 	}
 
-	FalconCommLibFTDI::~FalconCommLibFTDI() 
+	FalconCommLibFTDI::~FalconCommLibFTDI()
 	{
 		LOG_INFO("Destructing object");
 		close();
 		ftdi_deinit((m_falconDevice));
 		delete m_falconDevice;
 	}
-			
+
 	bool FalconCommLibFTDI::initLibFTDI()
 	{
 		LOG_INFO("Initializing communications");
@@ -64,7 +64,7 @@ namespace libnifalcon {
 			return false;
 		}
 		struct ftdi_device_list* dev_list[128];
-		device_count = ftdi_usb_find_all((m_falconDevice), dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
+		device_count = ftdi_usb_find_all(m_falconDevice, dev_list, FALCON_VENDOR_ID, FALCON_PRODUCT_ID);
 		ftdi_list_free(dev_list);
 		return true;
 	}
@@ -100,14 +100,19 @@ namespace libnifalcon {
 			}
 		}
 		for(i = 0, current = dev_list; current != NULL && i < device_index; current = current->next, ++i);
-		if(current==NULL || (m_deviceErrorCode = ftdi_usb_open_dev((m_falconDevice), current->dev)) < 0)
+		if(current==NULL)
+		{
+			LOG_ERROR("No devices found");
+			m_errorCode = FALCON_COMM_DEVICE_NOT_FOUND_ERROR;
+			return false;
+		}
+		if((m_deviceErrorCode = ftdi_usb_open_dev((m_falconDevice), current->dev)) < 0)
 		{
 			LOG_ERROR("Device error " << m_deviceErrorCode);
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			ftdi_list_free(&dev_list);
 			return false;
 		}
-		setNormalMode();
 		ftdi_list_free(&dev_list);
 		m_isCommOpen = true;
 		//Purge buffers
@@ -166,6 +171,7 @@ namespace libnifalcon {
 
 	bool FalconCommLibFTDI::write(uint8_t* str, uint32_t size)
 	{
+		LOG_DEBUG("Writing " << size << " bytes of data");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -186,7 +192,7 @@ namespace libnifalcon {
 			LOG_ERROR("Write amount " << m_lastBytesWritten << " less than requested size " << size);
 			m_errorCode = FALCON_COMM_WRITE_ERROR;
 			return false;
-		}		
+		}
 		return true;
 	}
 
@@ -200,7 +206,7 @@ namespace libnifalcon {
 		int k;
 
 		LOG_INFO("Setting firmware communications mode");
-		
+
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -210,7 +216,7 @@ namespace libnifalcon {
 
 		//Save ourselves having to reset this on every error
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		
+
 		//Clear out current buffers to make sure we have a fresh start
 		if((m_deviceErrorCode = ftdi_usb_purge_buffers((m_falconDevice))) < 0)
 		{
@@ -232,13 +238,13 @@ namespace libnifalcon {
 			return false;
 		}
 
-	
+
 		//Set to:
 		// 9600 baud
 		// 8n1
 		// No Flow Control
 		// RTS Low
-		// DTR High	
+		// DTR High
 		if((m_deviceErrorCode = ftdi_set_baudrate((m_falconDevice), 9600)) < 0)
 		{
 			LOG_ERROR("Cannot set baud rate - Device error " << m_deviceErrorCode);
@@ -282,7 +288,7 @@ namespace libnifalcon {
 			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-	
+
 		//Set to:
 		// DTR Low
 		// 140000 baud (0x15 clock ticks per signal)
@@ -311,14 +317,14 @@ namespace libnifalcon {
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		
+
 		m_errorCode = 0;
 		return true;
 	}
 
 	bool FalconCommLibFTDI::setNormalMode()
 	{
-		LOG_INFO("Setting normal communications mode");		
+		LOG_INFO("Setting normal communications mode");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");

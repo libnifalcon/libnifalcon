@@ -29,7 +29,7 @@
 #define SIO_SET_FLOW_CTRL_REQUEST SIO_SET_FLOW_CTRL
 #define SIO_SET_FLOW_CTRL_REQUEST_TYPE 0x40
 
-#define SIO_DISABLE_FLOW_CTRL 0x0 
+#define SIO_DISABLE_FLOW_CTRL 0x0
 #define SIO_RTS_CTS_HS (0x1 << 8)
 #define SIO_DTR_DSR_HS (0x2 << 8)
 #define SIO_XON_XOFF_HS (0x4 << 8)
@@ -66,15 +66,17 @@ namespace libnifalcon
 		m_requiresPoll = true;
 		initLibUSB();
 	}
-	
+
 	FalconCommLibUSB::~FalconCommLibUSB()
 	{
-		LOG_INFO("Destructing object");				
-		libusb_free_transfer(in_transfer);
-		libusb_free_transfer(out_transfer);
+		if(m_isCommOpen)
+		{
+			close();
+		}
 		delete m_tv;
+		LOG_INFO("Destructing object");
 	}
-	
+
 	bool FalconCommLibUSB::initLibUSB()
 	{
 		LOG_INFO("Initializing communications");
@@ -92,7 +94,7 @@ namespace libnifalcon
 		LOG_INFO("Setting libusb debug level to 0");
 		libusb_set_debug(m_usbContext, 0);
 #endif
-		
+
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
@@ -102,21 +104,20 @@ namespace libnifalcon
 		struct libusb_device **devs;
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
-		size_t i = 0;		
-		int r;
+		size_t i = 0;
 		count = 0;
-		
+
 		if (libusb_get_device_list(m_usbContext, &devs) < 0)
 		{
 			LOG_ERROR("Device list not retrievable");
 			return false;
 		}
-		
+
 		while ((dev = devs[i++]) != NULL)
 		{
 			struct libusb_device_descriptor desc;
 			m_deviceErrorCode = libusb_get_device_descriptor(dev, &desc);
-			if (r < 0)
+			if (m_deviceErrorCode < 0)
 			{
 				LOG_ERROR("Device descriptor not retrievable - Device error code " << m_deviceErrorCode);
 				break;
@@ -144,21 +145,21 @@ namespace libnifalcon
 
 		if ((m_deviceErrorCode = libusb_get_device_list(m_usbContext, &devs)) < 0)
 		{
-			LOG_ERROR("Device list not retrievable - Device error code " << m_deviceErrorCode);			
+			LOG_ERROR("Device list not retrievable - Device error code " << m_deviceErrorCode);
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
 		}
-		
+
 		while ((dev = devs[i++]) != NULL)
 		{
 			struct libusb_device_descriptor desc;
 			m_deviceErrorCode = libusb_get_device_descriptor(dev, &desc);
 			if (m_deviceErrorCode < 0)
 			{
-				LOG_ERROR("Device descriptor not retrievable - Device error code " << m_deviceErrorCode);			
+				LOG_ERROR("Device descriptor not retrievable - Device error code " << m_deviceErrorCode);
 				m_errorCode = FALCON_COMM_DEVICE_ERROR;
 				libusb_free_device_list(devs, 1);
-				return false;				
+				return false;
 			}
 			if (desc.idVendor == FALCON_VENDOR_ID && desc.idProduct == FALCON_PRODUCT_ID)
 			{
@@ -176,11 +177,11 @@ namespace libnifalcon
 			m_deviceErrorCode = libusb_open(found, &m_falconDevice);
 			if (m_deviceErrorCode < 0)
 			{
-				LOG_ERROR("Cannot open device - Device error code " << m_deviceErrorCode);			
+				LOG_ERROR("Cannot open device - Device error code " << m_deviceErrorCode);
 				m_falconDevice = NULL;
 				m_errorCode = FALCON_COMM_DEVICE_ERROR;
 				libusb_free_device_list(devs, 1);
-				return false;				
+				return false;
 			}
 		}
 		else
@@ -190,10 +191,10 @@ namespace libnifalcon
 			return false;
 		}
 
-		
+
 		if ((m_deviceErrorCode = libusb_claim_interface(m_falconDevice, 0)) < 0)
 		{
-			LOG_ERROR("Cannot claim device interface - Device error code " << m_deviceErrorCode);			
+			LOG_ERROR("Cannot claim device interface - Device error code " << m_deviceErrorCode);
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
 		}
@@ -230,7 +231,7 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::close()
 	{
-		LOG_INFO("Closing device communications");		
+		LOG_INFO("Closing device communications");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -259,7 +260,7 @@ namespace libnifalcon
 	{
 		m_hasBytesAvailable = true;
 	}
-	
+
 	bool FalconCommLibUSB::read(uint8_t* buffer, uint32_t size)
 	{
 		LOG_DEBUG("Reading " << size << " bytes");
@@ -277,13 +278,13 @@ namespace libnifalcon
 		m_bytesAvailable -= size;
 		return true;
 	}
-	
+
 	bool FalconCommLibUSB::write(uint8_t* buffer, uint32_t size)
 	{
 		LOG_DEBUG("Writing " << size << " bytes");
 		if(!m_isCommOpen)
 		{
-			LOG_ERROR("Device not open");			
+			LOG_ERROR("Device not open");
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
@@ -298,9 +299,9 @@ namespace libnifalcon
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
-		
+
 		m_isReadAllocated = true;
-		
+
 		return true;
 	}
 
@@ -313,7 +314,7 @@ namespace libnifalcon
 		unsigned char send_buf[128], receive_buf[128];
 		int k;
 		LOG_INFO("Setting firmware communications mode");
-	
+
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -325,7 +326,7 @@ namespace libnifalcon
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 
 		reset();
-		
+
 		//Clear out current buffers to make sure we have a fresh start
 		//if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
@@ -341,9 +342,9 @@ namespace libnifalcon
 
 		//Reset the device
 		//if((m_deviceErrorCode = ftdi_usb_reset(&(m_falconDevice))) < 0) return false;
-		
+
 		//Make sure our latency timer is at 16ms, otherwise firmware checks tend to always fail
-		//if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 16)) < 0) return false;		
+		//if((m_deviceErrorCode = ftdi_set_latency_timer(&(m_falconDevice), 16)) < 0) return false;
 	    if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 16, INTERFACE_ANY, NULL, 0, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot set latency timer - Device error " << m_deviceErrorCode);
@@ -355,7 +356,7 @@ namespace libnifalcon
 		// 8n1
 		// No Flow Control
 		// RTS Low
-		// DTR High	
+		// DTR High
 
 		//if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 9600)) < 0) return false;
 		//Baud for 9600 is 0x4138. Just trust me. It is.
@@ -414,8 +415,8 @@ namespace libnifalcon
 			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-	
-	
+
+
 		//Set to:
 		// DTR Low
 		// 140000 baud (0x15 clock ticks per signal)
@@ -426,7 +427,7 @@ namespace libnifalcon
 			LOG_ERROR("Cannot set DTR properties (3) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		   
+
 		//if((m_deviceErrorCode = ftdi_set_baudrate(&(m_falconDevice), 140000)) < 0) return false;
 		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x15, INTERFACE_ANY, NULL, 0, 1000) != 0)
 		{
@@ -442,7 +443,7 @@ namespace libnifalcon
 		}
 		//Expect back 2 bytes:
 		// 0x13 0x41
-		
+
 		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 5, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
@@ -468,25 +469,25 @@ namespace libnifalcon
 			reset();
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 1, INTERFACE_ANY, NULL, 0, 1000) != 0) 
+		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 1, INTERFACE_ANY, NULL, 0, 1000) != 0)
 		{
 			LOG_ERROR("Cannot set latency timers - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x2, INTERFACE_ANY, NULL, 0, 1000) != 0) 
+		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x2, INTERFACE_ANY, NULL, 0, 1000) != 0)
 		{
 			LOG_ERROR("Cannot set baud rate - Device error " << m_deviceErrorCode);
 			return false;
 		}
 		m_errorCode = 0;
-		return true;		
+		return true;
 	}
 
 	void FalconCommLibUSB::poll()
 	{
 		libusb_handle_events_timeout(NULL, m_tv);
 	}
-	
+
 	void FalconCommLibUSB::reset()
 	{
 		if(m_isWriteAllocated)
@@ -500,7 +501,7 @@ namespace libnifalcon
 			setReceived();
 		}
 	}
-	
+
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
 		((FalconCommLibUSB*)transfer->user_data)->setSent();

@@ -22,7 +22,7 @@ namespace libnifalcon
 	{
 	public:
 		FalconFirmwareNovintSDK();
-		~FalconFirmwareNovintSDK() {}
+		~FalconFirmwareNovintSDK();
 		bool runIOLoop();
 		int32_t getGripInfoSize() { return 1; }
 		//Things I am going to hell for, #8926:
