@@ -25,6 +25,7 @@
 #include "FalconLoopTimeTest.h"
 #include "FalconCubeTest.h"
 #include "FalconWallTest.h"
+#include "FalconColorTest.h"
 
 using namespace libnifalcon;
 namespace po = boost::program_options;
@@ -59,6 +60,7 @@ public:
 			("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
 #endif
 			("cube_test", "Presents a cube-shaped surface to touch")
+			("color_test", "Fades LEDs based on the position of the end effector")
 			("x_wall_test", "Presents a wall surface to touch (force along x axis)")
 			("y_wall_test", "Presents a wall surface to touch (force along y axis)")
 			("z_wall_test", "Presents a wall surface to touch (force along z axis)")
@@ -81,6 +83,12 @@ public:
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running cube test" << std::endl;
 			t.reset(new FalconCubeTest(m_falconDevice));
+		}
+		else if(m_varMap.count("color_test"))
+		{
+			while(!calibrateDevice() && !stop);
+			std::cout << "Running color test" << std::endl;
+			t.reset(new FalconColorTest(m_falconDevice));
 		}
 		else if(m_varMap.count("x_wall_test"))
 		{

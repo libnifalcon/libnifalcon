@@ -20,7 +20,7 @@ void FalconCubeTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	double *pos = m_falconDevice->getPosition();
+	boost::array<double, 3> pos = m_falconDevice->getPosition();
 
 	if(m_isInitializing)
 	{
@@ -39,7 +39,7 @@ void FalconCubeTest::runFunction()
 		return;
 	}
 
-	double force[3];
+	boost::array<double, 3> force;
 
 	double dist = 10000;
 	int closest = -1, outside=3, axis;

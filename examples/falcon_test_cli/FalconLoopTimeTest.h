@@ -15,4 +15,4 @@ protected:
 	void runFunction();
 };
 
-#endif FALCONLOOPTIMETEST_H
+#endif

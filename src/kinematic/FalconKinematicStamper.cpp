@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- *
- * Project info at http://libnifalcon.sourceforge.net/
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
 
@@ -35,7 +35,7 @@ namespace libnifalcon
 		m_dir.initialize();
 	}
 
-	bool FalconKinematicStamper::getForces(const double (&position)[3], const double (&cart_force)[3], int (&enc_force)[3])
+	bool FalconKinematicStamper::getForces(const boost::array<double, 3> (&position), const boost::array<double, 3> (&cart_force), boost::array<int16_t, 3> (&enc_force))
 	{
 		double ang[3];
 		StamperKinematicImpl::Angle a;
@@ -45,7 +45,7 @@ namespace libnifalcon
 		//I do not question the magic.
 		c *= 10000.0;
 		a = m_inv.calculate(p);
-
+	
 		gmtl::Vec3f angularVelocity = StamperKinematicImpl::JacobianMatrix::calculate(a, c);
 		for(int i = 0; i < 3; ++i)
 		{
@@ -53,20 +53,20 @@ namespace libnifalcon
 		}
 		return true;
 	}
-
-	bool FalconKinematicStamper::getAngles(const double (&position)[3], double (&angles)[3])
+	
+	bool FalconKinematicStamper::getAngles(boost::array<double, 3> (&position), boost::array<double, 3> (&angles))
 	{
 		StamperKinematicImpl::Angle a;
 		gmtl::Point3f p(position[0], position[1], position[2]);
 		a = m_inv.calculate(p);
-
+			
 		angles[0] = a.theta1[0];
 		angles[1] = a.theta1[1];
-		angles[2] = a.theta1[2];
+		angles[2] = a.theta1[2];			
 		return true;
 	}
 
-	bool FalconKinematicStamper::getPosition(const int (&encoders)[3], double (&position)[3])
+	bool FalconKinematicStamper::getPosition(boost::array<int16_t, 3> (&encoders), boost::array<double,3> (&position))
 	{
 		float angle1 = getTheta(encoders[0]);
 		float angle2 = getTheta(encoders[1]);

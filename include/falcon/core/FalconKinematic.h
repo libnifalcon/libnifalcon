@@ -14,8 +14,7 @@
 #ifndef FALCONKINEMATIC_H
 #define FALCONKINEMATIC_H
 
-#include <stdint.h>
-#include <iostream>
+#include <boost/array.hpp>
 
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconGeometry.h"
@@ -63,7 +62,7 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getAngles(const double (&position)[3], double (&angles)[3]) = 0;
+		virtual bool getAngles(boost::array<double, 3> &position, boost::array<double, 3>& angles) = 0;
 
 		/** 
 		 * Given a set of encoder values, return the cartesian position (in meters) of the end effector in relation to the origin.
@@ -75,14 +74,14 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getPosition(const int (&encoders)[3], double (&position)[3]) = 0;
+		virtual bool getPosition(boost::array<int16_t, 3>& encoders, boost::array<double, 3>& position) = 0;
 
 		/** 
 		 * Returns the center point of the workspace. May not always be [0,0,0].
 		 *
 		 * @param origin Array to store values in
 		 */
-		virtual void getWorkspaceOrigin(double (&origin)[3]) = 0;
+		virtual void getWorkspaceOrigin(boost::array<double, 3>& origin) = 0;
 
 		/** 
 		 * Given a caretesian position (in meters), and force vector (in newtons),
@@ -95,7 +94,7 @@ namespace libnifalcon
 		 * @return true if forces are generated, false otherwise.
 		 */
 
-		virtual bool getForces(const double (&position)[3], const double (&cart_force)[3], int (&enc_force)[3]) = 0;
+		virtual bool getForces(const boost::array<double, 3> &position, const boost::array<double, 3>& cart_force, boost::array<int16_t, 3> &enc_force) = 0;
 	};
 }
 

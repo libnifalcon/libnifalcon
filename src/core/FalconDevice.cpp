@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #include "falcon/core/FalconDevice.h"
@@ -44,7 +44,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return false;
 		}
-		if(!m_falconComm->open(index)) 
+		if(!m_falconComm->open(index))
 		{
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
@@ -69,7 +69,7 @@ namespace libnifalcon
 			m_falconFirmware->resetFirmwareState();
 		}
 	}
-	
+
 	bool FalconDevice::setFirmwareFile(const std::string& filename)
     {
 		if(m_falconFirmware == NULL)
@@ -89,7 +89,7 @@ namespace libnifalcon
 		}
 		return m_falconFirmware->loadFirmware(retries, skip_checksum);
 	}
-	
+
 	bool FalconDevice::loadFirmware(bool skip_checksum)
 	{
 		if(m_falconFirmware == NULL)
@@ -109,17 +109,17 @@ namespace libnifalcon
 		}
 		return m_falconFirmware->isFirmwareLoaded();
 	}
-	
+
 	bool FalconDevice::runIOLoop(unsigned int exe_flags)
 	{
 		if(m_falconFirmware == NULL)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
-		}		
+		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			int enc_vec[3];
+			boost::array<int16_t, 3> enc_vec;
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
@@ -134,12 +134,12 @@ namespace libnifalcon
 			if(!m_falconGrip->runGripLoop(m_falconFirmware->getGripInfoSize(), m_falconFirmware->getGripInfo()))
 			{
 				m_errorCode = m_falconGrip->getErrorCode();
-				return false;				
+				return false;
 			}
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			int p[3];
+			boost::array<int16_t, 3> p;
 			//Stopgap until boost::array conversion
 			p[0] = m_falconFirmware->getEncoderValues()[0];
 			p[1] = m_falconFirmware->getEncoderValues()[1];
@@ -148,7 +148,7 @@ namespace libnifalcon
 			{
 				++m_errorCount;
 				m_errorCode = m_falconKinematic->getErrorCode();
-				return false;				
+				return false;
 			}
 		}
 		return true;

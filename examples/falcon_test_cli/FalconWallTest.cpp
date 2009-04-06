@@ -24,7 +24,7 @@ void FalconWallTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	double *pos = m_falconDevice->getPosition();
+	boost::array<double, 3> pos = m_falconDevice->getPosition();
 
 	if(m_isInitializing)
 	{
@@ -58,7 +58,7 @@ void FalconWallTest::runFunction()
 		return;
 	}
 
-	double force[3];
+	boost::array<double, 3> force;
 
 	double dist = 10000;
 	int closest = -1, outside=3;
@@ -80,5 +80,6 @@ void FalconWallTest::runFunction()
 	if (closest > -1)
 		force[closest] = -m_stiffness*dist;
 	m_falconDevice->setForce(force);
+
 }
 
