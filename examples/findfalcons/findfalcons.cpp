@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include <csignal>
 #include "stdint.h"
-#include "falcon/util/FalconDeviceBoostThread.h"
 #ifdef ENABLE_LOGGING
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
@@ -161,7 +160,6 @@ int main(int argc, char** argv)
 	signal(SIGQUIT, sigproc);
 #endif
 
-	FalconDeviceBoostThread t;
 #ifdef ENABLE_LOGGING
 	std::string logPattern(TTCC_CONVERSION_PATTERN);
 	log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
