@@ -11,6 +11,8 @@
 
 #ifdef FTC_USE_TIME
 #include "sys/time.h"
+#else
+#include <windows.h>
 #endif
 
 #include "boost/shared_ptr.hpp"
@@ -25,6 +27,7 @@ public:
 		m_lastLoopCount(0),
 		m_countLimit(0)
 	{
+		tinit();
 		tstart();
 	}
 	void run();
@@ -41,12 +44,23 @@ protected:
 #ifdef FTC_USE_TIME
 	struct timeval m_tstart, m_tend;
 	struct timezone m_tz;
+#else
+	LARGE_INTEGER m_tstart, m_tend, m_tfreq;
 #endif
+
+	void tinit()
+	{
+#ifndef FTC_USE_TIME
+		QueryPerformanceFrequency(&m_tfreq);
+#endif
+	}
 
 	void tstart()
 	{
 #ifdef FTC_USE_TIME
 		gettimeofday(&m_tstart, &m_tz);
+#else
+		QueryPerformanceCounter(&m_tstart);
 #endif
 	}
 
@@ -54,6 +68,8 @@ protected:
 	{
 #ifdef FTC_USE_TIME
 		gettimeofday(&m_tend,&m_tz);
+#else
+		QueryPerformanceCounter(&m_tend);
 #endif
 	}
 
@@ -65,7 +81,7 @@ protected:
 		t2 =  (double)m_tend.tv_sec + (double)m_tend.tv_usec/(1000*1000);
 		return t2-t1;
 #else
-		return 0;
+		return ((m_tend.QuadPart - m_tstart.QuadPart) / (m_tfreq.QuadPart));
 #endif
 	}
 };

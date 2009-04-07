@@ -2,7 +2,7 @@
 # Build function for examples
 ######################################################################################
 
-INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH} ${LINK_DIRS})
 
 SET(NP_EXE_CPP_DEFINES )
