@@ -7,8 +7,8 @@
  *
  * -----------------------------------------------------------------
  * File:          Intersection.h,v
- * Date modified: 2006/12/09 03:44:44
- * Version:       1.26
+ * Date modified: 2009/02/13 16:42:26
+ * Version:       1.31
  * -----------------------------------------------------------------
  *
  *********************************************************** ggt-head end */
@@ -315,7 +315,10 @@ namespace gmtl
    {
       numHits = 0;
       bool result = intersectAABoxRay(box, seg, tIn, tOut);
-
+      if (tIn < 0.0 && tOut > 1.0)
+      {
+	  return false;
+      }
       if ( result )
       {
          // If tIn is less than 0, then the origin of the line segment is
@@ -545,7 +548,7 @@ namespace gmtl
     * @return numhits, t0, t1 are undefined if return value is false
     */
    template<typename T>
-   inline bool intersect( const Sphere<T>& sphere, const Ray<T>& ray, int& numhits, float& t0, float& t1 )
+   inline bool intersect( const Sphere<T>& sphere, const Ray<T>& ray, int& numhits, T& t0, T& t1 )
    {
       numhits = -1;
 
@@ -613,7 +616,7 @@ namespace gmtl
     * numhits, t0, t1 are undefined if return value is false
     */
    template<typename T>
-   inline bool intersect( const Sphere<T>& sphere, const LineSeg<T>& lineseg, int& numhits, float& t0, float& t1 )
+   inline bool intersect( const Sphere<T>& sphere, const LineSeg<T>& lineseg, int& numhits, T& t0, T& t1 )
    {
       if (intersect( sphere, Ray<T>( lineseg ), numhits, t0, t1 ))
       {
@@ -646,7 +649,7 @@ namespace gmtl
     * @return numhits, t0, t1 are undefined if return value is false
     */
    template<typename T>
-   inline bool intersectVolume( const Sphere<T>& sphere, const LineSeg<T>& ray, int& numhits, float& t0, float& t1 )
+   inline bool intersectVolume( const Sphere<T>& sphere, const LineSeg<T>& ray, int& numhits, T& t0, T& t1 )
    {
       bool result = intersect( sphere, ray, numhits, t0, t1 );
       if (result && numhits == 2)
@@ -703,7 +706,7 @@ namespace gmtl
     * @return numhits, t0, t1 are undefined if return value is false
     */
    template<typename T>
-   inline bool intersectVolume( const Sphere<T>& sphere, const Ray<T>& ray, int& numhits, float& t0, float& t1 )
+   inline bool intersectVolume( const Sphere<T>& sphere, const Ray<T>& ray, int& numhits, T& t0, T& t1 )
    {
       bool result = intersect( sphere, ray, numhits, t0, t1 );
       if (result && numhits == 2)
@@ -744,11 +747,11 @@ namespace gmtl
    template<class DATA_TYPE>
    bool intersect( const Plane<DATA_TYPE>& plane, const Ray<DATA_TYPE>& ray, DATA_TYPE& t )
    {
-      const float eps(0.00001f);
+      const DATA_TYPE eps(0.00001f);
 
       // t = -(n·P + d)
       Vec<DATA_TYPE, 3> N( plane.getNormal() );
-      float denom( dot(N,ray.getDir()) );
+      DATA_TYPE denom( dot(N,ray.getDir()) );
       if(gmtl::Math::abs(denom) < eps)    // Ray parallel to plane
       {
          t = 0;
@@ -840,6 +843,75 @@ namespace gmtl
    }
 
    /**
+    * Tests if the given triangle intersects with the given ray, from both sides.
+    *
+    * @param tri The triangle (ccw ordering).
+    * @param ray The ray.
+    * @param u Tangent space u-coordinate of the intersection.
+    * @param v Tangent space v-coordinate of the intersection.
+    * @param t An indicator of the intersection location.
+    *
+    * @post \p t gives you the intersection point:
+    *       \code isect = ray.dir * t + ray.origin \endcode
+    *
+    * @return true if the ray intersects the triangle.
+    *
+    * @see from http://www.acm.org/jgt/papers/MollerTrumbore97/code.html
+    */
+   template<class DATA_TYPE>
+   bool intersectDoubleSided(const Tri<DATA_TYPE>& tri, const Ray<DATA_TYPE>& ray,
+                             DATA_TYPE& u, DATA_TYPE& v, DATA_TYPE& t)
+   {
+      const DATA_TYPE EPSILON = (DATA_TYPE)0.00001f;
+      Vec<DATA_TYPE, 3> edge1, edge2, tvec, pvec, qvec;
+      DATA_TYPE det, inv_det;
+
+      // Find vectors for two edges sharing vert0.
+      edge1 = tri[1] - tri[0];
+      edge2 = tri[2] - tri[0];
+
+      // Begin calculating determinant - also used to calculate U parameter.
+      gmtl::cross(pvec, ray.getDir(), edge2);
+
+      // If determinant is near zero, ray lies in plane of triangle.
+      det = gmtl::dot( edge1, pvec );
+
+      if ( det < EPSILON && det > -EPSILON )
+      {
+         return false;
+      }
+
+      // calculate distance from vert0 to ray origin>
+      tvec = ray.getOrigin() - tri[0];
+
+      // Calc inverse deteriminant.
+      inv_det = ((DATA_TYPE)1.0) / det; 
+
+      // Calculate U parameter and test bounds.
+      u =  inv_det * gmtl::dot(tvec, pvec);
+      if ( u < 0.0 || u > 1.0 )
+      {
+         return false;
+      }
+
+      // Prepare to test V parameter.
+      gmtl::cross(qvec, tvec, edge1);
+
+      // Calculate V parameter and test bounds.
+      v = inv_det * gmtl::dot(ray.getDir(), qvec);
+      if (v < 0.0 || u + v > 1.0)
+      {
+         return false;
+      }
+
+      // Calculate t, scale parameters, ray intersects triangle.
+      t = inv_det * gmtl::dot(edge2, qvec);
+
+      // Test if t is within the ray boundary (when t >= 0).
+      return t >= (DATA_TYPE)0;
+   }
+
+   /**
     * Tests if the given triangle and line segment intersect with each other.
     *
     *  @param tri - the triangle (ccw ordering)
@@ -853,7 +925,7 @@ namespace gmtl
     */
    template<class DATA_TYPE>
    bool intersect( const Tri<DATA_TYPE>& tri, const LineSeg<DATA_TYPE>& lineseg,
-                        float& u, float& v, float& t )
+                   DATA_TYPE& u, DATA_TYPE& v, DATA_TYPE& t )
    {
       const DATA_TYPE eps = (DATA_TYPE)0.0001010101;
       DATA_TYPE l = length( lineseg.getDir() );

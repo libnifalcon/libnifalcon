@@ -7,8 +7,8 @@
  *
  * -----------------------------------------------------------------
  * File:          Containment.h,v
- * Date modified: 2007/06/13 19:42:29
- * Version:       1.21
+ * Date modified: 2009/02/13 14:29:09
+ * Version:       1.23
  * -----------------------------------------------------------------
  *
  *********************************************************** ggt-head end */
@@ -120,7 +120,7 @@ void extendVolume( Sphere<DATA_TYPE>& container,
    DATA_TYPE len = normalize( dir );
 
    // compute what the new radius should be
-   DATA_TYPE newRadius =  (len + container.mRadius) * DATA_TYPE(0.5);
+   DATA_TYPE newRadius = (len + container.mRadius) * static_cast<DATA_TYPE>(0.5);
 
    // compute the new center for the sphere
    Point<DATA_TYPE, 3> newCenter = container.mCenter +
@@ -154,7 +154,7 @@ void extendVolume( Sphere<DATA_TYPE>& container,
 
    // compute what the new radius should be
    DATA_TYPE newRadius = (len + sphere.mRadius + container.mRadius) *
-                         DATA_TYPE(0.5);
+                         static_cast<DATA_TYPE>(0.5);
 
    // compute the new center for container
    Point<DATA_TYPE, 3> newCenter = container.mCenter +
@@ -193,7 +193,7 @@ void makeVolume( Sphere<DATA_TYPE>& container,
       sum += *itr;
       ++itr;
    }
-   container.mCenter = sum / DATA_TYPE(pts.size());
+   container.mCenter = sum / static_cast<DATA_TYPE>(pts.size());
 
    // compute the distance from the computed center to point furthest from that
    // center as the radius
@@ -225,7 +225,7 @@ void makeVolume( Sphere<DATA_TYPE>& container,
    const Point<DATA_TYPE, 3>& second = *itr;
    ++itr;
    const Vec<DATA_TYPE, 3> dir = second - first;
-   container.mRadius = length(dir) * DATA_TYPE(0.5);
+   container.mRadius = length(dir) * static_cast<DATA_TYPE>(0.5);
    container.mCenter = first + (dir * container.mRadius);
 
    // iterate through the remaining points and extend the container to fit each
@@ -265,7 +265,7 @@ void makeVolume( Sphere<DATA_TYPE>& container,
    ++itr;
    const Vec<DATA_TYPE, 3> dir = second.mCenter - first.mCenter;
    container.mRadius = (length(dir) + first.mRadius + second.mRadius) *
-                       DATA_TYPE(0.5);
+                       static_cast<DATA_TYPE>(0.5);
    container.mCenter = first.mCenter +
                        (dir * (container.mRadius - first.mRadius));
 
@@ -399,17 +399,16 @@ bool isInVolume(const AABox<DATA_TYPE>& container,
    {
       return false;
    }
-
-   // Test that the boxes are not overlapping on any axis
-   if (container.mMax[0] < box.mMin[0] || container.mMin[0] > box.mMax[0] ||
-       container.mMax[1] < box.mMin[1] || container.mMin[1] > box.mMax[1] ||
-       container.mMax[2] < box.mMin[2] || container.mMin[2] > box.mMax[2])
+ 
+   if (container.mMin[0] <= box.mMin[0] && container.mMax[0] >= box.mMax[0] &&
+       container.mMin[1] <= box.mMin[1] && container.mMax[1] >= box.mMax[1] &&
+       container.mMin[2] <= box.mMin[2] && container.mMax[2] >= box.mMax[2])
    {
-      return false;
+      return true;
    }
    else
    {
-      return true;
+      return false;
    }
 }
 

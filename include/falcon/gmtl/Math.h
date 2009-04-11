@@ -7,8 +7,8 @@
  *
  * -----------------------------------------------------------------
  * File:          Math.h,v
- * Date modified: 2005/06/23 21:13:28
- * Version:       1.40
+ * Date modified: 2009/02/12 23:16:53
+ * Version:       1.42
  * -----------------------------------------------------------------
  *
  *********************************************************** ggt-head end */
@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <falcon/gmtl/Defines.h>
 #include <falcon/gmtl/Util/Assert.h>
+#include <falcon/gmtl/Util/StaticAssert.h>
 
 namespace gmtl
 {
@@ -81,7 +82,7 @@ namespace Math
 template <typename T>
 inline T abs( T iValue )
 {
-    return T( iValue >= ((T)0) ? iValue : -iValue );
+    return static_cast<T>( iValue >= static_cast<T>(0) ? iValue : -iValue );
 }
 
 inline float abs(float iValue)
@@ -127,13 +128,13 @@ inline double floor( double fValue )
 template <typename T>
 inline int sign( T iValue )
 {
-   if (iValue > T(0))
+   if (iValue > static_cast<T>(0))
    {
       return 1;
    }
    else
    {
-      if (iValue < T(0))
+      if (iValue < static_cast<T>(0))
       {
          return -1;
       }
@@ -153,9 +154,9 @@ inline int sign( T iValue )
  * @return  zero if the value is close to 0, the value otherwise
  */
 template <typename T>
-inline T zeroClamp( T value, T eps = T(0) )
+inline T zeroClamp( T value, T eps = static_cast<T>(0) )
 {
-   return ( (gmtl::Math::abs(value) <= eps) ? T(0) : value );
+   return ( (gmtl::Math::abs(value) <= eps) ? static_cast<T>(0) : value );
 }
 
 //----------------------------------------------------------------------------
@@ -171,9 +172,9 @@ inline float aCos( float fValue )
         if ( fValue < 1.0f )
         {
 #ifdef NO_ACOSF
-            return float(::acos(fValue));
+            return static_cast<float>(::acos(fValue));
 #else
-            return float( ::acosf( fValue ) );
+            return static_cast<float>(::acosf(fValue));
 #endif
         }
         else
@@ -181,7 +182,7 @@ inline float aCos( float fValue )
     }
     else
     {
-        return (float)gmtl::Math::PI;
+        return static_cast<float>(gmtl::Math::PI);
     }
 }
 inline double aCos( double fValue )
@@ -189,13 +190,13 @@ inline double aCos( double fValue )
     if ( -1.0 < fValue )
     {
         if ( fValue < 1.0 )
-            return double( ::acos( fValue ) );
+            return static_cast<double>(::acos(fValue));
         else
             return 0.0;
     }
     else
     {
-        return (double)gmtl::Math::PI;
+        return static_cast<double>(gmtl::Math::PI);
     }
 }
 //----------------------------------------------------------------------------
@@ -208,17 +209,17 @@ inline float aSin( float fValue )
         if ( fValue < 1.0f )
         {
 #ifdef NO_ASINF
-            return float(::asin(fValue));
+            return static_cast<float>(::asin(fValue));
 #else
-            return float( ::asinf( fValue ) );
+            return static_cast<float>(::asinf(fValue));
 #endif
         }
         else
-            return (float)-gmtl::Math::PI_OVER_2;
+            return static_cast<float>(-gmtl::Math::PI_OVER_2);
     }
     else
     {
-        return (float)gmtl::Math::PI_OVER_2;
+        return static_cast<float>(gmtl::Math::PI_OVER_2);
     }
 }
 inline double aSin( double fValue )
@@ -226,13 +227,13 @@ inline double aSin( double fValue )
     if ( -1.0 < fValue )
     {
         if ( fValue < 1.0 )
-            return double( ::asin( fValue ) );
+            return static_cast<double>(::asin(fValue));
         else
-            return (double)-gmtl::Math::PI_OVER_2;
+            return static_cast<double>(-gmtl::Math::PI_OVER_2);
     }
     else
     {
-        return (double)gmtl::Math::PI_OVER_2;
+        return static_cast<double>(gmtl::Math::PI_OVER_2);
     }
 }
 //----------------------------------------------------------------------------
@@ -245,9 +246,9 @@ inline double aTan( double fValue )
 inline float aTan( float fValue )
 {
 #ifdef NO_TANF
-   return float(::atan(fValue));
+   return static_cast<float>(::atan(fValue));
 #else
-   return float( ::atanf( fValue ) );
+   return static_cast<float>(::atanf(fValue));
 #endif
 }
 //----------------------------------------------------------------------------
@@ -256,14 +257,14 @@ inline T aTan2( T fY, T fX );
 inline float aTan2( float fY, float fX )
 {
 #ifdef NO_ATAN2F
-   return float(::atan2(fY, fX));
+   return static_cast<float>(::atan2(fY, fX));
 #else
-   return float( ::atan2f( fY, fX ) );
+   return static_cast<float>(::atan2f(fY, fX));
 #endif
 }
 inline double aTan2( double fY, double fX )
 {
-    return double( ::atan2( fY, fX ) );
+    return static_cast<double>(::atan2(fY, fX));
 }
 //----------------------------------------------------------------------------
 template <typename T>
@@ -271,14 +272,14 @@ inline T cos( T fValue );
 inline float cos( float fValue )
 {
 #ifdef NO_COSF
-   return float(::cos(fValue));
+   return static_cast<float>(::cos(fValue));
 #else
-   return float( ::cosf( fValue ) );
+   return static_cast<float>(::cosf(fValue));
 #endif
 }
 inline double cos( double fValue )
 {
-    return double( ::cos( fValue ) );
+    return static_cast<double>(::cos(fValue));
 }
 //----------------------------------------------------------------------------
 template <typename T>
@@ -286,41 +287,41 @@ inline T exp( T fValue );
 inline float exp( float fValue )
 {
 #ifdef NO_EXPF
-   return float(::exp(fValue));
+   return static_cast<float>(::exp(fValue));
 #else
-   return float( ::expf( fValue ) );
+   return static_cast<float>(::expf(fValue));
 #endif
 }
 inline double exp( double fValue )
 {
-    return double( ::exp( fValue ) );
+    return static_cast<double>(::exp(fValue));
 }
 //----------------------------------------------------------------------------
 template <typename T>
 inline T log( T fValue );
 inline double log( double fValue )
 {
-    return double( ::log( fValue ) );
+    return static_cast<double>(::log(fValue));
 }
 inline float log( float fValue )
 {
 #ifdef NO_LOGF
-   return float(::log(fValue));
+   return static_cast<float>(::log(fValue));
 #else
-   return float( ::logf( fValue ) );
+   return static_cast<float>(::logf(fValue));
 #endif
 }
 //----------------------------------------------------------------------------
 inline double pow( double fBase, double fExponent)
 {
-    return double( ::pow( fBase, fExponent ) );
+    return static_cast<double>(::pow(fBase, fExponent));
 }
 inline float pow( float fBase, float fExponent)
 {
 #ifdef NO_POWF
-   return float(::pow(fBase, fExponent));
+   return static_cast<float>(::pow(fBase, fExponent));
 #else
-   return float( ::powf( fBase, fExponent ) );
+   return static_cast<float>(::powf(fBase, fExponent));
 #endif
 }
 //----------------------------------------------------------------------------
@@ -328,14 +329,14 @@ template <typename T>
 inline T sin( T fValue );
 inline double sin( double fValue )
 {
-    return double( ::sin( fValue ) );
+    return static_cast<double>(::sin(fValue));
 }
 inline float sin( float fValue )
 {
 #ifdef NO_SINF
-   return float(::sin(fValue));
+   return static_cast<float>(::sin(fValue));
 #else
-   return float( ::sinf( fValue ) );
+   return static_cast<float>(::sinf(fValue));
 #endif
 }
 //----------------------------------------------------------------------------
@@ -343,55 +344,83 @@ template <typename T>
 inline T tan( T fValue );
 inline double tan( double fValue )
 {
-    return double( ::tan( fValue ) );
+    return static_cast<double>(::tan(fValue));
 }
 inline float tan( float fValue )
 {
 #ifdef NO_TANF
-   return float(::tan(fValue));
+   return static_cast<float>(::tan(fValue));
 #else
-   return float( ::tanf( fValue ) );
+   return static_cast<float>(::tanf(fValue));
 #endif
 }
 //----------------------------------------------------------------------------
 template <typename T>
 inline T sqr( T fValue )
 {
-    return T( fValue * fValue );
+    return static_cast<T>(fValue * fValue);
 }
 //----------------------------------------------------------------------------
 template <typename T>
 inline T sqrt( T fValue )
 {
 #ifdef NO_SQRTF
-   return T(::sqrt(((float)fValue)));
+   return static_cast<T>(::sqrt((static_cast<float>(fValue))));
 #else
-   return T( ::sqrtf( ((float)fValue) ) );
+   return static_cast<T>(::sqrtf((static_cast<float>(fValue))));
 #endif
 }
 inline double sqrt( double fValue )
 {
-    return double( ::sqrt( fValue ) );
+    return static_cast<double>(::sqrt(fValue));
 }
 
 /** Fast inverse square root.
  */
 inline float fastInvSqrt(float x)
 {
+   GMTL_STATIC_ASSERT(sizeof(float) == sizeof(int),
+                      Union_type_sizes_do_not_match);
+
+   // Use an approach to data type reinterpretation that is safe with GCC
+   // strict aliasing enabled. This is called type-punning, and it is valid
+   // when done with a union where the value read (int_value) is different
+   // than the one most recently written to (float_value).
+   union
+   {
+      float float_value;
+      int   int_value;
+   } data;
+
    const float xhalf(0.5f*x);
-   long i = *(long*)&x;
-   i = 0x5f3759df - (i>>1);    // This hides a good amount of math
-   x = *(float*)&i;
+   data.float_value = x;
+   // This hides a good amount of math
+   data.int_value = 0x5f3759df - (data.int_value >> 1);
+   x = data.float_value;
    x = x*(1.5f - xhalf*x*x);   // Repeat for more accuracy
    return x;
 }
 
 inline float fastInvSqrt2(float x)
 {
+   GMTL_STATIC_ASSERT(sizeof(float) == sizeof(int),
+                      Union_type_sizes_do_not_match);
+
+   // Use an approach to data type reinterpretation that is safe with GCC
+   // strict aliasing enabled. This is called type-punning, and it is valid
+   // when done with a union where the value read (int_value) is different
+   // than the one most recently written to (float_value).
+   union
+   {
+      float float_value;
+      int   int_value;
+   } data;
+
    const float xhalf(0.5f*x);
-   long i = *(long*)&x;
-   i = 0x5f3759df - (i>>1);    // This hides a good amount of math
-   x = *(float*)&i;
+   data.float_value = x;
+   // This hides a good amount of math
+   data.int_value = 0x5f3759df - (data.int_value >> 1);
+   x = data.float_value;
    x = x*(1.5f - xhalf*x*x);   // Repeat for more accuracy
    x = x*(1.5f - xhalf*x*x);
    return x;
@@ -399,10 +428,24 @@ inline float fastInvSqrt2(float x)
 
 inline float fastInvSqrt3(float x)
 {
+   GMTL_STATIC_ASSERT(sizeof(float) == sizeof(int),
+                      Union_type_sizes_do_not_match);
+
+   // Use an approach to data type reinterpretation that is safe with GCC
+   // strict aliasing enabled. This is called type-punning, and it is valid
+   // when done with a union where the value read (int_value) is different
+   // than the one most recently written to (float_value).
+   union
+   {
+      float float_value;
+      int   int_value;
+   } data;
+
    const float xhalf(0.5f*x);
-   long i = *(long*)&x;
-   i = 0x5f3759df - (i>>1);    // This hides a good amount of math
-   x = *(float*)&i;
+   data.float_value = x;
+   // This hides a good amount of math
+   data.int_value = 0x5f3759df - (data.int_value >> 1);
+   x = data.float_value;
    x = x*(1.5f - xhalf*x*x);   // Repeat for more accuracy
    x = x*(1.5f - xhalf*x*x);
    x = x*(1.5f - xhalf*x*x);
@@ -426,7 +469,7 @@ inline void seedRandom(unsigned int seed)
  */
 inline float unitRandom()
 {
-   return float(::rand())/float(RAND_MAX);
+   return static_cast<float>(::rand()) / static_cast<float>(RAND_MAX);
 }
 
 /** return a random number between x1 and x2
@@ -436,33 +479,33 @@ inline float rangeRandom( float x1, float x2 )
 {
    float r = gmtl::Math::unitRandom();
    float size = x2 - x1;
-   return float( r * size + x1 );
+   return static_cast<float>(r * size + x1);
 }
 
 /*
 float SymmetricRandom ()
 {
-    return 2.0*float(rand())/float(RAND_MAX) - 1.0;
+    return 2.0 * static_cast<float>(rand()) / static_cast<float>(RAND_MAX) - 1.0;
 }
 */
 //----------------------------------------------------------------------------
 
 inline float deg2Rad( float fVal )
 {
-   return float( fVal * (float)(gmtl::Math::PI/180.0) );
+   return static_cast<float>(fVal * static_cast<float>(gmtl::Math::PI / 180.0));
 }
 inline double deg2Rad( double fVal )
 {
-   return double( fVal * (double)(gmtl::Math::PI/180.0) );
+   return static_cast<double>(fVal * static_cast<double>(gmtl::Math::PI / 180.0));
 }
 
 inline float rad2Deg( float fVal )
 {
-   return float( fVal * (float)(180.0/gmtl::Math::PI) );
+   return static_cast<float>(fVal * static_cast<float>(180.0 / gmtl::Math::PI));
 }
 inline double rad2Deg( double fVal )
 {
-   return double( fVal * (double)(180.0/gmtl::Math::PI) );
+   return static_cast<float>(fVal * static_cast<double>(180.0 / gmtl::Math::PI));
 }
 //----------------------------------------------------------------------------
 
@@ -473,21 +516,23 @@ inline double rad2Deg( double fVal )
 template <class T>
 inline bool isEqual( const T& a, const T& b, const T& tolerance )
 {
-   gmtlASSERT( tolerance >= (T)0 );
-   return bool( gmtl::Math::abs( a - b ) <= tolerance );
+   gmtlASSERT(tolerance >= static_cast<T>(0));
+   return gmtl::Math::abs( a - b ) <= tolerance;
 }
 //----------------------------------------------------------------------------
 /** cut off the digits after the decimal place */
 template <class T>
 inline T trunc( T val )
 {
-   return T( (val < ((T)0)) ? gmtl::Math::ceil( val ) : gmtl::Math::floor( val ) );
+   return static_cast<T>((val < static_cast<T>(0)) ?
+                         gmtl::Math::ceil(val)     :
+                         gmtl::Math::floor(val));
 }
 /** round to nearest integer */
 template <class T>
 inline T round( T p )
 {
-   return T( gmtl::Math::floor( p + (T)0.5 ) );
+   return static_cast<T>(gmtl::Math::floor(p + static_cast<T>(0.5)));
 }
 //----------------------------------------------------------------------------
 /** min returns the minimum of 2 values */
@@ -536,9 +581,9 @@ inline T Max( const T& w, const T& x, const T& y, const T& z )
 template<class T>
 inline T factorial(T rhs)
 {
-   T lhs = (T)1;
+   T lhs = static_cast<T>(1);
 
-   for( T x = (T)1; x <= rhs; ++x )
+   for( T x = static_cast<T>(1); x <= rhs; ++x )
    {
       lhs *= x;
    }
@@ -571,7 +616,7 @@ template <class T, typename U>
 inline void lerp( T& result, const U& lerp, const T& a, const T& b )
 {
     T size = b - a;
-    result = ((U)a) + (((U)size) * lerp);
+    result = static_cast<U>(a) + (static_cast<U>(size) * lerp);
 }
 /** @} */
 
@@ -590,13 +635,13 @@ inline void lerp( T& result, const U& lerp, const T& a, const T& b )
 template <class T>
 inline bool quadraticFormula(T& r1, T& r2, const T& a, const T& b, const T& c)
 {
-   const T q = b*b - T(4)*a*c;
+   const T q = b * b - static_cast<T>(4) * a * c;
 
    // the result has real roots
    if (q >= 0)
    {
       const T sq = gmtl::Math::sqrt(q);
-      const T d = T(1) / (T(2) * a);
+      const T d = static_cast<T>(1) / (static_cast<T>(2) * a);
       r1 = (-b + sq) * d;
       r2 = (-b - sq) * d;
       return true;

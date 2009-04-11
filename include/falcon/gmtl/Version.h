@@ -7,8 +7,8 @@
  *
  * -----------------------------------------------------------------
  * File:          Version.h,v
- * Date modified: 2007/06/27 14:25:42
- * Version:       1.43
+ * Date modified: 2009/03/10 18:11:39
+ * Version:       1.45
  * -----------------------------------------------------------------
  *
  *********************************************************** ggt-head end */
@@ -50,8 +50,8 @@
  */
 // The major/minor/patch version (up to 3 digits each).
 #define GMTL_VERSION_MAJOR    0
-#define GMTL_VERSION_MINOR    5
-#define GMTL_VERSION_PATCH    4
+#define GMTL_VERSION_MINOR    6
+#define GMTL_VERSION_PATCH    0
 
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
