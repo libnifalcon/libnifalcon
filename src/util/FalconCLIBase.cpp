@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -114,7 +114,7 @@ namespace libnifalcon
 			("debug_level", po::value<std::string>(), "Level of debug messages to print (FATAL, ERROR, WARN, INFO, DEBUG) (Default: FATAL)")
 			;
 //		("output_file", po::value<std::string>(), "File to output debug messages to (outputs to stdout otherwise")
-		m_progOptions.add(debug);		
+		m_progOptions.add(debug);
 #endif
 	}
 
@@ -123,7 +123,7 @@ namespace libnifalcon
 		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
 		std::cout << m_progOptions << std::endl;
 	}
-	
+
 	bool FalconCLIBase::parseOptions(int argc, char** argv)
 	{
 		try
@@ -137,7 +137,7 @@ namespace libnifalcon
 			outputProgramOptions();
 			return false;
 		}
-		
+
 		if (m_varMap.count("help")) {
 			outputProgramOptions();
 			return false;
@@ -154,16 +154,16 @@ namespace libnifalcon
 
 		configureLogging(logPattern, logLevel);
 #endif
-		
+
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
-		
+
 		//First off, see if we have a communication method
 		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
-		
+
 		//This is an either/or choice, since we have problems with static linking and ftd2xx. Prefer libusb1, then libftdi. Thanks for the static linking against old libusb binaries, FTDI!
 
 #if defined(LIBUSB)
@@ -197,11 +197,11 @@ namespace libnifalcon
 		//Device count check
 		if(m_varMap.count("device_count"))
 		{
-			int8_t count;
+			unsigned int count;
 			m_falconDevice->getDeviceCount(count);
 			std::cout << "Connected Device Count: " << (int)count << std::endl;
 			return false;
-		}		
+		}
 		else if(m_varMap.count("device_index"))
 		{
 			if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
@@ -213,14 +213,16 @@ namespace libnifalcon
 		else
 		{
 			std::cout << "No device index specified to open, cannot continue (--help for options)" << std::endl;
-			return false;			
+			return false;
 		}
 
 		//There's only one kind of firmware right now, so automatically set that.
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
-		bool firmware_loaded = m_falconDevice->isFirmwareLoaded();	 
-		if((m_varMap.count("firmware") || m_varMap.count("test_firmware") || m_varMap.count("nvent_firmware")) && (m_varMap.count("force_firmware") || !firmware_loaded))
+		bool firmware_loaded = false;
+		if(!m_varMap.count("force_firmware"))
+			firmware_loaded = m_falconDevice->isFirmwareLoaded();
+		if(!firmware_loaded)
 		{
 			std::cout << "Loading firmware" << std::endl;
 			if(m_varMap.count("nvent_firmware"))
@@ -288,7 +290,7 @@ namespace libnifalcon
 			std::cout << "No firmware loaded to device, cannot continue" << std::endl;
 			return false;
 		}
-		
+
 		return true;
 	}
 
