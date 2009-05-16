@@ -30,11 +30,13 @@ namespace libnifalcon
 	{
 	}
 
-	void FalconFirmwareNovintSDK::formatOutput()
+	bool FalconFirmwareNovintSDK::formatOutput()
 	{
-		m_rawData[m_rawDataSize] = 0;
+		bool ret_val = false;
+		//m_rawData[m_rawDataSize] = 0;
 		for(int i = 0; i < m_rawDataSize; ++i)
 		{
+			ret_val = false;
 			m_rawOutputInternal[m_currentOutputIndex] = m_rawData[i];
 			++m_currentOutputIndex;
 			if(m_currentOutputIndex == 16 && m_rawOutputInternal[m_currentOutputIndex - 1] == '>')
@@ -56,8 +58,10 @@ namespace libnifalcon
 					m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
 				}
 				m_currentOutputIndex = 0;
+				ret_val = true;
 			}
 		}
+		return ret_val;
 	}
 
 	void FalconFirmwareNovintSDK::formatInput()
@@ -85,6 +89,8 @@ namespace libnifalcon
 			m_rawInput[i] += 0x41;
 		}
 	}
+
+
 
 	bool FalconFirmwareNovintSDK::runIOLoop()
 	{

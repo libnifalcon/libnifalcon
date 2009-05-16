@@ -92,6 +92,25 @@ namespace libnifalcon
 		 */
 		virtual bool write(uint8_t* str, unsigned int size) = 0;
 		/**
+		 * Read a specified number of bytes from the device
+		 *
+		 * @param[out] str Buffer to read data into
+		 * @param[in] size Amount of bytes to read
+		 *
+		 * @return True if (size) amount of bytes is read successfully, false otherwise. Error code set if false.
+		 */
+		virtual bool readBlocking(uint8_t* str, unsigned int size) = 0;
+		/**
+		 * Write a specified number of bytes to the device
+		 *
+		 * @param[in] str Buffer to write data from
+		 * @param[in] size Amount of bytes to write
+		 *
+		 * @return True if (size) amount of bytes is written successfully, false otherwise. Error code set if false.
+		 */
+		virtual bool writeBlocking(uint8_t* str, unsigned int size) = 0;
+
+		/**
 		 * Sets the communications mode and initializes the device to load firmware
 		 *
 		 *

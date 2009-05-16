@@ -34,9 +34,9 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconFirmware::loadFirmware(int retries, bool skip_checksum)
+	bool FalconFirmware::loadFirmware(unsigned int retries, bool skip_checksum)
 	{
-		for(int i = 0; i < retries; ++i)
+		for(unsigned int i = 0; i < retries; ++i)
 		{
 			if(loadFirmware(skip_checksum))
 			{
@@ -101,7 +101,7 @@ namespace libnifalcon
 		//If you send 60-62, libusb-1.0 freaks out
 		//So, 58 it is. Happy medium
 
-		const int READ_SIZE = 58;
+		const int READ_SIZE = 62;
 
 		while(total_read != firmware_size)
 		{
@@ -109,49 +109,47 @@ namespace libnifalcon
 			if(total_read + READ_SIZE > firmware_size)
 			{
 				bytes_read = firmware_size-total_read;
+				//bytes_read = READ_SIZE;
 			}
 			else
 			{
 				bytes_read = READ_SIZE;
 			}
-			if(!m_falconComm->write(buffer+total_read, bytes_read))
+			if(!m_falconComm->writeBlocking(buffer+total_read, bytes_read))
 			{
 				m_errorCode = m_falconComm->getErrorCode();
 				return false;
 			}
-			if(m_falconComm->requiresPoll())
+			int bytes_check = 0;
+			int bytes_current = 0;
+			while(bytes_check < bytes_read)
 			{
-				while(!m_falconComm->hasBytesAvailable())
+				if(!m_falconComm->readBlocking(receive_buf, READ_SIZE))
 				{
-					m_falconComm->poll();
+					LOG_DEBUG("Firmware read failed, only returned " << m_falconComm->getLastBytesRead() << " bytes");
+					m_errorCode = m_falconComm->getErrorCode();
+
+					return false;
 				}
-			}
-			if(!m_falconComm->read(receive_buf, bytes_read))
-			{
-				LOG_DEBUG("Firmware read failed, only returned " << bytes_read << " bytes");
-				m_errorCode = m_falconComm->getErrorCode();
-
-				return false;
-			}
-
-			if(!skip_checksum)
-			{
-				for(int i = 0; i < bytes_read; ++i)
+				if(!skip_checksum)
 				{
-					LOG_DEBUG("Firmware Comparison: " << (unsigned int)buffer[total_read+i] << " " << (unsigned int)receive_buf[i]);
-					if((buffer[total_read+i]) != receive_buf[i])
+					for(unsigned int i = 0; i < m_falconComm->getLastBytesRead(); ++i)
 					{
-						//m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
-						//return false;
+						LOG_DEBUG("Firmware Comparison: " << i << " " << (unsigned int)buffer[total_read+i] << " " << (unsigned int)receive_buf[i]);
+						if((buffer[total_read+i]) != receive_buf[i])
+						{
+							m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
+							return false;
+						}
 					}
 				}
+				else
+				{
+					LOG_DEBUG("Skipping checksum for firmware");
+				}
+				bytes_check += m_falconComm->getLastBytesRead();
+				total_read += m_falconComm->getLastBytesRead();
 			}
-			else
-			{
-				LOG_DEBUG("Skipping checksum for firmware");
-			}
-			total_read += bytes_read;
-
 		}
 		m_falconComm->setNormalMode();
 		m_hasWritten = false;
@@ -163,7 +161,7 @@ namespace libnifalcon
 	{
 		if(m_falconComm->requiresPoll())
 		{
-			for(int i = 0; i < 250; ++i)
+			for(unsigned int i = 0; i < 250; ++i)
 			{
 				if(runIOLoop())
 				{
@@ -174,7 +172,7 @@ namespace libnifalcon
 		}
 		else
 		{
-			for(int i = 0; i < 10; ++i)
+			for(unsigned int i = 0; i < 10; ++i)
 			{
 				if(runIOLoop())
 				{

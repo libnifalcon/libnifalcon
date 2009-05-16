@@ -31,7 +31,7 @@ namespace libnifalcon
 	protected:
 
 		void formatInput();
-		void formatOutput();
+		bool formatOutput();
 
 
 		uint8_t m_gripInfo;

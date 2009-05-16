@@ -31,6 +31,8 @@ namespace libnifalcon
 		virtual bool close();
 		virtual bool read(uint8_t*, unsigned int);
 		virtual bool write(uint8_t*, unsigned int);
+		virtual bool readBlocking(uint8_t* size, unsigned int buffer) { return read(size, buffer); }
+		virtual bool writeBlocking(uint8_t* size, unsigned int buffer) { return write(size, buffer); }
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:

@@ -226,6 +226,7 @@ namespace libnifalcon
 		}
 
 		m_isCommOpen = true;
+		setNormalMode();
 		return true;
 	}
 
@@ -238,6 +239,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
+		m_isCommOpen = false;
 		reset();
 		libusb_free_transfer(in_transfer);
 		libusb_free_transfer(out_transfer);
@@ -252,7 +254,6 @@ namespace libnifalcon
 		libusb_close(m_falconDevice);
 		libusb_exit(m_usbContext);
 		m_falconDevice = NULL;
-		m_isCommOpen = false;
 		return true;
 	}
 
@@ -263,14 +264,17 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::read(uint8_t* buffer, unsigned int size)
 	{
-		LOG_DEBUG("Reading " << size << " bytes");
+		LOG_DEBUG("Reading " << size << " + 2 bytes");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
-
+		if(m_hasBytesAvailable && m_bytesAvailable == 0)
+		{
+			reissueRead();
+		}
 		//Plus 2. Stupid modem bits.
 		if(size > 0)
 			memcpy(buffer, output+2, size);
@@ -289,19 +293,55 @@ namespace libnifalcon
 			return false;
 		}
 
-
+		m_lastBytesWritten = size;
 		libusb_fill_bulk_transfer(in_transfer, m_falconDevice, 0x02, buffer,
 								  size, FalconCommLibUSB::cb_in, this, 0);
 		libusb_submit_transfer(in_transfer);
 		m_isWriteAllocated = true;
-		//Try to read over 64 and you'll fry libusb-1.0. Granted, the endpoint
-		//limits that anyways, but still.
-		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
-								  64, FalconCommLibUSB::cb_out, this, 1000);
-		libusb_submit_transfer(out_transfer);
-
+		reissueRead();
 		m_isReadAllocated = true;
 
+		return true;
+	}
+
+	bool FalconCommLibUSB::readBlocking(uint8_t* buffer, unsigned int size)
+	{
+		LOG_DEBUG("Reading " << size << " bytes blocking");
+		if(!m_isCommOpen)
+		{
+			LOG_ERROR("Device not open");
+			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
+			return false;
+		}
+
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, buffer, size+2, &m_lastBytesRead, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot do blocking read - Device error " << m_deviceErrorCode);
+			return false;
+		}
+		m_lastBytesRead -= 2;
+		if(m_lastBytesRead != 0)
+			memcpy(buffer, buffer+2, m_lastBytesRead);
+		LOG_DEBUG("Read " << m_lastBytesRead << " bytes while blocking");
+		return true;
+	}
+
+	bool FalconCommLibUSB::writeBlocking(uint8_t* buffer, unsigned int size)
+	{
+		LOG_DEBUG("Writing " << size << " bytes blocking");
+		if(!m_isCommOpen)
+		{
+			LOG_ERROR("Device not open");
+			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
+			return false;
+		}
+
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x2, buffer, size, &m_lastBytesWritten, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot do blocking write - Device error " << m_deviceErrorCode);
+			return false;
+		}
+		LOG_DEBUG("Wrote " << m_lastBytesWritten << " bytes while blocking");
 		return true;
 	}
 
@@ -325,10 +365,11 @@ namespace libnifalcon
 		//Save ourselves having to reset this on every error
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 
-		reset();
+		//reset();
 
 		//Clear out current buffers to make sure we have a fresh start
 		//if((m_deviceErrorCode = ftdi_usb_purge_buffers(&(m_falconDevice))) < 0) return false;
+
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
@@ -409,13 +450,13 @@ namespace libnifalcon
 			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 5, &transferred, 1000)) != 0)
+		printf("CHECK 1 IN  0x%x 0x%x 0x%x\n", check_msg_1_send[0], check_msg_1_send[1], check_msg_1_send[2]);
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-
+		printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", transferred, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4], receive_buf[5], receive_buf[6]);
 
 		//Set to:
 		// DTR Low
@@ -444,11 +485,12 @@ namespace libnifalcon
 		//Expect back 2 bytes:
 		// 0x13 0x41
 
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 5, &transferred, 1000)) != 0)
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 3, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
+		printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x\n", transferred, receive_buf[0], receive_buf[1], receive_buf[2]);
 
 		m_errorCode = 0;
 
@@ -468,13 +510,24 @@ namespace libnifalcon
 		{
 			reset();
 		}
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
+			return false;
+		}
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_TX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
+			return false;
+		}
+
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
 		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, 0x40, 0x09, 1, INTERFACE_ANY, NULL, 0, 1000) != 0)
 		{
 			LOG_ERROR("Cannot set latency timers - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x2, INTERFACE_ANY, NULL, 0, 1000) != 0)
+		if (m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_SET_BAUDRATE_REQUEST_TYPE, SIO_SET_BAUDRATE_REQUEST, 0x2, INTERFACE_ANY, NULL, 0, 0) != 0)
 		{
 			LOG_ERROR("Cannot set baud rate - Device error " << m_deviceErrorCode);
 			return false;
@@ -502,6 +555,19 @@ namespace libnifalcon
 		}
 	}
 
+	void FalconCommLibUSB::reissueRead()
+	{
+		//Try to read over 64 and you'll fry libusb-1.0. Try to read under
+		//64 and you'll fry OS X. So, read 64.
+
+		std::cout << "Trying to reissue read" << std::endl;
+		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
+								  64, FalconCommLibUSB::cb_out, this, 1000);
+		std::cout << "Submitting read" << std::endl;
+		libusb_submit_transfer(out_transfer);
+		std::cout << "Reissuing read" << std::endl;
+	}
+
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
 		((FalconCommLibUSB*)transfer->user_data)->setSent();
@@ -515,6 +581,13 @@ namespace libnifalcon
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
+			/*
+			else
+			{
+				std::cout << "RAN OUT OF READING!" << std::endl;
+				((FalconCommLibUSB*)transfer->user_data)->reissueRead();
+			}
+			*/
 		}
 	}
 

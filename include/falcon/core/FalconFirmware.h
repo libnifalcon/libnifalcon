@@ -185,7 +185,7 @@ namespace libnifalcon
 		 *
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */
-		bool loadFirmware(int retries, bool skip_checksum = false);
+		bool loadFirmware(unsigned int retries, bool skip_checksum = false);
 
         /**
 		 * Conveinence function, runs one try of loading firmware with set filename
