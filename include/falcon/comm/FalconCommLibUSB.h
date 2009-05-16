@@ -29,11 +29,11 @@ namespace libnifalcon
 	public:
 		FalconCommLibUSB();
 		~FalconCommLibUSB();
-		virtual bool getDeviceCount(int8_t& );
-		virtual bool open(uint8_t );
+		virtual bool getDeviceCount(unsigned int& );
+		virtual bool open(unsigned int );
 		virtual bool close();
-		virtual bool read(uint8_t*, uint32_t);
-		virtual bool write(uint8_t*, uint32_t);
+		virtual bool read(uint8_t*, unsigned int);
+		virtual bool write(uint8_t*, unsigned int);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 		static void cb_in(struct libusb_transfer *transfer);

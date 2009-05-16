@@ -98,7 +98,7 @@ namespace libnifalcon
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
-	bool FalconCommLibUSB::getDeviceCount(int8_t& count)
+	bool FalconCommLibUSB::getDeviceCount(unsigned int& count)
 	{
 		LOG_INFO("Getting device count");
 		struct libusb_device **devs;
@@ -133,7 +133,7 @@ namespace libnifalcon
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
-	bool FalconCommLibUSB::open(uint8_t index)
+	bool FalconCommLibUSB::open(unsigned int index)
 	{
 		LOG_INFO("Opening device");
 		struct libusb_device **devs;
@@ -261,7 +261,7 @@ namespace libnifalcon
 		m_hasBytesAvailable = true;
 	}
 
-	bool FalconCommLibUSB::read(uint8_t* buffer, uint32_t size)
+	bool FalconCommLibUSB::read(uint8_t* buffer, unsigned int size)
 	{
 		LOG_DEBUG("Reading " << size << " bytes");
 		if(!m_isCommOpen)
@@ -279,7 +279,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommLibUSB::write(uint8_t* buffer, uint32_t size)
+	bool FalconCommLibUSB::write(uint8_t* buffer, unsigned int size)
 	{
 		LOG_DEBUG("Writing " << size << " bytes");
 		if(!m_isCommOpen)

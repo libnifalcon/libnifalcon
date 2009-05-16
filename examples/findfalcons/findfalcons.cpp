@@ -64,7 +64,7 @@ void runFalconTest()
 	boost::shared_ptr<FalconFirmware> f;
 	FalconKinematic* k;
 	double position[3];
-	int8_t num_falcons = 0;
+	unsigned int num_falcons = 0;
 	int status, i;
 	unsigned int count;
 	unsigned int error_count = 0;

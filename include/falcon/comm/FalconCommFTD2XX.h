@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -24,17 +24,17 @@ namespace libnifalcon
 	public:
 		FalconCommFTD2XX() { m_requiresPoll = true; }
 		virtual ~FalconCommFTD2XX();
-		virtual bool getDeviceCount(int8_t& );
+		virtual bool getDeviceCount(unsigned int& );
 		virtual void poll();
-		virtual bool open(uint8_t );
+		virtual bool open(unsigned int );
 		virtual bool close();
-		virtual bool read(uint8_t*, uint32_t);
-		virtual bool write(uint8_t*, uint32_t);
+		virtual bool read(uint8_t*, unsigned int);
+		virtual bool write(uint8_t*, unsigned int);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:
 		const static char* FALCON_DESCRIPTION;
-		int8_t openDeviceFTD2XX(uint8_t , bool );
+		int8_t openDeviceFTD2XX(unsigned int , bool );
 		//This would usually be a FT_HANDLE, but FT_HANDLE
 		//is just a void*, so this saves us having to deal
 		//with the include at this level.

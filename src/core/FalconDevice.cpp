@@ -26,7 +26,7 @@ namespace libnifalcon
 	{
 	}
 
-    bool FalconDevice::getDeviceCount(int8_t& count)
+    bool FalconDevice::getDeviceCount(unsigned int& count)
 	{
 		if(m_falconComm == NULL)
 		{

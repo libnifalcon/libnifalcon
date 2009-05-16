@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #ifndef FALCONLIBFTDICOMM_H
@@ -26,11 +26,11 @@ namespace libnifalcon
 	public:
 		FalconCommLibFTDI();
 		~FalconCommLibFTDI();
-		virtual bool getDeviceCount(int8_t& );
-		virtual bool open(uint8_t );
+		virtual bool getDeviceCount(unsigned int& );
+		virtual bool open(unsigned int );
 		virtual bool close();
-		virtual bool read(uint8_t*, uint32_t);
-		virtual bool write(uint8_t*, uint32_t);
+		virtual bool read(uint8_t*, unsigned int);
+		virtual bool write(uint8_t*, unsigned int);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
 	protected:

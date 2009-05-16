@@ -54,7 +54,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::getDeviceCount(int8_t& device_count)
+	bool FalconCommLibFTDI::getDeviceCount(unsigned int& device_count)
 	{
 		LOG_INFO("Getting device count");
 		if(!m_isInitialized)
@@ -69,7 +69,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::open(uint8_t device_index)
+	bool FalconCommLibFTDI::open(unsigned int device_index)
 	{
 		LOG_INFO("Opening device " << device_index);
 		if(!m_isInitialized)
@@ -140,7 +140,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::read(uint8_t* str, uint32_t size)
+	bool FalconCommLibFTDI::read(uint8_t* str, unsigned int size)
 	{
 		LOG_DEBUG("Reading " << size << " bytes of data");
 		unsigned long bytes_rx;
@@ -169,7 +169,7 @@ namespace libnifalcon {
 		return true;
 	}
 
-	bool FalconCommLibFTDI::write(uint8_t* str, uint32_t size)
+	bool FalconCommLibFTDI::write(uint8_t* str, unsigned int size)
 	{
 		LOG_DEBUG("Writing " << size << " bytes of data");
 		if(!m_isCommOpen)

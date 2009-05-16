@@ -103,7 +103,7 @@ namespace libnifalcon
 		 *
 		 * @return true if count is successfully returned, false otherwise
 		 */
-		bool getDeviceCount(int8_t& count);
+		bool getDeviceCount(unsigned int& count);
 
 		/**
 		 * Opens the falcon at the specified index

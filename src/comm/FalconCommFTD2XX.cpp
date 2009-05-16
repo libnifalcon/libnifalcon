@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #include "falcon/comm/FalconCommFTD2XX.h"
@@ -31,19 +31,19 @@ namespace libnifalcon
 	{
 		close();
 	}
-	
-	bool FalconCommFTD2XX::getDeviceCount(int8_t& device_count)
+
+	bool FalconCommFTD2XX::getDeviceCount(unsigned int& device_count)
 	{
 		device_count = openDeviceFTD2XX(0, true);
 		return true;
 	}
 
-	bool FalconCommFTD2XX::open(uint8_t index)
+	bool FalconCommFTD2XX::open(unsigned int index)
 	{
 		return openDeviceFTD2XX(index, false) >= 0;
 	}
 
-	int8_t FalconCommFTD2XX::openDeviceFTD2XX(uint8_t device_index, bool stop_at_count)
+	int8_t FalconCommFTD2XX::openDeviceFTD2XX(unsigned int device_index, bool stop_at_count)
 	{
 		unsigned int falcon_count = 0, device_count = 0, i = 0;
 		char* pcBufLD[MAX_DEVICES + 1];
@@ -73,7 +73,7 @@ namespace libnifalcon
 		{
 			return falcon_count;
 		}
-	
+
 		if(falcon_count == 0 || device_index > falcon_count)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_NOT_FOUND_ERROR;
@@ -81,7 +81,7 @@ namespace libnifalcon
 		}
 
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		
+
 		//Now that we know the index, get the serial number
 		if((m_deviceErrorCode = FT_ListDevices((PVOID)(i-1), serial, FT_LIST_BY_INDEX | FT_OPEN_BY_SERIAL_NUMBER))) return -1;
 		//Open and reset device using serial number
@@ -104,7 +104,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::read(uint8_t* str, uint32_t size)
+	bool FalconCommFTD2XX::read(uint8_t* str, unsigned int size)
 	{
 		unsigned long bytes_rx = 0, b_read = 0, bytes_read = 0;
 
@@ -138,7 +138,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::write(uint8_t* str, uint32_t size)
+	bool FalconCommFTD2XX::write(uint8_t* str, unsigned int size)
 	{
 		if(!m_isCommOpen)
 		{
@@ -191,7 +191,7 @@ namespace libnifalcon
 		// 8n1
 		// No Flow Control
 		// RTS Low
-		// DTR High	
+		// DTR High
 		if((m_deviceErrorCode = FT_SetBaudRate(m_falconDevice, 9600)) != FT_OK) return false;
 		if((m_deviceErrorCode = FT_SetDataCharacteristics(m_falconDevice, FT_BITS_8, FT_STOP_BITS_1, FT_PARITY_NONE)) != FT_OK) return false;
 		if((m_deviceErrorCode = FT_SetFlowControl(m_falconDevice, FT_FLOW_NONE, 0, 0)) != FT_OK) return false;
@@ -201,9 +201,9 @@ namespace libnifalcon
 
 		//Send 3 bytes: 0x0a 0x43 0x0d
 		if(!write((uint8_t*)check_msg_1, (uint32_t)3)) return false;
-	
+
 		//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
-		if(!read(receive_buf, 5)) return false;	
+		if(!read(receive_buf, 5)) return false;
 
 		//Set to:
 		// DTR Low
