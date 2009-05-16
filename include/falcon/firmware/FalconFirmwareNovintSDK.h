@@ -7,14 +7,15 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #ifndef FALCONNOVINTFIRMWARE_H
 #define FALCONNOVINTFIRMWARE_H
 
 #include "falcon/core/FalconFirmware.h"
+#include "falcon/core/FalconLogger.h"
 
 namespace libnifalcon
 {
@@ -28,7 +29,7 @@ namespace libnifalcon
 		//Things I am going to hell for, #8926:
 		uint8_t* getGripInfo() { return &(m_gripInfo); }
 	protected:
-	
+
 		void formatInput();
 		void formatOutput();
 
@@ -38,6 +39,12 @@ namespace libnifalcon
 		uint32_t m_currentOutputIndex;
 		uint32_t m_rawDataSize;
 		uint8_t m_rawInput[16], m_rawOutput[16], m_rawOutputInternal[16];
+
+		unsigned int m_currentOutputIndex;
+		unsigned int m_rawDataSize;
+	private:
+		DECLARE_LOGGER();
+
 	};
 }
 

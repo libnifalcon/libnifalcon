@@ -20,7 +20,9 @@ namespace libnifalcon
 {
 
 	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
-		m_currentOutputIndex(0)
+		m_currentOutputIndex(0),
+		INIT_LOGGER("FalconFirmwareNovintSDK")
+
 	{
 	}
 
