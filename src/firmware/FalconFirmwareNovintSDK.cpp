@@ -95,8 +95,10 @@ namespace libnifalcon
 	bool FalconFirmwareNovintSDK::runIOLoop()
 	{
 		bool read_successful = false;
-		if(m_falconComm == NULL)
+
+		if(m_falconComm == NULL || !m_falconComm->isCommOpen())
 		{
+			LOG_ERROR("Cannot run IO on uninitialized/unopened device!");
 			return false;
 		}
 
@@ -108,12 +110,29 @@ namespace libnifalcon
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
-			m_rawDataSize = m_falconComm->getBytesAvailable();
-			//hack to make libftdi work for the time being
-			//always read the maximum amount available from the endpoint to make sure we don't lose anything
-			if(m_rawDataSize <= 0 && !m_falconComm->requiresPoll()) m_rawDataSize = 16;
+			if(m_falconComm->requiresPoll())
+			{
+				m_rawDataSize = m_falconComm->getBytesAvailable();
+				//std::cout << "IORead " << m_rawDataSize << std::endl;
+				//We somehow just got modem bytes back. Kick out another read.
+				if(m_rawDataSize == 0)
+				{
+					m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize);
+					return false;
+				}
+			}
+			else
+			{
+				//hack to make libftdi work for the time being
+				//always read the maximum amount available from the endpoint to make sure we don't lose anything
+				m_rawDataSize = 16;
+			}
 			if(m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize))
 			{
+				if(!m_falconComm->requiresPoll())
+				{
+					m_rawDataSize = m_falconComm->getLastBytesRead();
+				}
 				formatOutput();
 				m_hasWritten = false;
 				if(m_rawDataSize <= 0) read_successful = false;
