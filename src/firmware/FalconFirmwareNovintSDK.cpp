@@ -49,11 +49,15 @@ namespace libnifalcon
 				for(i = 0; i < 3; ++i)
 				{
 					int idx = 1 + (i*4);
-					m_encoderValues[i] =
+					//We're getting a signed short int off the wire
+					int16_t val =
 						(((*(m_rawOutput+idx) - 0x41) & 0xf)) |
 						(((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
 						(((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
 						(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
+					//Now convert into full system int since the compiler will
+					//do the sign move for us
+					m_encoderValues[i] = val;
 					//Shift value down a nibble for homing status
 					m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
 					m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;

@@ -139,11 +139,7 @@ namespace libnifalcon
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int, 3> p;
-			//Stopgap until boost::array conversion
-			p[0] = m_falconFirmware->getEncoderValues()[0];
-			p[1] = m_falconFirmware->getEncoderValues()[1];
-			p[2] = m_falconFirmware->getEncoderValues()[2];
+			boost::array<int, 3> p = m_falconFirmware->getEncoderValues();
 			if(!m_falconKinematic->getPosition(p, m_position))
 			{
 				++m_errorCount;
