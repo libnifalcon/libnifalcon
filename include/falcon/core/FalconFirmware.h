@@ -112,7 +112,7 @@ namespace libnifalcon
 		 *
 		 * @return Signed 16-bit integers representing the current encoder values for each motor
 		 */
-		int16_t* getEncoderValues() { return m_encoderValues; }
+		boost::array<int, 3> getEncoderValues() { return m_encoderValues; }
 
 		/**
 		 * Sets the LEDs to turn on or off at the next I/O loop
