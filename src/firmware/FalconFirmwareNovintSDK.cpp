@@ -30,6 +30,7 @@ namespace libnifalcon
 	{
 	}
 
+
 	bool FalconFirmwareNovintSDK::formatOutput()
 	{
 		bool ret_val = false;
@@ -59,6 +60,7 @@ namespace libnifalcon
 				}
 				m_currentOutputIndex = 0;
 				ret_val = true;
+				++m_outputCount;
 			}
 		}
 		return ret_val;

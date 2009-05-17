@@ -231,6 +231,7 @@ namespace libnifalcon
 		uint8_t m_homingStatus; /**< Current homing status from the last I/O loop */
 
 		uint64_t m_loopCount; /**< Number of successful loops that have been run by this firmware instance */
+		uint64_t m_outputCount; /**< Number of successful loops that have been run by this firmware instance */
 		bool m_hasWritten; /**< True if we're waiting for a read return */
 	private:
 		DECLARE_LOGGER();

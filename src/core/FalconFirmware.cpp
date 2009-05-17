@@ -10,6 +10,7 @@ namespace libnifalcon
 		m_isFirmwareLoaded(false),
 		m_hasWritten(false),
 		m_loopCount(0),
+		m_outputCount(0),
 		INIT_LOGGER("FalconFirmware")
 		//m_packetBufferSize(1)
 	{
@@ -158,16 +159,22 @@ namespace libnifalcon
 
 	bool FalconFirmware::isFirmwareLoaded()
 	{
+		resetFirmwareState();
 		if(m_falconComm->requiresPoll())
 		{
-			for(unsigned int i = 0; i < 2500; ++i)
+			for(unsigned int j = 0; j < 10; ++j)
 			{
-				if(i % 100 == 0) resetFirmwareState();
-				if(runIOLoop())
+				for(unsigned int i = 0; i < 100; ++i)
 				{
-					m_isFirmwareLoaded = true;
-					return true;
+					runIOLoop();
+					if(m_outputCount > 0)
+					{
+						m_isFirmwareLoaded = true;
+						return true;
+					}
 				}
+				//Sometimes we need to kick out another write to get a proper return
+				resetFirmwareState();
 			}
 		}
 		else
