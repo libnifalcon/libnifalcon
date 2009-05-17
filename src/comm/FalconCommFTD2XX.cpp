@@ -115,25 +115,14 @@ namespace libnifalcon
 			return false;
 		}
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
-		//Jankywait! But still better than permablocking for the moment.
-		//Will turn this back into a timeout at some point.
-		for(int i = 0; i < 10000000 && bytes_read < size; ++i)
-		{
-			if((m_deviceErrorCode = FT_GetQueueStatus(m_falconDevice, &bytes_rx)) != FT_OK) return false;
-			if(bytes_rx == 0) continue;
-			if(bytes_rx > size) bytes_rx = size - bytes_read;
-			if(bytes_rx > 0)
-			{
-				if((m_deviceErrorCode = FT_Read(m_falconDevice, str, bytes_rx, &b_read)) != FT_OK) return false;
-				bytes_read += bytes_rx;
-			}
-		}
-		m_lastBytesRead = bytes_read;
-		if(bytes_read != size)
-		{
-			m_errorCode = FALCON_COMM_READ_ERROR;
-			return false;
-		}
+		if(size <= m_bytesAvailable) bytes_read = size;
+		else bytes_read = m_bytesAvailable;
+
+		if((m_deviceErrorCode = FT_Read(m_falconDevice, str, bytes_read, &b_read)) != FT_OK) return false;
+
+		m_lastBytesRead = b_read;
+		m_bytesAvailable -= b_read;
+		if(m_bytesAvailable == 0) m_hasBytesAvailable = false;
 		m_errorCode = 0;
 		return true;
 	}
@@ -159,6 +148,15 @@ namespace libnifalcon
 		return true;
 	}
 
+	bool FalconCommFTD2XX::readBlocking(uint8_t* buffer, unsigned int size)
+	{
+		while(m_bytesAvailable != size)
+		{
+			poll();
+		}
+		return read(buffer, size);
+	}
+
 	void FalconCommFTD2XX::poll()
 	{
 		if(!m_isCommOpen)
@@ -169,11 +167,12 @@ namespace libnifalcon
 		if((m_deviceErrorCode = FT_GetQueueStatus(m_falconDevice, (DWORD*)&m_bytesAvailable)) != FT_OK) return;
 		m_hasBytesAvailable = (m_bytesAvailable > 0);
 	}
+
 	bool FalconCommFTD2XX::setFirmwareMode()
 	{
-		uint32_t bytes_written, bytes_read;
-		uint8_t check_msg_1[3] = {0x0a, 0x43, 0x0d};
-		uint8_t check_msg_2[1] = {'A'};
+		uint8_t check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
+		uint8_t check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
+		uint8_t check_msg_2[1] = {0x41};
 		uint8_t send_buf[128], receive_buf[128];
 
 		if(!m_isCommOpen)
@@ -199,11 +198,27 @@ namespace libnifalcon
 		if((m_deviceErrorCode = FT_ClrDtr(m_falconDevice)) != FT_OK) return false;
 		if((m_deviceErrorCode = FT_SetDtr(m_falconDevice)) != FT_OK) return false;
 
-		//Send 3 bytes: 0x0a 0x43 0x0d
-		if(!write((uint8_t*)check_msg_1, (uint32_t)3)) return false;
 
-		//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
-		if(!read(receive_buf, 5)) return false;
+		int i;
+		if(!write((uint8_t*)check_msg_1_send, (uint32_t)3)) return false;
+		for(i = 0; i < 100; ++i)
+		{
+			//Send 3 bytes: 0x0a 0x43 0x0d
+
+			//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
+			if(!readBlocking(receive_buf, 5)) return false;
+			//printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x\n", m_lastBytesRead, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4]);
+			if(m_lastBytesRead != 5 || memcmp(receive_buf,check_msg_1_recv, 5))
+			{
+				continue;
+				//return false;
+			}
+			break;
+		}
+		if(i == 100)
+		{
+			return false;
+		}
 
 		//Set to:
 		// DTR Low
@@ -217,7 +232,7 @@ namespace libnifalcon
 		//Expect back 2 bytes:
 		// 0x13 0x41
 		// (Both LibFTDI and FTD2XX except 2)
-		if(!read(receive_buf, 1)) return false;
+		if(!readBlocking(receive_buf, 1)) return false;
 		m_errorCode = 0;
 		return true;
 	}
