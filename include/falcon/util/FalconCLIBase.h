@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #ifndef FALCONCLIBASE_H
@@ -17,6 +17,7 @@
 #include <boost/program_options.hpp>
 #include <boost/shared_ptr.hpp>
 #include "falcon/core/FalconDevice.h"
+#include "falcon/core/FalconLogger.h"
 
 namespace libnifalcon
 {
@@ -26,7 +27,7 @@ namespace libnifalcon
 		boost::shared_ptr<FalconDevice> m_falconDevice;
 		boost::program_options::options_description m_progOptions;
 		boost::program_options::variables_map m_varMap;
-		virtual void addOptions(int value);	
+		virtual void addOptions(int value);
 		virtual bool parseOptions(int argc, char** argv);
 		void outputProgramOptions();
 		bool calibrateDevice();
@@ -42,7 +43,10 @@ namespace libnifalcon
 			COMM_OPTIONS = 0x2,
 			FIRMWARE_OPTIONS = 0x4
 		};
-	   
+	private:
+		DECLARE_LOGGER();
+
+
 	};
 }
 #endif
