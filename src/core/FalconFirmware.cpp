@@ -160,8 +160,9 @@ namespace libnifalcon
 	{
 		if(m_falconComm->requiresPoll())
 		{
-			for(unsigned int i = 0; i < 250; ++i)
+			for(unsigned int i = 0; i < 2500; ++i)
 			{
+				if(i % 100 == 0) resetFirmwareState();
 				if(runIOLoop())
 				{
 					m_isFirmwareLoaded = true;
