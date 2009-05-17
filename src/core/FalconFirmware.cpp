@@ -88,7 +88,6 @@ namespace libnifalcon
 		}
 		if(!m_falconComm->setFirmwareMode())
 		{
-			std::cout << "Can't set firmware mode! " << m_errorCode << " " << m_falconComm->getDeviceErrorCode() << std::endl;
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
