@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- *
- * Project info at http://libnifalcon.sourceforge.net/
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
 #ifndef FALCONNOVINTFIRMWARE_H
@@ -29,10 +29,9 @@ namespace libnifalcon
 		//Things I am going to hell for, #8926:
 		uint8_t* getGripInfo() { return &(m_gripInfo); }
 	protected:
-
+	
 		void formatInput();
 		bool formatOutput();
-
 
 		uint8_t m_gripInfo;
 		uint8_t m_rawData[128];

@@ -84,7 +84,7 @@ namespace libnifalcon
 		 *
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */
-		bool loadFirmware(int retries, bool skip_checksum = false);
+		bool loadFirmware(unsigned int retries, bool skip_checksum = false);
 
 		/**
 		 * Tries to load the firmware that was specified by the setFirmwareFile function. For the moment, skip_checksum should be used

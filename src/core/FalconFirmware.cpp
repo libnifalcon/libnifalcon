@@ -75,7 +75,7 @@ namespace libnifalcon
 		return success;
 	}
 
-	bool FalconFirmware::loadFirmware(bool skip_checksum, const long& firmware_size, uint8_t* buffer)
+	bool FalconFirmware::loadFirmware(bool skip_checksum, const unsigned int& firmware_size, uint8_t* buffer)
 	{
 		if(m_falconComm == NULL)
 		{
@@ -123,30 +123,30 @@ namespace libnifalcon
 			int bytes_check = 0;
 			int bytes_current = 0;
 			while(bytes_check < bytes_read)
-			{
+				{
 				if(!m_falconComm->readBlocking(receive_buf, READ_SIZE))
-				{
+			{
 					LOG_DEBUG("Firmware read failed, only returned " << m_falconComm->getLastBytesRead() << " bytes");
-					m_errorCode = m_falconComm->getErrorCode();
+				m_errorCode = m_falconComm->getErrorCode();
 
-					return false;
-				}
-				if(!skip_checksum)
-				{
+				return false;
+			}
+			if(!skip_checksum)
+			{
 					for(unsigned int i = 0; i < m_falconComm->getLastBytesRead(); ++i)
-					{
+				{
 						LOG_DEBUG("Firmware Comparison: " << i << " " << (unsigned int)buffer[total_read+i] << " " << (unsigned int)receive_buf[i]);
-						if((buffer[total_read+i]) != receive_buf[i])
-						{
+					if((buffer[total_read+i]) != receive_buf[i])
+					{
 							m_errorCode = FALCON_FIRMWARE_CHECKSUM_MISMATCH;
 							return false;
-						}
 					}
 				}
-				else
-				{
-					LOG_DEBUG("Skipping checksum for firmware");
-				}
+			}
+			else
+			{
+				LOG_DEBUG("Skipping checksum for firmware");
+			}
 				bytes_check += m_falconComm->getLastBytesRead();
 				total_read += m_falconComm->getLastBytesRead();
 			}
@@ -165,14 +165,14 @@ namespace libnifalcon
 			for(unsigned int j = 0; j < 10; ++j)
 			{
 				for(unsigned int i = 0; i < 100; ++i)
-				{
+			{
 					runIOLoop();
 					if(m_outputCount > 0)
-					{
-						m_isFirmwareLoaded = true;
-						return true;
-					}
+				{
+					m_isFirmwareLoaded = true;
+					return true;
 				}
+			}
 				//Sometimes we need to kick out another write to get a proper return
 				resetFirmwareState();
 			}

@@ -80,7 +80,7 @@ namespace libnifalcon
 		return m_falconFirmware->setFirmwareFile(filename);
 	}
 
-	bool FalconDevice::loadFirmware(int retries, bool skip_checksum)
+	bool FalconDevice::loadFirmware(unsigned int retries, bool skip_checksum)
 	{
 		if(m_falconFirmware == NULL)
 		{
@@ -119,7 +119,7 @@ namespace libnifalcon
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int16_t, 3> enc_vec;
+			boost::array<int, 3> enc_vec;
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
@@ -139,7 +139,7 @@ namespace libnifalcon
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int16_t, 3> p;
+			boost::array<int, 3> p;
 			//Stopgap until boost::array conversion
 			p[0] = m_falconFirmware->getEncoderValues()[0];
 			p[1] = m_falconFirmware->getEncoderValues()[1];

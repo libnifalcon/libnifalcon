@@ -74,7 +74,7 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getPosition(boost::array<int16_t, 3>& encoders, boost::array<double, 3>& position) = 0;
+		virtual bool getPosition(boost::array<int, 3>& encoders, boost::array<double, 3>& position) = 0;
 
 		/** 
 		 * Returns the center point of the workspace. May not always be [0,0,0].
@@ -94,7 +94,7 @@ namespace libnifalcon
 		 * @return true if forces are generated, false otherwise.
 		 */
 
-		virtual bool getForces(const boost::array<double, 3> &position, const boost::array<double, 3>& cart_force, boost::array<int16_t, 3> &enc_force) = 0;
+		virtual bool getForces(const boost::array<double, 3> &position, const boost::array<double, 3>& cart_force, boost::array<int, 3> &enc_force) = 0;
 	};
 }
 

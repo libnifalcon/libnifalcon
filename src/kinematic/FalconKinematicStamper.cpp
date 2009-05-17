@@ -35,7 +35,7 @@ namespace libnifalcon
 		m_dir.initialize();
 	}
 
-	bool FalconKinematicStamper::getForces(const boost::array<double, 3> (&position), const boost::array<double, 3> (&cart_force), boost::array<int16_t, 3> (&enc_force))
+	bool FalconKinematicStamper::getForces(const boost::array<double, 3> (&position), const boost::array<double, 3> (&cart_force), boost::array<int, 3> (&enc_force))
 	{
 		double ang[3];
 		StamperKinematicImpl::Angle a;
@@ -66,7 +66,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconKinematicStamper::getPosition(boost::array<int16_t, 3> (&encoders), boost::array<double,3> (&position))
+	bool FalconKinematicStamper::getPosition(boost::array<int, 3> (&encoders), boost::array<double,3> (&position))
 	{
 		float angle1 = getTheta(encoders[0]);
 		float angle2 = getTheta(encoders[1]);

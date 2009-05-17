@@ -100,7 +100,7 @@ namespace libnifalcon
 		 *
 		 * @param force Array of signed 16-bit integers to set force
 		 */
-		void setForces(const boost::array<int16_t, 3> (&force))
+		void setForces(const boost::array<int, 3> (&force))
 		{
 			m_forceValues[0] = force[0];
 			m_forceValues[1] = force[1];
@@ -112,14 +112,14 @@ namespace libnifalcon
 		 *
 		 * @return Signed 16-bit integers representing the current encoder values for each motor
 		 */
-		int* getEncoderValues() { return m_encoderValues; }
+		int16_t* getEncoderValues() { return m_encoderValues; }
 
 		/**
 		 * Sets the LEDs to turn on or off at the next I/O loop
 		 *
 		 * @param leds Bitfield of the LED flags
 		 */
-		void setLEDStatus(uint8_t leds) { m_ledStatus = leds; }
+		void setLEDStatus(unsigned int leds) { m_ledStatus = leds; }
 
 		/**
 		 * Returns the current LED status bitfield
@@ -142,7 +142,7 @@ namespace libnifalcon
 		 *
 		 * @return Bitfield of encoder homing statuses
 		 */
-		uint8_t getHomingModeStatus() { return m_homingStatus; }
+		unsigned int getHomingModeStatus() { return m_homingStatus; }
 
 		/**
 		 * Returns the overall homing status
@@ -206,7 +206,7 @@ namespace libnifalcon
 		 *
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */
-		bool loadFirmware(bool skip_checksum, const long& firmware_size, uint8_t* buffer);
+		bool loadFirmware(bool skip_checksum, const unsigned int& firmware_size, uint8_t* buffer);
 
 		/**
 		 * Used to reset the state of the communications if reloading firmware more than once in the same session
@@ -226,9 +226,9 @@ namespace libnifalcon
 		//Values sent to falcon
 		bool m_homingMode;		/**< True if homing mode is on, false for homing mode off */
 		unsigned int m_ledStatus;	/**< Bitfield for LED Status */
-		int m_forceValues[3]; /**< Force values for the next I/O loop */
+		boost::array<int, 3> m_forceValues; /**< Force values for the next I/O loop */
 		//Values received from falcon
-		int m_encoderValues[3];	/**< Encoder values from the last I/O loop */
+		boost::array<int, 3> m_encoderValues;	/**< Encoder values from the last I/O loop */
 		unsigned int m_homingStatus; /**< Current homing status from the last I/O loop */
 
 		uint64_t m_loopCount; /**< Number of successful loops that have been run by this firmware instance */
@@ -236,7 +236,6 @@ namespace libnifalcon
 		bool m_hasWritten; /**< True if we're waiting for a read return */
 	private:
 		DECLARE_LOGGER();
-
 	};
 }
 #endif
