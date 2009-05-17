@@ -17,6 +17,7 @@
 #include "falcon/kinematic/stamper/AngularMatrixLookup.h"
 
 #include "falcon/core/FalconGeometry.h"
+#include "falcon/gmtl/gmtl.h"
 #include <iostream>
 
 namespace libnifalcon
@@ -24,7 +25,7 @@ namespace libnifalcon
 	namespace StamperKinematicImpl
 	{
 
-		AngularMatrix::AngularMatrix(const gmtl::Vec3f& center, const float& range, uint32_t size)
+		AngularMatrix::AngularMatrix(const gmtl::Vec3f& center, const float& range, unsigned int size)
 		{
 			this->center = center;
 			this->range = range;
@@ -52,9 +53,9 @@ namespace libnifalcon
 
 			gmtl::Vec3f zero_vec(0,0,0);
 			
-			for (uint32_t i=0; i<size; i++)
-				for (uint32_t j=0; j<size; j++)
-					for (uint32_t k=0; k<size; k++)
+			for (unsigned int i=0; i<size; i++)
+				for (unsigned int j=0; j<size; j++)
+					for (unsigned int k=0; k<size; k++)
 					{
 						setVec(i,j,k,zero_vec);
 					}
@@ -174,21 +175,21 @@ namespace libnifalcon
 				return deltaY;
 		}
 
-		void AngularMatrix::setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Vec3f& vector)
+		void AngularMatrix::setVec(const unsigned int a, const unsigned int b, const unsigned int c, const gmtl::Vec3f& vector)
 		{
 			matrix[a][b][c][0]=vector[0];
 			matrix[a][b][c][1]=vector[1];
 			matrix[a][b][c][2]=vector[2];
 		}
 
-		void AngularMatrix::setVec(const uint32_t a, const uint32_t b, const uint32_t c, const gmtl::Point3f& vector)
+		void AngularMatrix::setVec(const unsigned int a, const unsigned int b, const unsigned int c, const gmtl::Point3f& vector)
 		{
 			matrix[a][b][c][0]=vector[0];
 			matrix[a][b][c][1]=vector[1];
 			matrix[a][b][c][2]=vector[2];
 		}
 		
-		gmtl::Vec3f AngularMatrix::getVec(const uint32_t a, const uint32_t b, const uint32_t c)
+		gmtl::Vec3f AngularMatrix::getVec(const unsigned int a, const unsigned int b, const unsigned int c)
 		{
 			return gmtl::Vec3f(matrix[a][b][c][0],matrix[a][b][c][1],matrix[a][b][c][2]);
 		}

@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- *
- * Project info at http://libnifalcon.sourceforge.net/
+ * 
+ * Project info at http://libnifalcon.sourceforge.net/ 
  *
  */
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
@@ -25,7 +25,7 @@ namespace libnifalcon
 
 	{
 	}
-
+	
 	FalconFirmwareNovintSDK::~FalconFirmwareNovintSDK()
 	{
 	}
@@ -61,7 +61,7 @@ namespace libnifalcon
 				m_currentOutputIndex = 0;
 				ret_val = true;
 				++m_outputCount;
-			}
+			}			
 		}
 		return ret_val;
 	}
@@ -108,13 +108,13 @@ namespace libnifalcon
 		{
 			m_falconComm->poll();
 		}
-
+		
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
 			if(m_falconComm->requiresPoll())
 			{
-				m_rawDataSize = m_falconComm->getBytesAvailable();
+			m_rawDataSize = m_falconComm->getBytesAvailable();
 				//std::cout << "IORead " << m_rawDataSize << std::endl;
 				//We somehow just got modem bytes back. Kick out another read.
 				if(m_rawDataSize == 0)
@@ -125,11 +125,11 @@ namespace libnifalcon
 			}
 			else
 			{
-				//hack to make libftdi work for the time being
-				//always read the maximum amount available from the endpoint to make sure we don't lose anything
+			//hack to make libftdi work for the time being
+			//always read the maximum amount available from the endpoint to make sure we don't lose anything
 				m_rawDataSize = 16;
 			}
-			if(m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize))
+			if(m_falconComm->read((uint8_t*)m_rawData, m_rawDataSize))
 			{
 				if(!m_falconComm->requiresPoll())
 				{
@@ -153,12 +153,12 @@ namespace libnifalcon
 		}
 		//Send information to the falcon
 		formatInput();
-		if(!m_falconComm->write((uint8_t*)m_rawInput, (uint32_t)16))
+		if(!m_falconComm->write((uint8_t*)m_rawInput, 16))
 		{
 			return false;
 		}
 		m_hasWritten = true;
 		return read_successful;
 	}
-
+	
 }

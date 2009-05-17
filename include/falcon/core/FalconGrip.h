@@ -67,7 +67,7 @@ namespace libnifalcon
 		 * 
 		 * @return Number of digital inputs available on the grip
 		 */
-		uint32_t getNumDigitalInputs() const { return m_numDigitalInputs; }
+		unsigned int getNumDigitalInputs() const { return m_numDigitalInputs; }
 		
 		/** 
 		 * Returns the number of analog inputs available on the current grip
@@ -75,7 +75,7 @@ namespace libnifalcon
 		 * 
 		 * @return Number of analog inputs available on the grip
 		 */
-		uint32_t getNumAnalogInputs() const { return m_numAnalogInputs; }
+		unsigned int getNumAnalogInputs() const { return m_numAnalogInputs; }
 
 		/** 
 		 * Returns the value of the requested digital input
@@ -99,7 +99,7 @@ namespace libnifalcon
 		 * 
 		 * @return Bitfield of digital inputs
 		 */
-		uint32_t getDigitalInputs() const { return m_digitalInputs; }
+		unsigned int getDigitalInputs() const { return m_digitalInputs; }
 
 		/** 
 		 * Returns the value of the requested analog input
@@ -108,7 +108,7 @@ namespace libnifalcon
 		 * 
 		 * @return Value of analog input requested, (0 if index is out of range)
 		 */
-		int32_t getAnalogInput(unsigned int index)
+		int getAnalogInput(int index)
 		{
 			if(index > m_numAnalogInputs)
 			{
@@ -118,11 +118,11 @@ namespace libnifalcon
 			return m_analogInputs[index];
 		}
 	protected:
-		uint32_t m_numDigitalInputs; /**< Number of digital inputs available on the grip */
-		uint32_t m_numAnalogInputs; /**< Number of analog inputs available on the grip */
+		unsigned int m_numDigitalInputs; /**< Number of digital inputs available on the grip */
+		unsigned int m_numAnalogInputs; /**< Number of analog inputs available on the grip */
 		//I think assuming 32 digital inputs and 128 analog is enough
-		uint32_t m_digitalInputs; /**< Bitfield to hold digital input values */
-		int32_t m_analogInputs[128]; /**< Array of analog input values */
+		unsigned int m_digitalInputs; /**< Bitfield to hold digital input values */
+		int m_analogInputs[128]; /**< Array of analog input values */
 	};
 }
 

@@ -50,7 +50,7 @@ namespace libnifalcon
 		 * 
 		 * @return Angle (in degrees) the leg is at
 		 */
-		double getTheta(int16_t encoder_value)
+		double getTheta(int encoder_value)
 		{
 			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
 		}
@@ -75,7 +75,7 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getPosition(const int16_t (&encoders)[3], double (&position)[3]) = 0;
+		virtual bool getPosition(const int (&encoders)[3], double (&position)[3]) = 0;
 
 		/** 
 		 * Returns the center point of the workspace. May not always be [0,0,0].
@@ -95,7 +95,7 @@ namespace libnifalcon
 		 * @return true if forces are generated, false otherwise.
 		 */
 
-		virtual bool getForces(const double (&position)[3], const double (&cart_force)[3], int16_t (&enc_force)[3]) = 0;
+		virtual bool getForces(const double (&position)[3], const double (&cart_force)[3], int (&enc_force)[3]) = 0;
 	};
 }
 

@@ -14,7 +14,6 @@
 #ifndef DIRECTKINEMATIC_H_
 #define DIRECTKINEMATIC_H_
 
-#include "stdint.h"
 #include "falcon/kinematic/stamper/PositionMatrix.h"
 #include "falcon/kinematic/stamper/AngularMatrix.h"
 
@@ -58,7 +57,7 @@ namespace libnifalcon
 
 			const static double POSITION_CENTER[3]; /**< Origin of the workspace (offset from the fixed frame origin */
 			const static float POSITION_RANGE; /**< Range of each axis of the workspace */
-			const static uint32_t POSITION_MATRIX_DENSITY; /**< Density of the positional lookup table */
+			const static unsigned int POSITION_MATRIX_DENSITY; /**< Density of the positional lookup table */
 
 		private:
 
