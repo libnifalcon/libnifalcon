@@ -38,15 +38,17 @@ namespace libnifalcon
 		virtual bool writeBlocking(uint8_t*, unsigned int);
 		virtual bool setFirmwareMode();
 		virtual bool setNormalMode();
+		virtual void setBytesAvailable(uint32_t b);
 		static void cb_in(struct libusb_transfer *transfer);
 		static void cb_out(struct libusb_transfer *transfer);
+
 		void setHasBytesAvailable(bool v);
 		void setSent() { m_isWriteAllocated = false; }
 		void setReceived()  { m_isReadAllocated = false; }
 		bool initLibUSB();
 		void poll();
 		void reset();
-		void reissueRead();
+		void issueRead();
 	protected:
 		bool m_isWriteAllocated;
 		bool m_isReadAllocated;

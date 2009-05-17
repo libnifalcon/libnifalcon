@@ -159,7 +159,7 @@ namespace libnifalcon
 		bool requiresPoll() { return m_requiresPoll; }
 		bool hasBytesAvailable() { return m_hasBytesAvailable; }
 		uint32_t getBytesAvailable() { return m_bytesAvailable; }
-		void setBytesAvailable(uint32_t b) { m_bytesAvailable = b; }
+		virtual void setBytesAvailable(uint32_t b) { m_bytesAvailable = b; }
 		virtual void poll() {}
 	protected:
 		const static uint8_t MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */

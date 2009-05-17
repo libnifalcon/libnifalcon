@@ -73,6 +73,7 @@ namespace libnifalcon
 		{
 			close();
 		}
+		libusb_exit(m_usbContext);
 		delete m_tv;
 		LOG_INFO("Destructing object");
 	}
@@ -252,7 +253,6 @@ namespace libnifalcon
 		}
 
 		libusb_close(m_falconDevice);
-		libusb_exit(m_usbContext);
 		m_falconDevice = NULL;
 		return true;
 	}
@@ -264,7 +264,7 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::read(uint8_t* buffer, unsigned int size)
 	{
-		LOG_DEBUG("Reading " << size << " + 2 bytes");
+		LOG_DEBUG("Reading " << size << " bytes");
 		if(!m_isCommOpen)
 		{
 			LOG_ERROR("Device not open");
@@ -273,13 +273,28 @@ namespace libnifalcon
 		}
 		if(m_hasBytesAvailable && m_bytesAvailable == 0)
 		{
-			reissueRead();
+			issueRead();
+			m_hasBytesAvailable = false;
+			m_lastBytesRead = 0;
+			return true;
 		}
-		//Plus 2. Stupid modem bits.
-		if(size > 0)
-			memcpy(buffer, output+2, size);
-		m_hasBytesAvailable = false;
-		m_bytesAvailable -= size;
+		if(size > 0 && size < m_bytesAvailable)
+		{
+			memcpy(buffer, output, size);
+			memcpy(output, output+size, m_bytesAvailable-size);
+			m_lastBytesRead = size;
+			m_bytesAvailable -= size;
+		}
+		else if (size >= m_bytesAvailable)
+		{
+			memcpy(buffer, output, m_bytesAvailable);
+			m_lastBytesRead = m_bytesAvailable;
+			m_bytesAvailable = 0;
+			m_hasBytesAvailable = false;
+		}
+
+
+
 		return true;
 	}
 
@@ -298,7 +313,8 @@ namespace libnifalcon
 								  size, FalconCommLibUSB::cb_in, this, 0);
 		libusb_submit_transfer(in_transfer);
 		m_isWriteAllocated = true;
-		reissueRead();
+		m_hasBytesAvailable = false;
+		issueRead();
 		m_isReadAllocated = true;
 
 		return true;
@@ -349,7 +365,7 @@ namespace libnifalcon
 	{
 		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
-		unsigned char check_msg_1_recv[4] = {0x0a, 0x44, 0x2c, 0x0d};
+		unsigned char check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
 		unsigned char check_msg_2[1] = {0x41};
 		unsigned char send_buf[128], receive_buf[128];
 		int k;
@@ -450,13 +466,21 @@ namespace libnifalcon
 			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		printf("CHECK 1 IN  0x%x 0x%x 0x%x\n", check_msg_1_send[0], check_msg_1_send[1], check_msg_1_send[2]);
+
+		//Expect back 5 bytes: 0x00 0xa 0x44 0x2c 0xd
 		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", transferred, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4], receive_buf[5], receive_buf[6]);
+		if(transferred != 7 || memcmp(receive_buf+2,check_msg_1_recv, 5))
+		{
+			LOG_ERROR("Cannot match check values(1)");
+			return false;
+		}
+
+
+
 
 		//Set to:
 		// DTR Low
@@ -482,15 +506,18 @@ namespace libnifalcon
 			LOG_ERROR("Cannot write check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		//Expect back 2 bytes:
-		// 0x13 0x41
-
+		//Expect back 1 byte:
+		//0x41
 		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 3, &transferred, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x\n", transferred, receive_buf[0], receive_buf[1], receive_buf[2]);
+		if(transferred != 3 || receive_buf[2] != 0x41)
+		{
+			LOG_ERROR("Cannot match check values(2)");
+			return false;
+		}
 
 		m_errorCode = 0;
 
@@ -509,16 +536,6 @@ namespace libnifalcon
 		if(m_isWriteAllocated || m_isReadAllocated)
 		{
 			reset();
-		}
-		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
-		{
-			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
-			return false;
-		}
-		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_TX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
-		{
-			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
-			return false;
 		}
 
 		m_errorCode = FALCON_COMM_DEVICE_ERROR;
@@ -555,17 +572,25 @@ namespace libnifalcon
 		}
 	}
 
-	void FalconCommLibUSB::reissueRead()
+	void FalconCommLibUSB::issueRead()
 	{
 		//Try to read over 64 and you'll fry libusb-1.0. Try to read under
 		//64 and you'll fry OS X. So, read 64.
-
-		std::cout << "Trying to reissue read" << std::endl;
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
-		std::cout << "Submitting read" << std::endl;
 		libusb_submit_transfer(out_transfer);
-		std::cout << "Reissuing read" << std::endl;
+	}
+
+	void FalconCommLibUSB::setBytesAvailable(uint32_t b)
+	{
+		//Shift out modem bytes
+		if(b > 2)
+		{
+			memcpy(output, output+2, b - 2);
+			FalconComm::setBytesAvailable(b - 2);
+			return;
+		}
+		FalconComm::setBytesAvailable(0);
 	}
 
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
@@ -575,19 +600,17 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
-		//Minus 2. Stupid modem bits.
-		if(transfer->status != LIBUSB_TRANSFER_CANCELLED)
+		if(transfer->status == LIBUSB_TRANSFER_COMPLETED)
 		{
-			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length - 2);
+			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
-			/*
-			else
-			{
-				std::cout << "RAN OUT OF READING!" << std::endl;
-				((FalconCommLibUSB*)transfer->user_data)->reissueRead();
-			}
-			*/
+		}
+		else
+		{
+			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(0);
+			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
+			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
 	}
 
