@@ -163,12 +163,14 @@ namespace libnifalcon {
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
 		}
+		/*
 		if(m_lastBytesRead < size)
 		{
 			LOG_ERROR("Read amount " << m_lastBytesRead << " less than requested size " << size);
 			m_errorCode = FALCON_COMM_READ_ERROR;
 			return false;
 		}
+		*/
 		return true;
 	}
 
@@ -203,7 +205,7 @@ namespace libnifalcon {
 	{
 		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
-		unsigned char check_msg_1_recv[4] = {0x0a, 0x44, 0x2c, 0x0d};
+		unsigned char check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
 		unsigned char check_msg_2[1] = {0x41};
 		unsigned char send_buf[128], receive_buf[128];
 		int k;
@@ -228,13 +230,13 @@ namespace libnifalcon {
 		}
 
 		//Reset the device
-		/*
+
 		if((m_deviceErrorCode = ftdi_usb_reset((m_falconDevice))) < 0)
 		{
 			LOG_ERROR("Cannot reset - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		*/
+
 		//Make sure our latency timer is at 16ms, otherwise firmware checks tend to always fail
 		if((m_deviceErrorCode = ftdi_set_latency_timer((m_falconDevice), 16)) < 0)
 		{
@@ -265,7 +267,7 @@ namespace libnifalcon {
 			LOG_ERROR("Cannot set flow control - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		/*
+
 		if((m_deviceErrorCode = ftdi_setrts((m_falconDevice), 0)) < 0)
 		{
 			LOG_ERROR("Cannot set RTS properties - Device error " << m_deviceErrorCode);
@@ -276,7 +278,7 @@ namespace libnifalcon {
 			LOG_ERROR("Cannot set DTR properties (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		*/
+
 		if((m_deviceErrorCode = ftdi_setdtr((m_falconDevice), 1)) < 0)
 		{
 			LOG_ERROR("Cannot set DTR properties (2) - Device error " << m_deviceErrorCode);
@@ -284,20 +286,33 @@ namespace libnifalcon {
 		}
 
 
+
+		int i;
+		for(i = 0; i < 10; ++i)
+		{
 		//Send 3 bytes: 0x0a 0x43 0x0d
 		if(!write(check_msg_1_send, 3))
 		{
 			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		printf("CHECK 1 IN  0x%x 0x%x 0x%x\n", check_msg_1_send[0], check_msg_1_send[1], check_msg_1_send[2]);
-
-		if(!read(receive_buf, 5))
+			if(!read(receive_buf, 5))
+			{
+				LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
+				return false;
+			}
+			//printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x\n", m_lastBytesRead, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4]);
+			if(m_lastBytesRead != 5 || memcmp(receive_buf,check_msg_1_recv, 5))
+			{
+				continue;
+			}
+			break;
+		}
+		if(i == 10)
 		{
-			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
+			LOG_ERROR("Cannot match check values (1)");
 			return false;
 		}
-		printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x\n", m_lastBytesRead, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4]);
 
 		//Set to:
 		// DTR Low
@@ -320,14 +335,18 @@ namespace libnifalcon {
 			return false;
 		}
 
-		//Expect back 2 bytes:
-		// 0x13 0x41
+		//Expect back 1 bytes:
+		// 0x41
 		if(!read(receive_buf, 1))
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		printf("CHECK 1 OUT %d 0x%x\n", m_lastBytesRead, receive_buf[0]);
+		if(m_lastBytesRead != 1 || receive_buf[0] != 0x41)
+		{
+			LOG_ERROR("Cannot match check values(2)");
+			return false;
+		}
 
 		m_errorCode = 0;
 		return true;
