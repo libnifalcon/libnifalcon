@@ -315,8 +315,6 @@ namespace libnifalcon
 		m_isWriteAllocated = true;
 		m_hasBytesAvailable = false;
 		issueRead();
-		m_isReadAllocated = true;
-
 		return true;
 	}
 
@@ -459,24 +457,38 @@ namespace libnifalcon
 			return false;
 		}
 
-		//Send 3 bytes: 0x0a 0x43 0x0d
-		int transferred;
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x2, check_msg_1_send, 3, &transferred, 1000)) != 0)
+		int i;
+		for(i = 0; i < 100; ++i)
 		{
-			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
-			return false;
-		}
+			//Send 3 bytes: 0x0a 0x43 0x0d
+			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x2, check_msg_1_send, 3, &m_lastBytesWritten, 1000)) != 0)
+			{
+				LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
+				return false;
+			}
 
-		//Expect back 5 bytes: 0x00 0xa 0x44 0x2c 0xd
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &transferred, 1000)) != 0)
-		{
-			LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
-			return false;
+			//Expect back 5 bytes: 0x00 0xa 0x44 0x2c 0xd
+			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &m_lastBytesRead, 1000)) != 0)
+			{
+				LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
+				return false;
+			}
+			//printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n", m_lastBytesRead, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4], receive_buf[5], receive_buf[6]);
+			//Apple case
+			if(m_lastBytesRead == 7 && memcmp(receive_buf+2,check_msg_1_recv, 5) == 0)
+			{
+				break;
+			}
+			//Linux case
+			if(m_lastBytesRead == 6 && memcmp(receive_buf+2,check_msg_1_recv+1, 4) == 0)
+			{
+				break;
+			}
 		}
-		if(transferred != 7 || memcmp(receive_buf+2,check_msg_1_recv, 5))
+		if(i == 100)
 		{
-			LOG_ERROR("Cannot match check values(1)");
-			return false;
+				LOG_ERROR("Cannot match check values(1)");
+				return false;
 		}
 
 
@@ -501,19 +513,19 @@ namespace libnifalcon
 		}
 
 		//Send "A" character
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x2, check_msg_2, 1, &transferred, 1000)) != 0)
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x2, check_msg_2, 1, &m_lastBytesWritten, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot write check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
 		//Expect back 1 byte:
 		//0x41
-		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 3, &transferred, 1000)) != 0)
+		if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 3, &m_lastBytesRead, 1000)) != 0)
 		{
 			LOG_ERROR("Cannot read check values(2) - Device error " << m_deviceErrorCode);
 			return false;
 		}
-		if(transferred != 3 || receive_buf[2] != 0x41)
+		if(m_lastBytesRead != 3 || receive_buf[2] != 0x41)
 		{
 			LOG_ERROR("Cannot match check values(2)");
 			return false;
@@ -549,6 +561,17 @@ namespace libnifalcon
 			LOG_ERROR("Cannot set baud rate - Device error " << m_deviceErrorCode);
 			return false;
 		}
+
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
+			return false;
+		}
+		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_TX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
+		{
+			LOG_ERROR("Cannot purge buffers - Device error " << m_deviceErrorCode);
+			return false;
+		}
 		m_errorCode = 0;
 		return true;
 	}
@@ -574,11 +597,20 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::issueRead()
 	{
+		//If a read is already allocated, don't reallocate
+		//We'll expect someone else to do this for us again later
+		if(m_isReadAllocated)
+		{
+			return;
+		}
+
 		//Try to read over 64 and you'll fry libusb-1.0. Try to read under
 		//64 and you'll fry OS X. So, read 64.
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
+		m_isReadAllocated = true;
+
 	}
 
 	void FalconCommLibUSB::setBytesAvailable(uint32_t b)
