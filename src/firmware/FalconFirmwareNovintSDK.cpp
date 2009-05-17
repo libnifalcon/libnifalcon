@@ -7,8 +7,8 @@
  * @license BSD License
  *
  * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
@@ -25,7 +25,7 @@ namespace libnifalcon
 
 	{
 	}
-	
+
 	FalconFirmwareNovintSDK::~FalconFirmwareNovintSDK()
 	{
 	}
@@ -38,6 +38,11 @@ namespace libnifalcon
 		for(int i = 0; i < m_rawDataSize; ++i)
 		{
 			ret_val = false;
+			//Skip up to the next valid packet if need be
+			if(m_currentOutputIndex == 0)
+			{
+				if(m_rawData[i] != '<') continue;
+			}
 			m_rawOutputInternal[m_currentOutputIndex] = m_rawData[i];
 			++m_currentOutputIndex;
 			if(m_currentOutputIndex == 16 && m_rawOutputInternal[m_currentOutputIndex - 1] == '>')
@@ -65,7 +70,12 @@ namespace libnifalcon
 				m_currentOutputIndex = 0;
 				ret_val = true;
 				++m_outputCount;
-			}			
+			}
+			else if(m_currentOutputIndex == 16)
+			{
+				LOG_WARN("Clearing malformed packet!");
+				m_currentOutputIndex = 0;
+			}
 		}
 		return ret_val;
 	}
@@ -112,7 +122,7 @@ namespace libnifalcon
 		{
 			m_falconComm->poll();
 		}
-		
+
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
@@ -164,5 +174,5 @@ namespace libnifalcon
 		m_hasWritten = true;
 		return read_successful;
 	}
-	
+
 }
