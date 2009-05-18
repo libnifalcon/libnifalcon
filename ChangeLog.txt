@@ -1,6 +1,28 @@
 libnifalcon ChangeLog
 =====================
+Numbers refer to bug listings for libnifalcon bug tracking, at https://www.assembla.com/spaces/libnifalcon/tickets
 
+2009-05-17 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1 beta 4
+	* Fixed include install directories (#15)
+	* Fixed include file listings so that they show up in Visual Studio projects (#9)
+	* Fixed program option printing (#18)
+	* Divided falcon_test_cli into multiple smaller tests
+	* Added color fading test to falcon_test_cli
+	* Added wall test to falcon_test_cli (#2)
+	* Changed internal implementation holding to use smart pointers instead of bare pointers (#12)
+	* Fixed double free bug in libusb (#21)
+	* Cleaned loop counting methods in falcon_test_cli (#19 #22)
+	* Added per-comm-target compiles for findfalcons test (#17)
+	* Added QPT timing calls for windows (#6)
+	* Updated gmtl to v0.6.0
+	* Added package file generation for pkg-config (Thanks to Stephen Sinclair)
+	* Removed unnecessary stdint.h types
+	* Added blocking read/write calls to comm libraries for loading firmware
+	* Fixed validity checks for firmware mode setting and firmware loading across all comm cores
+	* Fixed firmware existence checking, now much more reliable
+	* Changed all array passing to use boost::array instead of bare arrays
+	* Fixed FTD2XX comm library to make reading more stable
 2009-03-14 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 3
 	* Overhauled CMake system because I didn't really know what I was doing with it the first time around (and may still not this time)
