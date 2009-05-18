@@ -2,15 +2,13 @@
  * @file FalconCommFTD2XX.cpp
  * @brief FTD2XX (http://www.ftdichip.com) based implementation of FTDI communication for the falcon
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #include "falcon/comm/FalconCommFTD2XX.h"
 
 #ifdef FTD2XX_WINDOWS

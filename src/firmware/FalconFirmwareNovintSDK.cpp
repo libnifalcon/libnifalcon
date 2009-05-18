@@ -2,15 +2,13 @@
  * @file FalconFirmwareNovintSDK.cpp
  * @brief Firmware communications for the firmware included with the Novint SDK/Official Drivers
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include <iostream>
 #include <cstdlib>
@@ -128,7 +126,7 @@ namespace libnifalcon
 		{
 			if(m_falconComm->requiresPoll())
 			{
-			m_rawDataSize = m_falconComm->getBytesAvailable();
+				m_rawDataSize = m_falconComm->getBytesAvailable();
 				//std::cout << "IORead " << m_rawDataSize << std::endl;
 				//We somehow just got modem bytes back. Kick out another read.
 				if(m_rawDataSize == 0)
@@ -139,8 +137,8 @@ namespace libnifalcon
 			}
 			else
 			{
-			//hack to make libftdi work for the time being
-			//always read the maximum amount available from the endpoint to make sure we don't lose anything
+				//hack to make libftdi work for the time being
+				//always read the maximum amount available from the endpoint to make sure we don't lose anything
 				m_rawDataSize = 16;
 			}
 			if(m_falconComm->read((uint8_t*)m_rawData, m_rawDataSize))

@@ -2,16 +2,12 @@
  * @file FalconCLIBase.cpp
  * @brief Utility class for common operations (device opening, firmware loading, etc...) needed in command line interface examples
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
-
 
 #include <iostream>
 
@@ -44,11 +40,11 @@ static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] -
  * Statically initialize the log4cxx library.
  */
 void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
-  log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
-  log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
-  log4cxx::BasicConfigurator::configure(appender);
-  log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
-  rootlogger->setLevel(level);
+	log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
+	log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
+	log4cxx::BasicConfigurator::configure(appender);
+	log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
+	rootlogger->setLevel(level);
 }
 #endif
 
@@ -115,7 +111,7 @@ namespace libnifalcon
 			("debug_level", po::value<std::string>(), "Level of debug messages to print (FATAL, ERROR, WARN, INFO, DEBUG) (Default: FATAL)")
 			;
 //		("output_file", po::value<std::string>(), "File to output debug messages to (outputs to stdout otherwise")
-		m_progOptions.add(debug);		
+		m_progOptions.add(debug);
 #endif
 	}
 
@@ -124,13 +120,13 @@ namespace libnifalcon
 		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
 		std::cout << m_progOptions << std::endl;
 	}
-	
+
 	bool FalconCLIBase::parseOptions(int argc, char** argv)
 	{
 		try
-	{
-		po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
-		po::notify(m_varMap);    
+		{
+			po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
+			po::notify(m_varMap);
 		}
 		catch(...)
 		{
@@ -138,7 +134,7 @@ namespace libnifalcon
 			outputProgramOptions();
 			return false;
 		}
-		
+
 		if (m_varMap.count("help")) {
 			outputProgramOptions();
 			return false;
@@ -155,16 +151,16 @@ namespace libnifalcon
 
 		configureLogging(logPattern, logLevel);
 #endif
-		
+
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
-		
+
 		//First off, see if we have a communication method
 		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
-		
+
 		//This is an either/or choice, since we have problems with static linking and ftd2xx. Prefer libusb1, then libftdi. Thanks for the static linking against old libusb binaries, FTDI!
 
 #if defined(LIBUSB)
@@ -202,7 +198,7 @@ namespace libnifalcon
 			m_falconDevice->getDeviceCount(count);
 			std::cout << "Connected Device Count: " << count << std::endl;
 			return false;
-		}		
+		}
 		else if(m_varMap.count("device_index"))
 		{
 			if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
@@ -214,7 +210,7 @@ namespace libnifalcon
 		else
 		{
 			std::cout << "No device index specified to open, cannot continue (--help for options)" << std::endl;
-			return false;			
+			return false;
 		}
 
 		//There's only one kind of firmware right now, so automatically set that.
@@ -234,7 +230,7 @@ namespace libnifalcon
 				//Check for existence of firmware file
 				std::string firmware_file = m_varMap["firmware"].as<std::string>();
 				if(!m_falconDevice->setFirmwareFile(firmware_file))
-			{
+				{
 					std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
 					return false;
 				}
@@ -245,7 +241,7 @@ namespace libnifalcon
 						std::cout << "Cannot load firmware to device" << std::endl;
 						std::cout << "Error Code: " << m_falconDevice->getErrorCode() << std::endl;
 						if(m_falconDevice->getErrorCode() == 2000)
-					{
+						{
 							std::cout << "Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 						}
 						m_falconDevice->close();
@@ -269,8 +265,8 @@ namespace libnifalcon
 					firmware_block = const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE);
 					firmware_size = NOVINT_FALCON_NVENT_FIRMWARE_SIZE;
 				}
-			else if(m_varMap.count("test_firmware"))
-			{
+				else if(m_varMap.count("test_firmware"))
+				{
 					firmware_block = const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE);
 					firmware_size = NOVINT_FALCON_TEST_FIRMWARE_SIZE;
 				}
@@ -282,7 +278,7 @@ namespace libnifalcon
 						//Completely close and reopen
 						m_falconDevice->close();
 						if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
-					{
+						{
 							std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 							return false;
 						}
@@ -296,22 +292,22 @@ namespace libnifalcon
 			}
 		}
 		else if(!firmware_loaded)
-			{
+		{
 			std::cout << "No firmware loaded to device, and no firmware specified to load (--nvent_firmware, --test_firmware, etc...). Cannot continue" << std::endl;
-					return false;
-				}
+			return false;
+		}
 		else
-				{
+		{
 			return true;
 		}
 		if(!firmware_loaded || !m_falconDevice->isFirmwareLoaded())
-					{
+		{
 			std::cout << "No firmware loaded to device, cannot continue" << std::endl;
 			return false;
-					}
+		}
 		std::cout << "Firmware loaded" << std::endl;
 		return true;
-				}
+	}
 
 	bool FalconCLIBase::calibrateDevice()
 	{
@@ -327,8 +323,8 @@ namespace libnifalcon
 				{
 					std::cout << "Falcon not currently calibrated. Move control all the way out then push straight all the way in." << std::endl;
 					m_displayCalibrationMessage = false;
+				}
 			}
-		}
 			homing = true;
 			return false;
 		}

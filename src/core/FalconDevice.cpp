@@ -2,17 +2,16 @@
  * @file FalconDevice.cpp
  * @brief FalconDevice class, glue class for falcon components
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #include "falcon/core/FalconDevice.h"
 #include <iostream>
+
 namespace libnifalcon
 {
 

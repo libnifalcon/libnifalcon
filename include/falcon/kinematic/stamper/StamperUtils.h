@@ -1,14 +1,11 @@
 /***
  * @file StamperUtils.h
  * @brief Enums and structs used in the Stamper kinematics implementation
- * @author Kevin Ouellet (kouellet@users.sourceforge.net)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net)/Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -18,11 +15,11 @@
 namespace libnifalcon
 {
 	namespace StamperKinematicImpl
-	{	
+	{
 		enum arm_id
 		{
 			ARM_1 = 0, ARM_2, ARM_3
-		};	
+		};
 
 		enum theta_id
 		{
@@ -42,4 +39,4 @@ namespace libnifalcon
 		};
 	}
 }
-#endif 
+#endif

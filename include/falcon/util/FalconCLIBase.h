@@ -2,15 +2,13 @@
  * @file FalconCLIBase.h
  * @brief Utility class for common operations (device opening, firmware loading, etc...) needed in command line interface examples
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #ifndef FALCONCLIBASE_H
 #define FALCONCLIBASE_H
 

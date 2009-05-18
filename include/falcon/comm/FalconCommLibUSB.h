@@ -2,15 +2,13 @@
  * @file FalconCommLibUSB.h
  * @brief LibUSB 1.0 (http://libusb.sourceforge.net/) based implementation of FTDI communication for the falcon
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id: FalconCommLibFTDI.h 226 2008-10-19 01:32:09Z kmachulis $
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL: https://kmachulis@libnifalcon.svn.sourceforge.net/svnroot/libnifalcon/trunk/libnifalcon/src/cpp/comm/FalconCommLibFTDI.h $
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #ifndef FALCONCOMMLIBUSB_H
 #define FALCONCOMMLIBUSB_H
 

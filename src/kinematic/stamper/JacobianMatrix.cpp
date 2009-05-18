@@ -1,5 +1,14 @@
-//Original code by Kevin Ouellet
-//kouellet@users.sourceforge.net
+/***
+ * @file JacobianMatrix.cpp
+ * @brief Jacobian implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net) / Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
+ *
+ */
+
 #include "falcon/kinematic/stamper/JacobianMatrix.h"
 
 namespace libnifalcon
@@ -10,21 +19,21 @@ namespace libnifalcon
 		gmtl::Vec3f JacobianMatrix::calculate(const Angle& angle, const gmtl::Vec3f& cartesian)
 		{
 			gmtl::Matrix33f matrixJ = calculateJacobian(angle);
-	
+
 			//gmtl::Matrix<float, 3, 1> velocityMatrix;
 			//velocityMatrix[0][0] = velocity[0];
 			//velocityMatrix[1][0] = velocity[1];
 			//velocityMatrix[2][0] = velocity[2];
 
 			//gmtl::Matrix<float, 3, 1> solution = matrixJ * velocityMatrix;
-	
+
 			return matrixJ * cartesian;//gmtl::Vec3f(solution[0][0], solution[1][0], solution[2][0]);
 		}
 
 		gmtl::Vec3f JacobianMatrix::calculateInverse(const Angle& angle, const gmtl::Vec3f& angular)
 		{
 			gmtl::Matrix33f matrixJ = calculateJacobian(angle);
-	
+
 			//gmtl::Matrix<float, 3, 1> velocityMatrix;
 			//velocityMatrix[0][0] = velocity[0];
 			//velocityMatrix[1][0] = velocity[1];
@@ -64,12 +73,12 @@ namespace libnifalcon
 			//Following equation (4.12) in the stamper paper
 			float JFi1 = gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::cos(phy[arm])-
 				gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
-	
+
 			float JFi2 = gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::cos(phy[arm])+
 				gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
-	
+
 			float JFi3 = gmtl::Math::sin(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm]);
-	
+
 			matrix[arm][0] = JFi1;
 			matrix[arm][1] = JFi2;
 			matrix[arm][2] = JFi3;

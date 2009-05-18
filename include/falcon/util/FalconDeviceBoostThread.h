@@ -2,13 +2,10 @@
  * @file FalconDeviceBoostThread.h
  * @brief Utility class for threading a FalconDevice instance using boost::thread (http://www.boost.org)
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -25,7 +22,7 @@ namespace libnifalcon
 	public:
 		FalconDeviceBoostThread();
 		virtual ~FalconDeviceBoostThread();
-		void getPosition(double pos[3]);		
+		void getPosition(double pos[3]);
 		void startThread();
 		virtual void runThreadLoop();
 		void stopThread();

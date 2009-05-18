@@ -2,15 +2,13 @@
  * @file FalconCommLibFTDI.h
  * @brief LibFTDI (http://www.intra2net.com/de/produkte/opensource/ftdi/) based implementation of FTDI communication for the falcon
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #ifndef FALCONLIBFTDICOMM_H
 #define FALCONLIBFTDICOMM_H
 

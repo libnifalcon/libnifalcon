@@ -1,14 +1,14 @@
 /***
  * @file FalconLogging.h
  * @brief Logging defines for log4cxx
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
+ */
+
+/***
  * Found this code at http://gonium.net/md/ in the Code Kata articles - Can't find a license, but I'm hoping it's MIT. :) Much thanks to the author
  * for saving me a massive amount of time, since I was planning on doing this myself.
  *
@@ -56,7 +56,7 @@ class Foo
 	Foo() : INIT_LOGGING("Foo") {}
 	LogSomething() { int num = 1;  LOG_INFO("Look! A Number! " << num);  }
 }
- 
+
 */
 
 #ifndef FALCON_LOGGING
@@ -93,8 +93,8 @@ namespace log4cxx {
 #define LLOG_FATAL(logger, msg) LOG4CXX_FATAL(logger, msg)
 
 #define LOG_DEBUG(msg) LLOG_DEBUG(logger, msg)
-#define LOG_INFO(msg)  LLOG_INFO(logger, msg) 
-#define LOG_WARN(msg)  LLOG_WARN(logger, msg) 
+#define LOG_INFO(msg)  LLOG_INFO(logger, msg)
+#define LOG_WARN(msg)  LLOG_WARN(logger, msg)
 #define LOG_ERROR(msg) LLOG_ERROR(logger, msg)
 #define LOG_FATAL(msg) LLOG_FATAL(logger, msg)
 
@@ -108,11 +108,11 @@ namespace log4cxx {
 #define DEFINE_LOGGER(hierarchy)  LDEFINE_LOGGER(logger, hierarchy)
 #define INIT_LOGGER(hierarchy)    LINIT_LOGGER(logger, hierarchy)
 
-#define LOG_DEBUG(msg) 
-#define LOG_INFO(msg)  
-#define LOG_WARN(msg)  
-#define LOG_ERROR(msg) 
-#define LOG_FATAL(msg) 
+#define LOG_DEBUG(msg)
+#define LOG_INFO(msg)
+#define LOG_WARN(msg)
+#define LOG_ERROR(msg)
+#define LOG_FATAL(msg)
 
 #endif
 

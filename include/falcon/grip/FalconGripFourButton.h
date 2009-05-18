@@ -2,15 +2,13 @@
  * @file FalconGripFourButton.h
  * @brief Hardware access definitions for the four-button grip that is packaged with the falcon
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
+
 #ifndef FALCONGRIPFOURBUTTON_H
 #define FALCONGRIPFOURBUTTON_H
 
@@ -20,7 +18,7 @@ namespace libnifalcon
 {
 	class FalconGripFourButton : public FalconGrip
 	{
-	public:		
+	public:
 		enum
 		{
 			BUTTON_1 = 0x1,

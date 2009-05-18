@@ -1,3 +1,14 @@
+/***
+ * @file FalconCommLibUSB.cpp
+ * @brief LibUSB (http://libusb.sourceforge.net/) based implementation of FTDI communication for the falcon
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
+ *
+ */
+
 #include "falcon/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
@@ -487,8 +498,8 @@ namespace libnifalcon
 		}
 		if(i == 100)
 		{
-				LOG_ERROR("Cannot match check values(1)");
-				return false;
+			LOG_ERROR("Cannot match check values(1)");
+			return false;
 		}
 
 

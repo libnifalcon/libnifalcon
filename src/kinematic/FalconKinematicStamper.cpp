@@ -2,13 +2,10 @@
  * @file FalconKinematicStamper.cpp
  * @brief IK and DK implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
  * @author Kevin Ouellet (kouellet@users.sourceforge.net) / Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -45,7 +42,7 @@ namespace libnifalcon
 		//I do not question the magic.
 		c *= 10000.0;
 		a = m_inv.calculate(p);
-	
+
 		gmtl::Vec3f angularVelocity = StamperKinematicImpl::JacobianMatrix::calculate(a, c);
 		for(int i = 0; i < 3; ++i)
 		{
@@ -53,16 +50,16 @@ namespace libnifalcon
 		}
 		return true;
 	}
-	
+
 	bool FalconKinematicStamper::getAngles(boost::array<double, 3> (&position), boost::array<double, 3> (&angles))
 	{
 		StamperKinematicImpl::Angle a;
 		gmtl::Point3f p(position[0], position[1], position[2]);
 		a = m_inv.calculate(p);
-			
+
 		angles[0] = a.theta1[0];
 		angles[1] = a.theta1[1];
-		angles[2] = a.theta1[2];			
+		angles[2] = a.theta1[2];
 		return true;
 	}
 

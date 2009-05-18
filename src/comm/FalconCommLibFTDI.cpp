@@ -2,11 +2,8 @@
  * @file FalconCommLibFTDI.cpp
  * @brief LibFTDI (http://www.intra2net.com/de/produkte/opensource/ftdi/) based implementation of FTDI communication for the falcon
  * @author Kyle Machulis (kyle@nonpolynomial.com)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.sourceforge.net/
  *
@@ -164,12 +161,12 @@ namespace libnifalcon {
 			return false;
 		}
 		/*
-		if(m_lastBytesRead < size)
-		{
-			LOG_ERROR("Read amount " << m_lastBytesRead << " less than requested size " << size);
-			m_errorCode = FALCON_COMM_READ_ERROR;
-			return false;
-		}
+		  if(m_lastBytesRead < size)
+		  {
+		  LOG_ERROR("Read amount " << m_lastBytesRead << " less than requested size " << size);
+		  m_errorCode = FALCON_COMM_READ_ERROR;
+		  return false;
+		  }
 		*/
 		return true;
 	}
@@ -290,12 +287,12 @@ namespace libnifalcon {
 		int i;
 		for(i = 0; i < 10; ++i)
 		{
-		//Send 3 bytes: 0x0a 0x43 0x0d
-		if(!write(check_msg_1_send, 3))
-		{
-			LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
-			return false;
-		}
+			//Send 3 bytes: 0x0a 0x43 0x0d
+			if(!write(check_msg_1_send, 3))
+			{
+				LOG_ERROR("Cannot write check values (1) - Device error " << m_deviceErrorCode);
+				return false;
+			}
 			if(!read(receive_buf, 5))
 			{
 				LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);

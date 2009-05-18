@@ -1,14 +1,11 @@
 /***
  * @file AngularMatrix.cpp
  * @brief Lookup table to find cartesian coordinates of end effector based on leg angles
- * @author Kevin Ouellet (kouellet@users.sourceforge.net)
- * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net) / Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * $HeadURL$
- * 
- * Project info at http://libnifalcon.sourceforge.net/ 
+ * Project info at http://libnifalcon.sourceforge.net/
  *
  */
 
@@ -30,9 +27,9 @@ namespace libnifalcon
 			this->center = center;
 			this->range = range;
 			this->size = size;
-	
+
 			matrix.resize(boost::extents[size][size][size][3]);
-	
+
 			minimum[0] = center[0]-(range/2.0f);
 			minimum[1] = center[1]-(range/2.0f);
 			minimum[2] = center[2]-(range/2.0f);
@@ -40,9 +37,9 @@ namespace libnifalcon
 			maximum[0] = center[0]+(range/2.0f);
 			maximum[1] = center[1]+(range/2.0f);
 			maximum[2] = center[2]+(range/2.0f);
-	
+
 			delta = range/size;
-	
+
 			minimumPosition[0] = .100;
 			minimumPosition[1] = .100;
 			minimumPosition[2] = .250;
@@ -52,7 +49,7 @@ namespace libnifalcon
 			maximumPosition[2] = 0.050;
 
 			gmtl::Vec3f zero_vec(0,0,0);
-			
+
 			for (unsigned int i=0; i<size; i++)
 				for (unsigned int j=0; j<size; j++)
 					for (unsigned int k=0; k<size; k++)
@@ -81,17 +78,17 @@ namespace libnifalcon
 				}
 			}
 		}
-		
+
 		bool AngularMatrix::setPosition(const gmtl::Point3f& position)
 		{
 
 			Angle allAngle = InverseKinematic::calculate(position);
-	
+
 			gmtl::Vec3f angle(allAngle.theta1[0],allAngle.theta1[1],allAngle.theta1[2]);
-	
+
 			//std::cout << position[0] << ":" << position[1] << ":" << position[2] << std::endl;
 			//std::cout << angle[0] << ":" << angle[1] << ":" << angle[2] << std::endl;
-			if (angle[0]>=minimum[0] && angle[0]<=maximum[0] && 
+			if (angle[0]>=minimum[0] && angle[0]<=maximum[0] &&
 				angle[1]>=minimum[1] && angle[1]<=maximum[1] &&
 				angle[2]>=minimum[2] && angle[2]<=maximum[2])
 			{
@@ -103,18 +100,18 @@ namespace libnifalcon
 					   (int)((angle[1]-minimum[1])/delta),
 					   (int)((angle[2]-minimum[2])/delta),
 					   position);
-				if (position[0] < minimumPosition[0]) 
+				if (position[0] < minimumPosition[0])
 					minimumPosition[0] = position[0];
-				if (position[1] < minimumPosition[1]) 
+				if (position[1] < minimumPosition[1])
 					minimumPosition[1] = position[1];
-				if (position[2] < minimumPosition[2]) 
+				if (position[2] < minimumPosition[2])
 					minimumPosition[2] = position[2];
-		
-				if (position[0] > maximumPosition[0]) 
+
+				if (position[0] > maximumPosition[0])
 					maximumPosition[0] = position[0];
-				if (position[1] > maximumPosition[1]) 
+				if (position[1] > maximumPosition[1])
 					maximumPosition[1] = position[1];
-				if (position[2] > maximumPosition[2]) 
+				if (position[2] > maximumPosition[2])
 					maximumPosition[2] = position[2];
 
 				return true;
@@ -124,7 +121,7 @@ namespace libnifalcon
 
 		bool AngularMatrix::getPosition(const gmtl::Vec3f& angle, gmtl::Point3f &position)
 		{
-			if (angle[0]>=minimum[0] && angle[0]<=maximum[0] && 
+			if (angle[0]>=minimum[0] && angle[0]<=maximum[0] &&
 				angle[1]>=minimum[1] && angle[1]<=maximum[1] &&
 				angle[2]>=minimum[2] && angle[2]<=maximum[2])
 			{
@@ -146,7 +143,7 @@ namespace libnifalcon
 					{
 						if (getVec(i,j,k)[2] != 0) uniqueElement++;
 					}
-				
+
 			return (((float)uniqueElement)/((float)maxElement))*100.0f;
 		}
 
@@ -188,7 +185,7 @@ namespace libnifalcon
 			matrix[a][b][c][1]=vector[1];
 			matrix[a][b][c][2]=vector[2];
 		}
-		
+
 		gmtl::Vec3f AngularMatrix::getVec(const unsigned int a, const unsigned int b, const unsigned int c)
 		{
 			return gmtl::Vec3f(matrix[a][b][c][0],matrix[a][b][c][1],matrix[a][b][c][2]);

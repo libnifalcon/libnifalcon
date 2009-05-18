@@ -1,3 +1,14 @@
+/***
+ * @file FalconFirmware.cpp
+ * @brief FalconFirmware class, base implementation for firmware operations
+ * @author Kyle Machulis (kyle@nonpolynomial.com)
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
+ * @license BSD License
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
+ *
+ */
+
 #include "falcon/core/FalconFirmware.h"
 #include <iostream>
 #include <fstream>
