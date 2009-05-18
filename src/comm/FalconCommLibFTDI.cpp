@@ -10,6 +10,7 @@
  */
 
 #include "falcon/comm/FalconCommLibFTDI.h"
+#include <cstring>
 #include "ftdi.h"
 
 namespace libnifalcon {
