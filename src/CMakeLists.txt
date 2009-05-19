@@ -12,7 +12,9 @@ SET(LIBRARY_SRCS
   kinematic/stamper/PositionMatrix.cpp 
   kinematic/stamper/DirectKinematic.cpp 
   kinematic/stamper/InverseKinematic.cpp 
-  kinematic/FalconKinematicStamper.cpp)
+  kinematic/FalconKinematicStamper.cpp
+  kinematic/FalconKinematicZsomborMurray.cpp
+)
 
 INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
