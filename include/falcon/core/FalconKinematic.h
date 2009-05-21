@@ -49,7 +49,8 @@ namespace libnifalcon
 		 */
 		double getTheta(int encoder_value)
 		{
-			return (((SHAFT_DIAMETER*PI) / (WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((PI*SMALL_ARM_DIAMETER)/360.0f) + THETA_OFFSET_ANGLE;
+			return (((FalconGeometry::SHAFT_DIAMETER*FalconGeometry::PI) / (FalconGeometry::WHEEL_SLOTS_NUMBER*4)) * (encoder_value))/((FalconGeometry::PI*FalconGeometry::SMALL_ARM_DIAMETER)/360.0f) +
+				FalconGeometry::THETA_OFFSET_ANGLE;
 		}
 
 		/**

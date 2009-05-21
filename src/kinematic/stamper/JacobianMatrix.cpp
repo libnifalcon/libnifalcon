@@ -71,11 +71,11 @@ namespace libnifalcon
 		void JacobianMatrix::calculateJFi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			//Following equation (4.12) in the stamper paper
-			float JFi1 = gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::cos(phy[arm])-
-				gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
+			float JFi1 = gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::cos(FalconGeometry::phy[arm])-
+				gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::sin(FalconGeometry::phy[arm]);
 
-			float JFi2 = gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::cos(phy[arm])+
-				gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::sin(phy[arm]);
+			float JFi2 = gmtl::Math::cos(angle.theta3[arm])*gmtl::Math::cos(FalconGeometry::phy[arm])+
+				gmtl::Math::cos(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm])*gmtl::Math::sin(FalconGeometry::phy[arm]);
 
 			float JFi3 = gmtl::Math::sin(angle.theta2[arm])*gmtl::Math::sin(angle.theta3[arm]);
 
@@ -87,7 +87,7 @@ namespace libnifalcon
 		void JacobianMatrix::calculateJIi(const arm_id arm, const Angle& angle, gmtl::Matrix33f& matrix)
 		{
 			//Following equation (4.12) in the stamper paper
-			float JIi = a*gmtl::Math::sin(angle.theta2[arm]-angle.theta1[arm])*gmtl::Math::sin(angle.theta3[arm]);
+			float JIi = FalconGeometry::a*gmtl::Math::sin(angle.theta2[arm]-angle.theta1[arm])*gmtl::Math::sin(angle.theta3[arm]);
 			matrix[arm][arm] = JIi;
 		}
 	}

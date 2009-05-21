@@ -27,25 +27,31 @@ namespace libnifalcon
 
 		void InverseKinematic::calulateArm(const arm_id arm, const gmtl::Point3f& position, Angle& angle)
 		{
-			float pu = -r+gmtl::Math::cos(phy[arm])*position[X]+gmtl::Math::sin(phy[arm])*position[Y];
-			float pv = -(s-gmtl::Math::cos(phy[arm])*position[Y]+gmtl::Math::sin(phy[arm])*position[X]);
+			float pu = -FalconGeometry::r+gmtl::Math::cos(FalconGeometry::phy[arm])*position[X]+gmtl::Math::sin(FalconGeometry::phy[arm])*position[Y];
+			float pv = -(FalconGeometry::s-gmtl::Math::cos(FalconGeometry::phy[arm])*position[Y]+gmtl::Math::sin(FalconGeometry::phy[arm])*position[X]);
 			float pw = position[Z];
 
-			float theta3 = gmtl::Math::aCos((pv+f)/b);
+			float theta3 = gmtl::Math::aCos((pv+FalconGeometry::f)/FalconGeometry::b);
 
-			float l0 = gmtl::Math::pow(pw,2) + gmtl::Math::pow(pu,2) + 2*c*pu - 2*a*pu + gmtl::Math::pow(a,2) + gmtl::Math::pow(c,2) - gmtl::Math::pow(d,2) - gmtl::Math::pow(e,2)
-				- gmtl::Math::pow(b,2)*gmtl::Math::pow(gmtl::Math::sin(theta3),2) - 2*b*e*gmtl::Math::sin(theta3) - 2*b*d*gmtl::Math::sin(theta3) - 2*d*e - 2*a*c;
+			float l0 = gmtl::Math::pow(pw,2) + gmtl::Math::pow(pu,2) + 2*FalconGeometry::c*pu - 2*FalconGeometry::a*pu + gmtl::Math::pow(FalconGeometry::a,2)
+				+ gmtl::Math::pow(FalconGeometry::c,2) - gmtl::Math::pow(FalconGeometry::d,2) - gmtl::Math::pow(FalconGeometry::e,2)
+				- gmtl::Math::pow(FalconGeometry::b,2) * gmtl::Math::pow(gmtl::Math::sin(theta3),2) - 2*FalconGeometry::b * FalconGeometry::e
+				* gmtl::Math::sin(theta3) - 2 * FalconGeometry::b * FalconGeometry::d * gmtl::Math::sin(theta3)
+				- 2 * FalconGeometry::d * FalconGeometry::e - 2 * FalconGeometry::a * FalconGeometry::c;
 
-			float l1 = -4*a*pw;
+			float l1 = -4 * FalconGeometry::a * pw;
 
-			float l2 = gmtl::Math::pow(pw,2) + gmtl::Math::pow(pu,2) + 2*c*pu + 2*a*pu + gmtl::Math::pow(a,2) + gmtl::Math::pow(c,2) - gmtl::Math::pow(d,2) - gmtl::Math::pow(e,2)
-				- gmtl::Math::pow(b,2)*gmtl::Math::pow(gmtl::Math::sin(theta3),2) - 2*b*e*gmtl::Math::sin(theta3) - 2*b*d*gmtl::Math::sin(theta3) - 2*d*e + 2*a*c;
+			float l2 = gmtl::Math::pow(pw,2) + gmtl::Math::pow(pu,2) + 2 * FalconGeometry::c * pu + 2 * FalconGeometry::a * pu
+				+ gmtl::Math::pow(FalconGeometry::a,2) + gmtl::Math::pow(FalconGeometry::c,2) - gmtl::Math::pow(FalconGeometry::d,2)
+				- gmtl::Math::pow(FalconGeometry::e,2) - gmtl::Math::pow(FalconGeometry::b,2) * gmtl::Math::pow(gmtl::Math::sin(theta3),2)
+				- 2 * FalconGeometry::b * FalconGeometry::e * gmtl::Math::sin(theta3) - 2 * FalconGeometry::b * FalconGeometry::d
+				* gmtl::Math::sin(theta3) - 2 * FalconGeometry::d * FalconGeometry::e + 2 * FalconGeometry::a * FalconGeometry::c;
 
 			float t = -(gmtl::Math::sqrt(gmtl::Math::pow(l1,2)-4*l2*l0)+l1)/(2*l2);
 
 			float theta1 = gmtl::Math::aTan(t)*2;
 
-			float theta2 = gmtl::Math::aCos(-(a*gmtl::Math::cos(theta1)-c-pu)/(b*gmtl::Math::sin(theta3)+d+e));
+			float theta2 = gmtl::Math::aCos(-(FalconGeometry::a*gmtl::Math::cos(theta1)-FalconGeometry::c-pu)/(FalconGeometry::b * gmtl::Math::sin(theta3) + FalconGeometry::d + FalconGeometry::e));
 
 			angle.theta1[arm] = theta1;
 			angle.theta2[arm] = theta2;
