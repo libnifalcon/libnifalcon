@@ -88,6 +88,24 @@ namespace libnifalcon
 			origin[1] = 0.0;
 			origin[2] = 0.150;
 		}
+	private:
+		/** 3D Point structure for kinematics calculations
+		 */
+		struct point3f {
+			float x;
+			float y;
+			float z;
+		};
+
+		/** 4D Point structure for homogenous kinematics calculations
+		  */
+		struct point4f {
+			float w;
+			float x;
+			float y;
+			float z;
+		};
+
 	};
 }
 
