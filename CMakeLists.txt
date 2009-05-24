@@ -14,11 +14,11 @@ ELSEIF(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules")
   MESSAGE(STATUS "Using cmake_modules git submodule ${NP_CMAKE_DIR}")
 ELSE(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules")
   MESSAGE(FATAL_ERROR 
-	"Cannot find cmake_modules directory for np labs project functions.\n"
-	"Make sure you've either put the cmake_modules directory in the same root as your repository directory, or that you've used the cmake_modules submodule (git submodule update --init).\n"
-	"NP Labs build repository is available at git://github.com/qdot/np_build_sys.git"
-	)
-ENDIF(EXISTS "${CMAKE_SOURCE_DIR}/../np_build_sys")
+    "Cannot find cmake_modules directory for np labs project functions.\n"
+    "Make sure you've either put the cmake_modules directory in the same root as your repository directory, or that you've used the cmake_modules submodule (git submodule update --init).\n"
+    "NP Labs build repository is available at git://github.com/qdot/np_build_sys.git"
+    )
+ENDIF(EXISTS "${CMAKE_SOURCE_DIR}/../np_build_sys/cmake")
 
 LIST(APPEND CMAKE_MODULE_PATH ${NP_CMAKE_DIR})
 
@@ -37,19 +37,19 @@ ENDIF(COMMAND cmake_policy)
 MACRO(LIBNIFALCON_COMM_VAR_SETUP)
   LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP})
   IF(LIBUSB_1_FOUND)
-	LIST(APPEND NP_COMM_TYPES LIBUSB)
-	LIST(APPEND NP_EXE_CPP_DEFINES -DLIBUSB)
-	LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libusb ${LIBUSB_1_LIBRARIES}) 
+    LIST(APPEND NP_COMM_TYPES LIBUSB)
+    LIST(APPEND NP_EXE_CPP_DEFINES -DLIBUSB)
+    LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libusb ${LIBUSB_1_LIBRARIES}) 
   ENDIF(LIBUSB_1_FOUND)
 
   IF(LIBFTDI_FOUND)
-	LIST(APPEND NP_COMM_TYPES LIBFTDI)
- 	LIST(APPEND NP_EXE_CPP_DEFINES -DLIBFTDI)
- 	LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libftdi ${LIBFTDI_LIBRARIES}) 
+    LIST(APPEND NP_COMM_TYPES LIBFTDI)
+    LIST(APPEND NP_EXE_CPP_DEFINES -DLIBFTDI)
+    LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libftdi ${LIBFTDI_LIBRARIES}) 
   ELSEIF(LIBFTD2XX_FOUND)
-	LIST(APPEND NP_COMM_TYPES LIBFTD2XX)
- 	LIST(APPEND NP_EXE_CPP_DEFINES -DLIBFTD2XX)
- 	LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_ftd2xx ${LIBFTD2XX_LIBRARIES})
+    LIST(APPEND NP_COMM_TYPES LIBFTD2XX)
+    LIST(APPEND NP_EXE_CPP_DEFINES -DLIBFTD2XX)
+    LIST(APPEND NP_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_ftd2xx ${LIBFTD2XX_LIBRARIES})
   ENDIF(LIBFTDI_FOUND)
 ENDMACRO(LIBNIFALCON_COMM_VAR_SETUP)
 
@@ -92,7 +92,7 @@ IF(NOT LIBFTD2XX_FOUND)
   FIND_PACKAGE(libftdi)
   FIND_PACKAGE(libusb-1.0)
   IF(LIBUSB_1_FOUND)
-	INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIR})
   ENDIF(LIBUSB_1_FOUND)
 ENDIF(NOT LIBFTD2XX_FOUND)
 
@@ -166,13 +166,13 @@ if(PKG_CONFIG_EXECUTABLE)
   set(PC_COMPILE_FLAGS "${lib${PC_LIBRARY_NAME}_COMPILE_FLAGS}")
   set(PC_CONFIGURED_FILE
     ${CMAKE_BINARY_DIR}/libnifalcon.pc
-  )
+    )
   MESSAGE("-- Generating ${PC_CONFIGURED_FILE}")
   configure_file(
     ${CMAKE_SOURCE_DIR}/libnifalcon.pc.cmake
     ${PC_CONFIGURED_FILE}
     @ONLY
-  )
+    )
   set(PKG_CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
   install(FILES ${PC_CONFIGURED_FILE} DESTINATION ${PKG_CONFIG_DIR})
 endif(PKG_CONFIG_EXECUTABLE)
