@@ -3,5 +3,8 @@ layout: default
 project: libnifalcon
 title: Crossplatform, open source driver for the Novint Falcon
 ---
-
-Testing markdown again
+{% for post in site.categories.blog limit:5 %}
+<div id="post">
+<div id="post_title"><span id="title_left"><h2>{{ post.date | date: "%Y-%m-%d" }}</h2></span><span id="title_right"><h2><a href="{{ post.url }}">{{ post.title }}</a></h2></span></div><div id="post_content">{{ post.content }}</div>
+</div>
+{% endfor %}
