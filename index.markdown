@@ -1,7 +1,7 @@
 ---
 layout: default
 project: libnifalcon
-title: index
+title: Crossplatform, open source driver for the Novint Falcon
 ---
 
 Testing markdown again
