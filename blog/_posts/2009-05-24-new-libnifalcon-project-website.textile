@@ -1,0 +1,7 @@
+---
+layout: default
+project: libnifalcon
+title: New libnifalcon project website
+---
+
+Decided to try building a new project website for libnifalcon, using the "jekyll":http://github.com/mojombo/jekyll/tree/master framework provided as a feature on "github":http://www.github.com repositories. Start expecting project updates here.

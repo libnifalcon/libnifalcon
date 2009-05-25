@@ -1,0 +1,12 @@
+---
+layout: default
+project: libnifalcon
+title: H3D API Integration for libnifalcon
+categories: projects
+---
+We've talked about "H3D":http://www.h3d.org integration quite a bit on the "libnifalcon-devel mailing list":http://sourceforge.net/mailarchive/forum.php?forum_name=libnifalcon-devel, but it now appears that it's actually going to happen. There are a couple of projects currently in the works:
+
+* The development team at "polydimensions.de":http://www.polydimensions.de has been working on a libnifalcon patch for H3D, along with their efforts to integrate the "Bullet Physics Engine":http://www.bulletphysics.com into the H3D framework. This should be integrating with the H3D development branch soon.
+* The developer of the "Volume Haptics Toolkit":http://www.h3dapi.org/modules/mediawiki/index.php/Volume_Haptics_Toolkit has submitted a "patch to HAPI that allows for libnifalcon support":http://www.h3dapi.org/modules/mantis/bug_view_page.php?bug_id=0000137 (note: you will need an account on "the H3D website":http://www.h3d.org to access this page).
+
+So, hopefully libnifalcon will be supported in H3D soon, one way or another.
