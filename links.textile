@@ -1,0 +1,13 @@
+---
+layout: default
+project: libnifalcon
+title: Links to related projects and pages
+---
+* "Novint Falcon Homepage":http://home.novint.com
+** Homepage of the manufacturers of the Falcon
+* "H3D":http://www.h3d.org
+** Popular open source Haptic scene graph
+* "Chai3D":http://www.chai3d.org
+** Popular open source haptic scene graph
+* "Dimple":http://www.idmil.org/software/dimple
+** Dynamically Interactive Musically PhysicaL Environment - Combination rendering/physics/haptics engine for audio research
