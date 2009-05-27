@@ -1,0 +1,22 @@
+---
+layout: default
+project: libnifalcon
+title: Downloads
+---
+<H1>Releases</H1>
+
+|<B>Version</B>|<B>Date</B>|<B>Page</B>|
+|1.0 beta 4|2009-05-18|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=683431|
+|1.0 beta 3|2009-03-15|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=668255|
+|1.0 beta 2|2008-12-08|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=645666|
+|1.0 beta 1|2008-11-16|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=640886|
+|1.0 alpha 4|2008-10-20|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=634562|
+|1.0 alpha 3|2008-10-12|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=632558|
+|1.0 alpha 2|2008-10-06|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=631011|
+|1.0 alpha 1|2008-09-21|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=627701|
+|0.5|2008-08-21|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=621049|
+|0.4.1|2008-07-16|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=613764|
+|0.4|2008-05-27|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=602223|
+|0.3|2008-04-09|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=590937|
+|0.2|2008-04-05|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=590010|
+|0.1|2008-02-18|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=577472|
