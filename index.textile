@@ -13,7 +13,7 @@ Please note that libnifalcon only provides control functions for the falcon, and
 <h1>News</h1>
 {% for post in site.categories.blog limit:5 %}
 <div id="post">
-<div id="post_title"><span id="title_left"><h2>{{ post.date | date: "%Y-%m-%d" }}</h2></span><span id="title_right"><h2><a href="/{{ post.url }}">{{ post.title }}</a></h2></span></div><div id="post_content">{{ post.content }}</div>
+<div id="post_title"><span id="title_left"><h2>{{ post.date | date: "%Y-%m-%d" }}</h2></span><span id="title_right"><h2><a href="{{ post.url }}">{{ post.title }}</a></h2></span></div><div id="post_content">{{ post.content }}<BR><BR>{{ post.url }}</div>
 </div>
 {% endfor %}
 </div>
