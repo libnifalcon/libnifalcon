@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 project: libnifalcon
 title: New libnifalcon project website
 ---

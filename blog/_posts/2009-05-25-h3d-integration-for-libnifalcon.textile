@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 project: libnifalcon
 title: H3D API Integration for libnifalcon
 categories: projects
