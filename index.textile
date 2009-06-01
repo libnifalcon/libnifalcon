@@ -1,5 +1,5 @@
 ---
 layout: front
 project: libnifalcon
-title: Crossplatform, open source driver for the Novint Falcon
+title: Open source driver for the Novint Falcon
 ---
