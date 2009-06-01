@@ -1,19 +1,5 @@
 ---
-layout: default
+layout: front
 project: libnifalcon
 title: Crossplatform, open source driver for the Novint Falcon
 ---
-<div id="about">
-<h1>About</h1>
-libnifalcon is an open source, cross platform driver for the "Novint Falcon Haptic Device":http://home.novint.com. It provides communications and a kinematics model for the controller for all major operating systems. 
-
-Please note that libnifalcon only provides control functions for the falcon, and is not a haptics scene graph, like "H3D":http://www.h3d.org or "Chai3D":http://www.chai3d.org.
-</div>
-<div id="news">
-<h1>News</h1>
-{% for post in site.categories.blog limit:5 %}
-<div id="post">
-<div id="post_title"><span id="title_left"><h2>{{ post.date | date: "%Y-%m-%d" }}</h2></span><span id="title_right"><h2><a href="/{{ post.project }}{{ post.url }}">{{ post.title }}</a></h2></span></div><div id="post_content">{{ post.content }}</div>
-</div>
-{% endfor %}
-</div>
