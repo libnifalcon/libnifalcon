@@ -84,6 +84,8 @@ namespace libnifalcon
 		{
 			close();
 		}
+		libusb_free_transfer(in_transfer);
+		libusb_free_transfer(out_transfer);
 		libusb_exit(m_usbContext);
 		delete m_tv;
 		LOG_INFO("Destructing object");
@@ -106,6 +108,20 @@ namespace libnifalcon
 		LOG_INFO("Setting libusb debug level to 0");
 		libusb_set_debug(m_usbContext, 0);
 #endif
+		out_transfer = libusb_alloc_transfer(0);
+		if (!out_transfer)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			LOG_ERROR("Cannot allocate outbound transfer");
+			return false;
+		}
+		in_transfer = libusb_alloc_transfer(0);
+		if (!in_transfer)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			LOG_ERROR("Cannot allocate inbound transfer");
+			return false;
+		}
 
 	}
 
@@ -210,20 +226,6 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
 			return false;
 		}
-		out_transfer = libusb_alloc_transfer(0);
-		if (!out_transfer)
-		{
-			m_errorCode = FALCON_COMM_DEVICE_ERROR;
-			LOG_ERROR("Cannot allocate outbound transfer");
-			return false;
-		}
-		in_transfer = libusb_alloc_transfer(0);
-		if (!in_transfer)
-		{
-			m_errorCode = FALCON_COMM_DEVICE_ERROR;
-			LOG_ERROR("Cannot allocate inbound transfer");
-			return false;
-		}
 		if ((m_deviceErrorCode = libusb_control_transfer(m_falconDevice, SIO_RESET_REQUEST_TYPE, SIO_RESET_REQUEST, SIO_RESET_PURGE_RX, INTERFACE_ANY, NULL, 0, 1000)) != 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
@@ -253,9 +255,6 @@ namespace libnifalcon
 		}
 		m_isCommOpen = false;
 		reset();
-		libusb_free_transfer(in_transfer);
-		libusb_free_transfer(out_transfer);
-
 		if ((m_deviceErrorCode = libusb_release_interface(m_falconDevice, 0)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
