@@ -1,0 +1,4 @@
+Novint HDAL Firmware and Protocol Documentation
+===============================================
+Kyle Machulis <kyle@nonpolynomial.com>
+v1.0, June 6 2009
