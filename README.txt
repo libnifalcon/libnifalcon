@@ -10,6 +10,8 @@ http://sourceforge.net/users/kouellet/
 
 Contributions by 
 Jared Allen
+Edgar Berdahl
+Devanshi Shah
 Stephen Sinclair
 
 ===========
