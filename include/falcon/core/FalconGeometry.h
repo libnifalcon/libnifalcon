@@ -24,12 +24,12 @@ namespace libnifalcon
 
 	const static double a = 0.060; /*!< Distance from leg base to start of knee, in meters */
 	const static double b = 0.1025; /*!< Length of shin parallelogram side, in meters */
-	const static double c = 0.014; /*!< Length from shin connection point to end effector center, u component, in meters */
-	const static double d = .01125; /*!< Length of shin to end effector connection joint, in meters */
+	const static double c = 0.01443; /*!< Length from shin connection point to end effector center, u component, in meters */
+	const static double d = 0.01125; /*!< Length of shin to end effector connection joint, in meters */
 	const static double e = d; /*!< Length of knee to shin connection joint, in meters */
-	const static double f = -.025; /*!< Length from shin connection point to end effector center, v component, in meters */
-	const static double r = .037233758; /*!< Distance from fixed frame origin to leg base, u component, in meters */
-	const static double s = -.027330909; /*!< Distance from fixed frame origin to leg base, v component, in meters */
+	const static double f = -0.025; /*!< Length from shin connection point to end effector center, v component, in meters */
+	const static double r = 0.02309; /*!< Distance from fixed frame origin to leg base, u component, in meters */
+	const static double s = -0.0400; /*!< Distance from fixed frame origin to leg base, v component, in meters */
 
 	const static double PI = 3.14159265; /*!< PI Constant, to save having to include one */
 	const static double OFFSET_ANGLE = (PI/12); /*!< Offset of each axis from the desk plane (15 degrees) */
