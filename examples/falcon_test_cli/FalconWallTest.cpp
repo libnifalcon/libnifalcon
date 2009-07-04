@@ -58,7 +58,7 @@ void FalconWallTest::runFunction()
 		return;
 	}
 
-	boost::array<double, 3> force;
+	boost::array<double, 3> force = {0,0,0};
 
 	double dist = 10000;
 	int closest = -1, outside=3;
