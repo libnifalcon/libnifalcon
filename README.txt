@@ -24,6 +24,10 @@ libnifalcon provides basic functionality to connect to the falcon and load firmw
 
 Compilation directions are included in the INSTALL.txt file
 
+libnifalcon is now a supported device in the H3D Haptics Framework. More information on this is available at
+
+http://www.h3d.org
+
 =========================
 NovInt Falcon Information
 =========================
@@ -124,5 +128,5 @@ OSX
 ---
 
 - If you are using the falcon on OS X, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Mac causes it to work erractically.
-- As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. libnifalcon developers prefer libusb for the time being.
+- As of ftd2xx 0.1.4 for OS X, ftd2xx seems to have gotten decent stability on OS X. libnifalcon developers prefer libusb though.
 
