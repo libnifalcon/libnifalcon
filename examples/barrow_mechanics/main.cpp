@@ -9,13 +9,12 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 #include "falcon/core/FalconDevice.h"
-#include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
-#include "falcon/kinematic/stamper/JacobianMatrix.h"
 #include "falcon/kinematic/stamper/stamperUtils.h"
 #include "falcon/core/FalconGeometry.h"
 #include "falcon/gmtl/gmtl.h"
@@ -409,12 +408,12 @@ int main(int argc, char* argv[])
 		*/
 
 		//Y-Wall
-
+/*
 		if(offsetPos[1]<0.0)
 		{
 			force[1] = -offsetPos[1]*400;
 		}
-
+*/
 
 		//Z-Wall
 		/*
@@ -443,7 +442,7 @@ int main(int argc, char* argv[])
 
 		//Sphere
 
-		/*
+
 		double distance = sqrt(gmtl::dot(offsetPos,offsetPos));
 		if( distance<0.028  )
 		{
@@ -452,7 +451,7 @@ int main(int argc, char* argv[])
 			direction *= 0.028-distance;
 			force = direction*300.0;
 		}
-		*/
+
 
 		//Slope
 		/*
