@@ -61,7 +61,7 @@ bool initialise()
 	cout << "Connected Device Count: " << count << endl;
 
 	//Open the device number:
-	int deviceNum = 1;
+	int deviceNum = 0;
 	cout << "Attempting to open Falcon device:  " << deviceNum << endl;
 	if(!falcon.open(deviceNum))
 	{
@@ -135,7 +135,7 @@ bool initialise()
 	falcon.runIOLoop();
 
 	falcon.getFalconFirmware()->setHomingMode(true);
-	falcon.setFalconKinematic<libnifalcon::FalconKinematicStamper>();
+	//falcon.setFalconKinematic<libnifalcon::FalconKinematicStamper>();
 
 	return true;
 }
@@ -409,12 +409,12 @@ int main(int argc, char* argv[])
 		*/
 
 		//Y-Wall
-		/*
+
 		if(offsetPos[1]<0.0)
 		{
 			force[1] = -offsetPos[1]*400;
 		}
-		*/
+
 
 		//Z-Wall
 		/*
@@ -442,7 +442,8 @@ int main(int argc, char* argv[])
 		/*/
 
 		//Sphere
-		///*
+
+		/*
 		double distance = sqrt(gmtl::dot(offsetPos,offsetPos));
 		if( distance<0.028  )
 		{
@@ -451,7 +452,7 @@ int main(int argc, char* argv[])
 			direction *= 0.028-distance;
 			force = direction*300.0;
 		}
-		//*/
+		*/
 
 		//Slope
 		/*

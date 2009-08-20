@@ -1,7 +1,7 @@
 /***
  * @file FalconKinematicStamper.h
  * @brief IK and DK implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
- * @author Alastair Barrow / Kyle Machulis
+ * @author Kevin Ouellet (kouellet@users.sourceforge.net) / Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
@@ -13,8 +13,8 @@
 #define FALCONSTAMPERKINEMATIC_H
 
 #include "falcon/core/FalconKinematic.h"
-#include "falcon/kinematic/stamper/StamperUtils.h"
-#include "falcon/gmtl/gmtl.h"
+#include "falcon/kinematic/stamper/DirectKinematic.h"
+#include "falcon/kinematic/stamper/InverseKinematic.h"
 
 namespace libnifalcon
 {
@@ -44,6 +44,22 @@ namespace libnifalcon
 		 *
 		 */
 		void initialize();
+
+		/**
+		 * Returns the internal InverseKinematic object
+		 *
+		 *
+		 * @return InverseKinematic object
+		 */
+		StamperKinematicImpl::InverseKinematic* getInverseKinematic() { return &m_inv; }
+
+		/**
+		 * Returns the internal DirectKinematic object
+		 *
+		 *
+		 * @return DirectKinematic object
+		 */
+		StamperKinematicImpl::DirectKinematic* getDirectKinematic() { return &m_dir; }
 
 		/**
 		 * Given a caretesian position (in meters), and force vector (in newtons),
@@ -91,10 +107,9 @@ namespace libnifalcon
 			origin[2] = 0.150;
 		}
 
-		void FK(const gmtl::Vec3d& theta0, gmtl::Vec3d& pos);
-		gmtl::Matrix33d jacobian(const StamperKinematicImpl::Angle& angles);
-		void IK(StamperKinematicImpl::Angle& angles, const gmtl::Vec3d& worldPosition);
-		gmtl::Vec3d pos_; //Lets assume the device starts off roughly in the centre of the workspace
+	protected:
+		StamperKinematicImpl::InverseKinematic m_inv; /**< Internal inverse kinematics representation */
+		StamperKinematicImpl::DirectKinematic m_dir; /**< Internal direct kinematics representation *///@}
 	};
 }
 
