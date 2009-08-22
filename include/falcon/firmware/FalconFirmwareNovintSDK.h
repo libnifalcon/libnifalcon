@@ -21,7 +21,8 @@ namespace libnifalcon
 	{
 	public:
 		FalconFirmwareNovintSDK();
-		~FalconFirmwareNovintSDK();
+		virtual ~FalconFirmwareNovintSDK();
+		virtual std::string getRawReturn();
 		bool runIOLoop();
 		int32_t getGripInfoSize() { return 1; }
 		//Things I am going to hell for, #8926:
@@ -33,7 +34,7 @@ namespace libnifalcon
 
 		uint8_t m_gripInfo;
 		uint8_t m_rawData[128];
-		uint8_t m_rawInput[16], m_rawOutput[16], m_rawOutputInternal[16];
+		uint8_t m_rawInput[17], m_rawOutput[17], m_rawOutputInternal[17];
 
 		unsigned int m_currentOutputIndex;
 		unsigned int m_rawDataSize;

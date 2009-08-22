@@ -217,6 +217,8 @@ namespace libnifalcon
 			m_hasWritten = false;
 		}
 
+		virtual std::string getRawReturn() { return std::string(); }
+		
 		uint64_t getLoopCount() { return m_loopCount; }
 	protected:
 		boost::shared_ptr<FalconComm> m_falconComm; /**< Communications object for I/O */

@@ -20,15 +20,22 @@ namespace libnifalcon
 	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
 		m_currentOutputIndex(0),
 		INIT_LOGGER("FalconFirmwareNovintSDK")
-
 	{
+		//Make sure we're pretty much always safe to print these
+		memset(m_rawInput, 0, 17);
+		memset(m_rawOutput, 0, 17);
+		memset(m_rawOutputInternal, 0, 17);
 	}
 
 	FalconFirmwareNovintSDK::~FalconFirmwareNovintSDK()
 	{
 	}
 
-
+	std::string FalconFirmwareNovintSDK::getRawReturn()
+	{
+		return (char*)m_rawOutput;
+	}
+	
 	bool FalconFirmwareNovintSDK::formatOutput()
 	{
 		bool ret_val = false;
