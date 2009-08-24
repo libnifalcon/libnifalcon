@@ -77,6 +77,8 @@ OPTION_LOG4CXX(OFF LIBNIFALCON_REQ_LIBS)
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
 OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
+OPTION(BUILD_SWIG_BINDINGS "Build Java/Python bindings for libnifalcon" OFF)
+OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 
 ######################################################################################
 # Project specific package finding
@@ -141,7 +143,12 @@ SET(LIBNIFALCON_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(examples)
+IF(BUILD_EXAMPLES)
+  ADD_SUBDIRECTORY(examples)
+ENDIF(BUILD_EXAMPLES)
+IF(BUILD_SWIG_BINDINGS)
+  ADD_SUBDIRECTORY(lang/swig)
+ENDIF(BUILD_SWIG_BINDINGS)
 
 # pkg-config (use the CPack information)
 FIND_PACKAGE(PkgConfig)
