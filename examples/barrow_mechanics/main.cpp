@@ -4,7 +4,7 @@
 //
 // Using LibniFalcon Beta 4
 //
-// Alastair Barrow 16/08/09
+// Alastair Barrow 26/08/09
 
 
 #include <iostream>
@@ -212,7 +212,7 @@ void IK(Angle& angles, const gmtl::Vec3d& worldPosition)
 }
 
 ////////////////////////////////////////////////////
-/// The velocity Jacobian where theta=J*Vel and Torque=J'*Force
+/// The velocity Jacobian where Vel=J*theta and Torque=J'*Force
 /// Derivation in a slightly different style to Stamper
 /// and may result in a couple of sign changes due to the configuration
 /// of the Falcon
@@ -220,36 +220,41 @@ gmtl::Matrix33d jacobian(const Angle& angles)
 {
 
 	//Naming scheme:
-	//Jx1 = velocity in x due to rotational velocity of joint 1 
+	//Jx1 = rotational velocity of joint 1 due to linear velocity in x
 
 	gmtl::Matrix33d J;
-
 	
 	//Arm1:
-	double den = libnifalcon::a*sin(angles.theta3[0])*(-sin(angles.theta1[0])*cos(angles.theta2[0])+sin(angles.theta2[0])*cos(angles.theta1[0]));
+	double den = -libnifalcon::a*sin(angles.theta3[0])*(sin(angles.theta1[0])*cos(angles.theta2[0])-sin(angles.theta2[0])*cos(angles.theta1[0]));
 
-	double Jx0 = (cos(phy[0])*cos(angles.theta2[0])*sin(angles.theta3[0])-sin(phy[0])*cos(angles.theta3[0]))/den;
-	double Jy0 = (sin(phy[0])*cos(angles.theta2[0])*sin(angles.theta3[0])+cos(phy[0])*cos(angles.theta3[0]))/den;
-	double Jz0 = sin(angles.theta2[0])*sin(angles.theta3[0])/den;
+	double Jx0 = cos(phy[0])*cos(angles.theta2[0])*sin(angles.theta3[0])/den-sin(phy[0])*cos(angles.theta3[0])/den;
+	double Jy0 = sin(phy[0])*cos(angles.theta2[0])*sin(angles.theta3[0])/den+cos(phy[0])*cos(angles.theta3[0])/den;
+	double Jz0 = (sin(angles.theta2[0])* sin(angles.theta2[0]))/(den);
 
 	//Arm2:
-	den = libnifalcon::a*sin(angles.theta3[1])*(-sin(angles.theta1[1])*cos(angles.theta2[1])+sin(angles.theta2[1])*cos(angles.theta1[1]));
+	den = -libnifalcon::a*sin(angles.theta3[1])*(sin(angles.theta1[1])*cos(angles.theta2[1])-sin(angles.theta2[1])*cos(angles.theta1[1]));
 
-	double Jx1 = (cos(phy[1])*cos(angles.theta2[1])*sin(angles.theta3[1])-sin(phy[1])*cos(angles.theta3[1]))/den;
-	double Jy1 = (sin(phy[1])*cos(angles.theta2[1])*sin(angles.theta3[1])+cos(phy[1])*cos(angles.theta3[1]))/den;
-	double Jz1 = sin(angles.theta2[1])*sin(angles.theta3[1])/den;
+	double Jx1 = cos(phy[1])*cos(angles.theta2[1])*sin(angles.theta3[1])/den-sin(phy[1])*cos(angles.theta3[1])/den;
+	double Jy1 = sin(phy[1])*cos(angles.theta2[1])*sin(angles.theta3[1])/den+cos(phy[1])*cos(angles.theta3[1])/den;
+	double Jz1 = (sin(angles.theta2[1])* sin(angles.theta2[1]))/(den);
 
 	//Arm3:
-	den = libnifalcon::a*sin(angles.theta3[2])*(-sin(angles.theta1[2])*cos(angles.theta2[2])+sin(angles.theta2[2])*cos(angles.theta1[2]));
+	den = -libnifalcon::a*sin(angles.theta3[2])*(sin(angles.theta1[2])*cos(angles.theta2[2])-sin(angles.theta2[2])*cos(angles.theta1[2]));
 
-	double Jx2 = (cos(phy[2])*cos(angles.theta2[2])*sin(angles.theta3[2])-sin(phy[2])*cos(angles.theta3[2]))/den;
-	double Jy2 = (sin(phy[2])*cos(angles.theta2[2])*sin(angles.theta3[2])+cos(phy[2])*cos(angles.theta3[2]))/den;
-	double Jz2 = sin(angles.theta2[2])*sin(angles.theta3[2])/den;
+	double Jx2 = cos(phy[2])*cos(angles.theta2[2])*sin(angles.theta3[2])/den-sin(phy[2])*cos(angles.theta3[2])/den;
+	double Jy2 = sin(phy[2])*cos(angles.theta2[2])*sin(angles.theta3[2])/den+cos(phy[2])*cos(angles.theta3[2])/den;
+	double Jz2 = (sin(angles.theta2[2])* sin(angles.theta2[2]))/(den);
+
 	
-	
-	J(0,0) = Jx0; J(0,1) = Jx1; J(0,2) = Jx2;
-	J(1,0) = Jy0; J(1,1) = Jy1; J(1,2) = Jy2;
-	J(2,0) = Jz0; J(2,1) = Jz1; J(2,2) = Jz2;
+	J(0,0) = Jx0; J(0,1) = Jy0; J(0,2) = Jz0;
+	J(1,0) = Jx1; J(1,1) = Jy1; J(1,2) = Jz1;
+	J(2,0) = Jx2; J(2,1) = Jy2; J(2,2) = Jz2;
+
+	J.setState(J.FULL);
+	invert(J);
+
+	//ToDo: Check to see if Jacobian inverted properly.
+	//If not we need to take action.
 
 	return J;
 
@@ -265,13 +270,14 @@ void FK(const gmtl::Vec3d& theta0, gmtl::Vec3d& pos)
 
 	Angle angles;
 	gmtl::Vec3d previousPos(pos);
+	gmtl::Vec3d currentPos(pos);
 	gmtl::Matrix33d J;
 	gmtl::Vec3d delta;
 
-	double targetError = 0.002;
+	double targetError = 0.01;
 	double previousError = 10000.0;
 	double gradientAdjustment = 0.5;
-	int maxTries = 20;
+	int maxTries = 15;
 
 	bool done = 0;
 	for(int i=0; i<maxTries; i++)
@@ -290,14 +296,6 @@ void FK(const gmtl::Vec3d& theta0, gmtl::Vec3d& pos)
 		delta[0] = theta0[0]-angles.theta1[0];
 		delta[1] = theta0[1]-angles.theta1[1];
 		delta[2] = theta0[2]-angles.theta1[2];
-	
-		//Before we invert the Jacobian, set it's type:
-		J.setState(J.FULL);
-		//Invert the jacobian:
-		invert(J);
-
-		//ToDo: Check to see if Jacobian inverted properly.
-		//If not we need to take action.
 
 		//Now use the Jacobian to tell us the direction:
 		delta = J*delta;
@@ -309,22 +307,29 @@ void FK(const gmtl::Vec3d& theta0, gmtl::Vec3d& pos)
 		//simply start with a sensible step size and reduce it 
 		//if necessary to avoid oscillation about the target error.
 
-		//Take the step size in to account:
+		//Take the step size into account:
 		delta*=gradientAdjustment;
 		//And move the position guess:
-		previousPos += delta;
+		currentPos = previousPos + delta;
 			
 		//Let's see if we have got close enough to the target:
-		double error = sqrt(gmtl::dot(delta,delta));
+		//double error = sqrt(gmtl::dot(delta,delta));
+		delta[0] = theta0[0]-angles.theta1[0];
+		delta[1] = theta0[1]-angles.theta1[1];
+		delta[2] = theta0[2]-angles.theta1[2];
+		double error = dot(delta,delta);
+		error = sqrt( error );
+		previousPos = currentPos;
+
 		if(error<targetError)
 		{
 			//Error is low enough so return the current position estimate
 			pos = previousPos;
+			//cout << i << endl;
 			return;
 		}
-		//Error isn't small enough yet, see if we have over shot or just not
-		//getting anywhere:
-		if( (error>previousError) || ( abs(error-previousError)<targetError ) )
+		//Error isn't small enough yet, see if we have over shot 
+		if( (error>previousError) )
 		{
 			//Whoops, over shot, reduce the stepsize next time:
 			gradientAdjustment /= 2.0;
@@ -365,12 +370,13 @@ int main(int argc, char* argv[])
 		encoderAngles[2] = falcon.getFalconKinematic()->getTheta(encoderPos[2]);
 		encoderAngles *= 0.0174532925;	//Convert to radians
 
+		
 
 		////////////////////////////////////
 		//Forward Kinematics
 		FK(encoderAngles, pos);
 
-		//cout << pos << endl;		
+		//cout << pos << endl;	
 
 		/////////////////////////////////////////
 		//Inverse kinematics:
@@ -378,12 +384,10 @@ int main(int argc, char* argv[])
 
 		IK(angles, pos);
 
-
 		////////////////////////////////////////
 		//Jacobian:
 		gmtl::Matrix33d J;
 		J = jacobian(angles);
-
 
 		//////////////////////////////////////////////
 		//
@@ -403,23 +407,23 @@ int main(int argc, char* argv[])
 		/*
 		if(offsetPos[0]>0.0)
 		{
-			force[0] = -offsetPos[0]*400;
+			force[0] = -offsetPos[0]*800;
 		}
 		*/
 
 		//Y-Wall
-/*
+		/*
 		if(offsetPos[1]<0.0)
 		{
-			force[1] = -offsetPos[1]*400;
+			force[1] = -offsetPos[1]*800;
 		}
-*/
+		*/
 
 		//Z-Wall
 		/*
 		if(offsetPos[2]<0.0)
 		{
-			force[2] = -offsetPos[2]*400;
+			force[2] = -offsetPos[2]*800;
 		}
 		*/
 
@@ -437,32 +441,31 @@ int main(int argc, char* argv[])
 			force[2] = -(offsetPos[2]+0.02);
 		if( offsetPos[2]>0.02 )
 			force[2] = -(offsetPos[2]-0.02);
-			force *= 400.0;
-		/*/
+			force *= 800.0;
+		*/
 
 		//Sphere
-
-
+		/*
 		double distance = sqrt(gmtl::dot(offsetPos,offsetPos));
 		if( distance<0.028  )
 		{
 			gmtl::Vec3d direction = offsetPos;
 			direction /= distance;
 			direction *= 0.028-distance;
-			force = direction*300.0;
+			force = direction*800.0;
 		}
-
+		*/
 
 		//Slope
-		/*
+		
 		gmtl::Vec3d normal(0.70711,0.70711,0.0);
 		double D = dot(normal,offsetPos);
 		
 		if(D<0.0)
 		{
-			force = -D*normal*400.0;
+			force = -D*normal*800.0;
 		}
-		*/
+		
 		
 		
 		
@@ -499,10 +502,8 @@ int main(int argc, char* argv[])
 		}
 		
 
-		//cout << torque << endl;
-
 		//Convert torque to motor voltages:
-		torque *= 100.0;
+		torque *= 10000.0;
 		boost::array<int, 3> enc_vec;
 		enc_vec[0] = -torque[0];
 		enc_vec[1] = -torque[1];
