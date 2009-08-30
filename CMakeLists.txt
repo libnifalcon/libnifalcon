@@ -9,10 +9,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
 IF(EXISTS "${CMAKE_SOURCE_DIR}/../build_sys/cmake")
   SET(BUILDSYS_CMAKE_DIR "${CMAKE_SOURCE_DIR}/../build_sys/cmake")
   MESSAGE(STATUS "Using outside cmake_modules directory ${BUILDSYS_CMAKE_DIR}")
-ELSEIF(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules")
-  SET(BUILDSYS_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
+ELSEIF(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/cmake")
+  SET(BUILDSYS_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake_modules/cmake")
   MESSAGE(STATUS "Using cmake_modules git submodule ${BUILDSYS_CMAKE_DIR}")
-ELSE(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules")
+ELSE(EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/cmake")
   MESSAGE(FATAL_ERROR 
     "Cannot find cmake_modules directory for np labs project functions.\n"
     "Make sure you've either put the cmake_modules directory in the same root as your repository directory, or that you've used the cmake_modules submodule (git submodule update --init).\n"
