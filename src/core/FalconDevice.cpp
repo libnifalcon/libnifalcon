@@ -10,6 +10,13 @@
  */
 
 #include "falcon/core/FalconDevice.h"
+#if defined(LIBNIFALCON_USE_LIBUSB)
+#include "falcon_comm_impl/comm/FalconCommLibUSB.h"
+#elif defined(LIBNIFALCON_USE_LIBFTD2XX)
+#include "falcon_comm_impl/comm/FalconCommFTD2XX.h"
+#else
+#error "Cannot build FalconDevice class without default comm core"
+#endif
 #include <iostream>
 
 namespace libnifalcon
@@ -19,6 +26,11 @@ namespace libnifalcon
 		m_errorCount(0),
 		INIT_LOGGER("FalconDevice")
 	{
+#if defined(LIBNIFALCON_USE_LIBUSB)
+		setFalconComm<FalconCommLibUSB>();
+#elif defined(LIBNIFALCON_USE_LIBFTD2XX)
+		setFalconComm<FalconCommFTD2XX>();
+#endif
 	}
 
     FalconDevice::~FalconDevice()

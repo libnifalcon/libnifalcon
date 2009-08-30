@@ -15,8 +15,6 @@
 
 #if defined(LIBUSB)
 #include "falcon/comm/FalconCommLibUSB.h"
-#elif defined(LIBFTDI)
-#include "falcon/comm/FalconCommLibFTDI.h"
 #elif defined(LIBFTD2XX)
 #include "falcon/comm/FalconCommFTD2XX.h"
 #endif
@@ -31,12 +29,8 @@ using namespace libnifalcon;
 	FalconDeviceBridge::FalconDeviceBridge()
 	{
 		//Fall back through the default device chain
-		std::cout << "Running Constructor!" << std::endl;
 #if defined(LIBUSB)
-		std::cout << "Creating LIBUSB comms!" << std::endl;
 		setFalconComm<FalconCommLibUSB>();
-#elif defined(LIBFTDI)
-		setFalconComm<FalconCommLibFTDI>();
 #elif defined(LIBFTD2XX)
 		setFalconComm<FalconCommFTD2XX>();
 #else

@@ -9,7 +9,7 @@
  *
  */
 
-#include "falcon/comm/FalconCommLibUSB.h"
+#include "falcon_comm_impl/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -74,7 +74,6 @@ namespace libnifalcon
 		m_tv = new timeval;
 		m_tv->tv_sec = 0;
 		m_tv->tv_usec = 100;
-		m_requiresPoll = true;
 		initLibUSB();
 	}
 

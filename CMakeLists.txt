@@ -31,29 +31,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 ######################################################################################
-# Macro for setting up defines for communications libraries
-######################################################################################
-
-MACRO(LIBNIFALCON_COMM_VAR_SETUP)
-  LIST(APPEND BUILDSYS_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP})
-  IF(LIBUSB_1_FOUND)
-    LIST(APPEND BUILDSYS_COMM_TYPES LIBUSB)
-    LIST(APPEND BUILDSYS_EXE_CPP_DEFINES -DLIBUSB)
-    LIST(APPEND BUILDSYS_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libusb ${LIBUSB_1_LIBRARIES}) 
-  ENDIF(LIBUSB_1_FOUND)
-
-  IF(LIBFTDI_FOUND)
-    LIST(APPEND BUILDSYS_COMM_TYPES LIBFTDI)
-    LIST(APPEND BUILDSYS_EXE_CPP_DEFINES -DLIBFTDI)
-    LIST(APPEND BUILDSYS_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_libftdi ${LIBFTDI_LIBRARIES}) 
-  ELSEIF(LIBFTD2XX_FOUND)
-    LIST(APPEND BUILDSYS_COMM_TYPES LIBFTD2XX)
-    LIST(APPEND BUILDSYS_EXE_CPP_DEFINES -DLIBFTD2XX)
-    LIST(APPEND BUILDSYS_EXE_CPP_LINK_LIBS ${LIBNIFALCON_CPP_COMM_PREFIX}_ftd2xx ${LIBFTD2XX_LIBRARIES})
-  ENDIF(LIBFTDI_FOUND)
-ENDMACRO(LIBNIFALCON_COMM_VAR_SETUP)
-
-######################################################################################
 # Project declaration and options
 ######################################################################################
 
@@ -75,7 +52,6 @@ OPTION_GPROF(OFF)
 #Project specific options
 
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
-OPTION(LIBUSB_DEBUG "For LibFTDI debugging - have LibUSB spam debug messages to stdout/stderr (VERY SPAMMY)" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
 OPTION(BUILD_SWIG_BINDINGS "Build Java/Python bindings for libnifalcon" OFF)
 OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
@@ -87,20 +63,23 @@ OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 #Find communications libraries
 IF(WIN32 OR FORCE_FTD2XX_BUILD)
   FIND_PACKAGE(libftd2xx)
+  IF(LIBFTD2XX_FOUND)
+    INCLUDE_DIRECTORIES(${LIBFTD2XX_INCLUDE_DIRS})
+    SET(LIBNIFALCON_REQ_LIBS ${LIBFTD2XX_LIBRARIES})
+  ENDIF(LIBFTD2XX_FOUND)
 ENDIF(WIN32 OR FORCE_FTD2XX_BUILD)
 
 IF(NOT LIBFTD2XX_FOUND)
-  FIND_PACKAGE(libusb)
-  FIND_PACKAGE(libftdi)
   FIND_PACKAGE(libusb-1.0)
   IF(LIBUSB_1_FOUND)
-    INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIRS})
+    SET(LIBNIFALCON_REQ_LIBS ${LIBUSB_1_LIBRARIES})
   ENDIF(LIBUSB_1_FOUND)
 ENDIF(NOT LIBFTD2XX_FOUND)
 
-IF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-  MESSAGE(FATAL_ERROR "Either ftd2xx, libftdi, or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
-ENDIF(NOT LIBFTDI_FOUND AND NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
+IF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
+  MESSAGE(FATAL_ERROR "Either ftd2xx or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
+ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
 
 #Find boost, used all over the place
 SET(Boost_USE_MULTITHREADED ON)
@@ -119,7 +98,7 @@ ENDIF(NOT Boost_FOUND)
 
 SET(LIBNIFALCON_MAJOR_VERSION 1)
 SET(LIBNIFALCON_MINOR_VERSION 0)
-SET(LIBNIFALCON_BUILD_VERSION beta4)
+SET(LIBNIFALCON_BUILD_VERSION 0)
 
 # BUILDSYS_CPACK_INFO(
 #   NAME "libnifalcon"
@@ -135,11 +114,24 @@ SET(LIBNIFALCON_VERSION ${LIBNIFALCON_MAJOR_VERSION}.${LIBNIFALCON_MINOR_VERSION
 
 #library name definitions
 
-SET(LIBNIFALCON_CPP "nifalcon")
-SET(LIBNIFALCON_CPP_COMM_PREFIX "nifalcon_comm")
-SET(LIBNIFALCON_CPP_CLI_BASE "nifalcon_cli_base")
-SET(LIBNIFALCON_CPP_BOOST_THREAD "nifalcon_device_boost_thread")
-SET(LIBNIFALCON_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include")
+CREATE_LIBRARY_LINK_NAME(nifalcon)
+CREATE_LIBRARY_LINK_NAME(nifalcon_cli_base)
+CREATE_LIBRARY_LINK_NAME(nifalcon_device_boost_thread)
+
+SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+
+INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
+
+#If we build libusb staticly on apple, we need the proper frameworks
+IF(BUILD_STATIC AND APPLE)
+  LIST(APPEND LIBNIFALCON_EXE_LINK_LIBS "-framework IOKit" "-framework CoreFoundation")
+ENDIF(BUILD_STATIC AND APPLE)
+
+LIST(APPEND LIBNIFALCON_EXE_LINK_LIBS 
+  ${libnifalcon_LIBRARY}
+  ${LIBNIFALCON_REQ_LIBS}
+  )
 
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
@@ -163,10 +155,6 @@ ENDIF(BUILD_SWIG_BINDINGS)
 #     set(PC_REQUIRES "${PC_REQUIRES}libusb-1.0 ")
 #     set(PC_LINK_FLAGS "${PC_LINK_FLAGS}-lnifalcon_comm_libusb ")
 #   endif(LIBUSB_1_FOUND)
-#   if(LIBFTDI_FOUND)
-#     set(PC_REQUIRES "${PC_REQUIRES}libftdi ")
-#     set(PC_LINK_FLAGS "${PC_LINK_FLAGS}-lnifalcon_comm_libftdi ")
-#   endif(LIBFTDI_FOUND)
 
 #   set(PC_LINK_FLAGS "${lib${PC_LIBRARY_NAME}_LINK_FLAGS} ${PC_LINK_FLAGS}")
 #   set(PC_LINK_FLAGS "-l${PC_LIBRARY_NAME} ${PC_LINK_FLAGS}")

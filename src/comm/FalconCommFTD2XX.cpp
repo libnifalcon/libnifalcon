@@ -9,9 +9,9 @@
  *
  */
 
-#include "falcon/comm/FalconCommFTD2XX.h"
+#include "falcon_comm_impl/comm/FalconCommFTD2XX.h"
 
-#ifdef FTD2XX_WINDOWS
+#ifdef WIN32
 #include <windows.h>
 #else
 #include <WinTypes.h>

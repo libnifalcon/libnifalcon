@@ -38,7 +38,6 @@ namespace libnifalcon
 		 */
 		FalconComm() :
 			m_isCommOpen(false),
-			m_requiresPoll(false),
 			m_hasBytesAvailable(false),
 			m_bytesAvailable(0)
 		{}
@@ -154,7 +153,6 @@ namespace libnifalcon
 
 		virtual void reset() {}
 
-		bool requiresPoll() { return m_requiresPoll; }
 		bool hasBytesAvailable() { return m_hasBytesAvailable; }
 		unsigned int getBytesAvailable() { return m_bytesAvailable; }
 		virtual void setBytesAvailable(unsigned int b) { m_bytesAvailable = b; }
