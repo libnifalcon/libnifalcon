@@ -44,7 +44,7 @@ BUILDSYS_BUILD_EXE(
 
 
 ######################################################################################
-# Build function for falcon_test_cli
+# Build function for falcon_led
 ######################################################################################
 
 #Can't compile without program options
@@ -94,3 +94,36 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     )
 ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
 
+######################################################################################
+# Build function for falcon_mouse
+######################################################################################
+
+IF(WIN32)
+  SET(MOUSE_SRCS falcon_mouse/falcon_mouse.cpp falcon_mouse/falcon_mouse_win.cpp)
+  SET(MOUSE_LINK_LIBS ${LIBNIFALCON_EXE_PO_LINK_LIBS})
+ELSEIF(APPLE)
+  SET(MOUSE_SRCS falcon_mouse/falcon_mouse.cpp falcon_mouse/falcon_mouse_osx.cpp)
+  SET(MOUSE_LINK_LIBS ${LIBNIFALCON_EXE_PO_LINK_LIBS})
+  SET(MOUSE_LINK_FLAGS "-framework Carbon -framework ApplicationServices")
+ELSEIF(UNIX)
+  FIND_PACKAGE(X11)
+  IF(X11_FOUND AND X11_XTest_LIB)
+	INCLUDE_DIRECTORIES(${X11_INCLUDE_DIR})
+	SET(MOUSE_SRCS falcon_mouse/falcon_mouse.cpp falcon_mouse/falcon_mouse_x11.cpp)      
+	SET(MOUSE_LINK_LIBS ${LIBNIFALCON_EXE_PO_LINK_LIBS} ${X11_LIBRARIES} ${X11_XTest_LIB}) 
+  ELSE(X11_FOUND AND X11_XTest_LIB)
+	MESSAGE(STATUS "Not compiling falcon_mouse example - X11 compiling requires the XTest library")
+  ENDIF(X11_FOUND AND X11_XTest_LIB)
+ENDIF(WIN32)
+
+IF(MOUSE_SRCS)
+  BUILDSYS_BUILD_EXE(
+    NAME falcon_mouse
+    SOURCES "${MOUSE_SRCS}" 
+    LINK_LIBS "${MOUSE_LINK_LIBS}" 
+    LINK_FLAGS "${MOUSE_LINK_FLAGS}" 
+    CXX_FLAGS FALSE
+    DEPENDS ${libnifalcon_LIBRARY}_DEPEND
+    SHOULD_INSTALL TRUE
+  )
+ENDIF(MOUSE_SRCS)
