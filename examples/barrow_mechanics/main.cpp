@@ -21,8 +21,6 @@
 
 #if defined(LIBUSB)
 #include "falcon/comm/FalconCommLibUSB.h"
-#elif defined(LIBFTDI)
-#include "falcon/comm/FalconCommLibFTDI.h"
 #elif defined(LIBFTD2XX)
 #include "falcon/comm/FalconCommFTD2XX.h"
 #endif
@@ -44,9 +42,6 @@ bool initialise()
 #if defined(LIBUSB)
 	std::cout << "Running libusb test" << std::endl;
 	falcon.setFalconComm<FalconCommLibUSB>();
-#elif defined(LIBFTDI)
-	std::cout << "Running libftdi test" << std::endl;
-	falcon.setFalconComm<FalconCommLibFTDI>();
 #elif defined(LIBFTD2XX)
 	std::cout << "Running ftd2xx test" << std::endl;
 	falcon.setFalconComm<FalconCommFTD2XX>();

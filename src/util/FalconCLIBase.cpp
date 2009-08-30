@@ -17,9 +17,6 @@
 #ifdef LIBFTD2XX
 #include "falcon/comm/FalconCommFTD2XX.h"
 #endif
-#ifdef LIBFTDI
-#include "falcon/comm/FalconCommLibFTDI.h"
-#endif
 #ifdef LIBUSB
 #include "falcon/comm/FalconCommLibUSB.h"
 #endif
@@ -72,9 +69,7 @@ namespace libnifalcon
 #if defined(LIBUSB)
 				("libusb", "use libusb-1.0 based driver")
 #endif
-#if defined(LIBFTDI)
-				("libftdi", "use libftdi based driver")
-#elif defined(LIBFTD2XX)
+#if defined(LIBFTD2XX)
 				("ftd2xx", "use ftd2xx based driver")
 #endif
 				;
@@ -155,13 +150,11 @@ namespace libnifalcon
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 
 		//First off, see if we have a communication method
-		if(m_varMap.count("libftdi") && m_varMap.count("ftd2xx"))
+		if(m_varMap.count("libusb") &&  m_varMap.count("ftd2xx"))
 		{
-			std::cout << "Error: can only use one comm method. Choose either libftdi or ftd2xx, depending on which is available." << std::endl;
+			std::cout << "Error: can only use one comm method. Choose either libusb or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
-
-		//This is an either/or choice, since we have problems with static linking and ftd2xx. Prefer libusb1, then libftdi. Thanks for the static linking against old libusb binaries, FTDI!
 
 #if defined(LIBUSB)
 		else if (m_varMap.count("libusb"))
@@ -170,13 +163,7 @@ namespace libnifalcon
 			m_falconDevice->setFalconComm<FalconCommLibUSB>();
 		}
 #endif
-#if defined(LIBFTDI)
-		else if (m_varMap.count("libftdi"))
-		{
-			std::cout << "Setting up libftdi device" << std::endl;
-			m_falconDevice->setFalconComm<FalconCommLibFTDI>();
-		}
-#elif defined(LIBFTD2XX)
+#if defined(LIBFTD2XX)
 		else if (m_varMap.count("ftd2xx"))
 		{
 			std::cout << "Setting up ftd2xx device" << std::endl;

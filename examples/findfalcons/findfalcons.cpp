@@ -16,8 +16,6 @@
 #include "falcon/core/FalconDevice.h"
 #if defined(LIBUSB)
 #include "falcon/comm/FalconCommLibUSB.h"
-#elif defined(LIBFTDI)
-#include "falcon/comm/FalconCommLibFTDI.h"
 #elif defined(LIBFTD2XX)
 #include "falcon/comm/FalconCommFTD2XX.h"
 #endif
@@ -74,9 +72,6 @@ void runFalconTest()
 #if defined(LIBUSB)
 	std::cout << "Running libusb test" << std::endl;
 	dev.setFalconComm<FalconCommLibUSB>();
-#elif defined(LIBFTDI)
-	std::cout << "Running libftdi test" << std::endl;
-	dev.setFalconComm<FalconCommLibFTDI>();
 #elif defined(LIBFTD2XX)
 	std::cout << "Running ftd2xx test" << std::endl;
 	dev.setFalconComm<FalconCommFTD2XX>();
