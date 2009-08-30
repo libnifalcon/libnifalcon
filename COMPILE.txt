@@ -26,7 +26,7 @@ Test Machines
 
 All NP labs libraries are compiled and tested on the following platforms:
 
-- Windows (XP Pro, mingw (gcc 4.3.3 TDM) and/or Visual Studio 2008)
+- Windows (XP Pro, mingw (gcc 4.4.0 TDM) and/or Visual Studio 2008)
 - OS X (10.5, Intel, gcc 4)
 - Linux (Ubuntu 8.04, gcc 4.3)
 

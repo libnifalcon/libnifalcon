@@ -1,9 +1,11 @@
 Kyle Machulis
 http://www.nonpolynomial.com
-http://sourceforge.net/users/kmachulis/
+http://www.github.com/qdot/
 
 Kevin Ouellet
 http://sourceforge.net/users/kouellet/
+
+Alastair Barrow
 
 Jared Allen
 http://sourceforge.net/users/jared_allen/

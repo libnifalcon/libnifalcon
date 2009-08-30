@@ -1,7 +1,14 @@
 libnifalcon ChangeLog
 =====================
-Numbers refer to bug listings for libnifalcon bug tracking, at https://www.assembla.com/spaces/libnifalcon/tickets
+Numbers refer to bug listings for libnifalcon bug tracking system
 
+2009-08-30 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1.0
+	* Removed libftdi support since libusb 1.0 works on all platforms and libftdi is the only library using non-polling updates
+	* Upgraded build system support to work with new Compily Buildd system (http://www.github.com/qdot/compily_buildd)
+	* Integrated Alastair Barrow's new kinematics core based on the RL Stamper paper
+	* Added SWIG support with python and java builds and examples
+	* Decided it was time to kick out of the beta phase and just be done with v1.0.
 2009-05-17 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 4
 	* Fixed include install directories (#15)
