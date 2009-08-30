@@ -19,7 +19,7 @@ namespace libnifalcon
 	class FalconCommFTD2XX : public FalconComm
 	{
 	public:
-		FalconCommFTD2XX() { m_requiresPoll = true; }
+		FalconCommFTD2XX() { }
 		virtual ~FalconCommFTD2XX();
 		virtual bool getDeviceCount(unsigned int& );
 		virtual void poll();

@@ -123,37 +123,21 @@ namespace libnifalcon
 			return false;
 		}
 
-		if(m_falconComm->requiresPoll())
-		{
-			m_falconComm->poll();
-		}
+		m_falconComm->poll();
 
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
-			if(m_falconComm->requiresPoll())
+			m_rawDataSize = m_falconComm->getBytesAvailable();
+
+			//We somehow just got modem bytes back. Kick out another read.
+			if(m_rawDataSize == 0)
 			{
-				m_rawDataSize = m_falconComm->getBytesAvailable();
-				//std::cout << "IORead " << m_rawDataSize << std::endl;
-				//We somehow just got modem bytes back. Kick out another read.
-				if(m_rawDataSize == 0)
-				{
-					m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize);
-					return false;
-				}
-			}
-			else
-			{
-				//hack to make libftdi work for the time being
-				//always read the maximum amount available from the endpoint to make sure we don't lose anything
-				m_rawDataSize = 16;
+				m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize);
+				return false;
 			}
 			if(m_falconComm->read((uint8_t*)m_rawData, m_rawDataSize))
 			{
-				if(!m_falconComm->requiresPoll())
-				{
-					m_rawDataSize = m_falconComm->getLastBytesRead();
-				}
 				formatOutput();
 				m_hasWritten = false;
 				if(m_rawDataSize <= 0) read_successful = false;

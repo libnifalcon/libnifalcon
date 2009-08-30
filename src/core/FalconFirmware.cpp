@@ -170,33 +170,19 @@ namespace libnifalcon
 	bool FalconFirmware::isFirmwareLoaded()
 	{
 		resetFirmwareState();
-		if(m_falconComm->requiresPoll())
+		for(unsigned int j = 0; j < 10; ++j)
 		{
-			for(unsigned int j = 0; j < 10; ++j)
+			for(unsigned int i = 0; i < 100; ++i)
 			{
-				for(unsigned int i = 0; i < 100; ++i)
-				{
-					runIOLoop();
-					if(m_outputCount > 0)
-					{
-						m_isFirmwareLoaded = true;
-						return true;
-					}
-				}
-				//Sometimes we need to kick out another write to get a proper return
-				resetFirmwareState();
-			}
-		}
-		else
-		{
-			for(unsigned int i = 0; i < 10; ++i)
-			{
-				if(runIOLoop())
+				runIOLoop();
+				if(m_outputCount > 0)
 				{
 					m_isFirmwareLoaded = true;
 					return true;
 				}
 			}
+			//Sometimes we need to kick out another write to get a proper return
+			resetFirmwareState();
 		}
 		m_isFirmwareLoaded = false;
 		m_errorCode = FALCON_FIRMWARE_NO_FIRMWARE_LOADED;

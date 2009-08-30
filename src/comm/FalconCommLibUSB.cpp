@@ -74,7 +74,6 @@ namespace libnifalcon
 		m_tv = new timeval;
 		m_tv->tv_sec = 0;
 		m_tv->tv_usec = 100;
-		m_requiresPoll = true;
 		initLibUSB();
 	}
 
