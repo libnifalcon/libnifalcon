@@ -80,7 +80,7 @@ Note that libnifalcon has been written in such a way that which comm library you
 
 == Credits ==
 
-libnifalcon is written by Kyle Machulis
+libnifalcon is maintained by Kyle Machulis
 More information at Nonpolynomial Labs - http://www.nonpolynomial.com
 
 Kinematics development by Kevin Ouellet and Alastair Barrow
