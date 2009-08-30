@@ -14,11 +14,6 @@
 
 #include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconDevice.h"
-#if defined(LIBUSB)
-#include "falcon/comm/FalconCommLibUSB.h"
-#elif defined(LIBFTD2XX)
-#include "falcon/comm/FalconCommFTD2XX.h"
-#endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
 #include <iostream>
@@ -68,18 +63,6 @@ void runFalconTest()
 	unsigned int error_count = 0;
 	unsigned int loop_count = 0;
 	FalconDevice dev;
-
-#if defined(LIBUSB)
-	std::cout << "Running libusb test" << std::endl;
-	dev.setFalconComm<FalconCommLibUSB>();
-#elif defined(LIBFTD2XX)
-	std::cout << "Running ftd2xx test" << std::endl;
-	dev.setFalconComm<FalconCommFTD2XX>();
-#else
-	std::cout << "No communication types built. Please rebuild libnifalcon and make sure comm libs are built." << std::endl;
-	return 0;
-#endif
-
 
 	dev.setFalconFirmware<FalconFirmwareNovintSDK>();
 

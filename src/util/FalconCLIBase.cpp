@@ -14,12 +14,6 @@
 #include <boost/shared_ptr.hpp>
 
 #include "falcon/util/FalconCLIBase.h"
-#ifdef LIBFTD2XX
-#include "falcon/comm/FalconCommFTD2XX.h"
-#endif
-#ifdef LIBUSB
-#include "falcon/comm/FalconCommLibUSB.h"
-#endif
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryTest.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
@@ -62,20 +56,6 @@ namespace libnifalcon
 
 	void FalconCLIBase::addOptions(int value)
 	{
-		if(value & COMM_OPTIONS)
-		{
-			po::options_description comm("Communication Options");
-			comm.add_options()
-#if defined(LIBUSB)
-				("libusb", "use libusb-1.0 based driver")
-#endif
-#if defined(LIBFTD2XX)
-				("ftd2xx", "use ftd2xx based driver")
-#endif
-				;
-			m_progOptions.add(comm);
-		}
-
 		if(value & DEVICE_OPTIONS)
 		{
 			po::options_description device("Device options");
@@ -155,28 +135,6 @@ namespace libnifalcon
 			std::cout << "Error: can only use one comm method. Choose either libusb or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
-
-#if defined(LIBUSB)
-		else if (m_varMap.count("libusb"))
-		{
-			std::cout << "Setting up libusb device" << std::endl;
-			m_falconDevice->setFalconComm<FalconCommLibUSB>();
-		}
-#endif
-#if defined(LIBFTD2XX)
-		else if (m_varMap.count("ftd2xx"))
-		{
-			std::cout << "Setting up ftd2xx device" << std::endl;
-			m_falconDevice->setFalconComm<FalconCommFTD2XX>();
-		}
-#endif
-        else
-		{
-            std::cout << "No communication method selected." << std::endl;
-			outputProgramOptions();
-            return false;
-        }
-
 
 		//Device count check
 		if(m_varMap.count("device_count"))

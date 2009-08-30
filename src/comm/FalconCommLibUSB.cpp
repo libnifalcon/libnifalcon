@@ -9,7 +9,7 @@
  *
  */
 
-#include "falcon/comm/FalconCommLibUSB.h"
+#include "falcon_comm_impl/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
 #include <cstring>
