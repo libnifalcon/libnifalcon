@@ -31,10 +31,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 ######################################################################################
-# Macro for setting up defines for communications libraries
-######################################################################################
-
-######################################################################################
 # Project declaration and options
 ######################################################################################
 
@@ -78,15 +74,12 @@ IF(NOT LIBFTD2XX_FOUND)
   IF(LIBUSB_1_FOUND)
     INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIRS})
     SET(LIBNIFALCON_REQ_LIBS ${LIBUSB_1_LIBRARIES})
-    SET(LIBNIFALCON_REQ_DEFINES "-DLIBNIFALCON_USE_LIBUSB")
   ENDIF(LIBUSB_1_FOUND)
 ENDIF(NOT LIBFTD2XX_FOUND)
 
 IF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
   MESSAGE(FATAL_ERROR "Either ftd2xx or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
 ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-
-
 
 #Find boost, used all over the place
 SET(Boost_USE_MULTITHREADED ON)
@@ -128,6 +121,17 @@ CREATE_LIBRARY_LINK_NAME(nifalcon_device_boost_thread)
 SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
 INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
+
+#If we build libusb staticly on apple, we need the proper frameworks
+IF(BUILD_STATIC AND APPLE)
+  LIST(APPEND LIBNIFALCON_EXE_LINK_LIBS "-framework IOKit" "-framework CoreFoundation")
+ENDIF(BUILD_STATIC AND APPLE)
+
+LIST(APPEND LIBNIFALCON_EXE_LINK_LIBS 
+  ${libnifalcon_LIBRARY}
+  ${LIBNIFALCON_REQ_LIBS}
+  )
 
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
