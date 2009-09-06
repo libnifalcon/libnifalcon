@@ -8,7 +8,7 @@
  *
  * $HeadURL$
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 
@@ -217,8 +217,18 @@ namespace libnifalcon
 			m_hasWritten = false;
 		}
 
+		/**
+		 * Get the raw data string returned from the falcon
+		 *
+		 * @return std::string of last full packet received from the falcon
+		 */
 		virtual std::string getRawReturn() { return std::string(); }
-		
+
+		/**
+		 * Get the number of successful I/O loops run
+		 *
+		 * @return number of successful I/O loops
+		 */		
 		uint64_t getLoopCount() { return m_loopCount; }
 	protected:
 		boost::shared_ptr<FalconComm> m_falconComm; /**< Communications object for I/O */
@@ -229,6 +239,7 @@ namespace libnifalcon
 		bool m_homingMode;		/**< True if homing mode is on, false for homing mode off */
 		unsigned int m_ledStatus;	/**< Bitfield for LED Status */
 		boost::array<int, 3> m_forceValues; /**< Force values for the next I/O loop */
+
 		//Values received from falcon
 		boost::array<int, 3> m_encoderValues;	/**< Encoder values from the last I/O loop */
 		unsigned int m_homingStatus; /**< Current homing status from the last I/O loop */

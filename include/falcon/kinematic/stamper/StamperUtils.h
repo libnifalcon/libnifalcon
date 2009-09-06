@@ -16,26 +16,41 @@ namespace libnifalcon
 {
 	namespace StamperKinematicImpl
 	{
+		/**
+		 * Enumeration for joints. Looking at the falcon from the front, goes from top, clockwise
+		 */
 		enum arm_id
 		{
 			ARM_1 = 0, ARM_2, ARM_3
 		};
 
+		/**
+		 * Enumeration for joint angles.
+		 * THETA_1 is thigh angle (connecting the leg to the device),
+		 * THETA_2 is knee angle (connecting thigh to shin)
+		 * THETA_3 is shin angle (connecting shin to end effector)
+		 */
 		enum theta_id
 		{
 			THETA_1 = 0, THETA_2, THETA_3
 		};
 
+		/**
+		 * Enumeration for cartesian coordinates
+		 */
 		enum coord
 		{
 			X = 0, Y, Z
 		};
 
+		/**
+		 * Structure for storing Euler angles of a single leg
+		 */		
 		struct Angle
 		{
-			float theta1[3];
-			float theta2[3];
-			float theta3[3];
+			float theta1[3]; /**< Euler for thigh angle */
+			float theta2[3]; /**< Euler for knee angle */
+			float theta3[3]; /**< Euler for shin angle */
 		};
 	}
 }

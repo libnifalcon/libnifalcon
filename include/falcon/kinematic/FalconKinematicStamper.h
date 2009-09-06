@@ -90,11 +90,33 @@ namespace libnifalcon
 			origin[1] = 0.0;
 			origin[2] = 0.150;
 		}
-
+		
+		/**
+		 * Implementation of Forward Kinematics equation for kinematics model, by Alastair Barrow
+		 *
+		 * @param theta0 Vector of joint angles to calculate end effector position from
+		 * @param pos Vector to store calculated cartesian end effector position to
+		 */
 		void FK(const gmtl::Vec3d& theta0, gmtl::Vec3d& pos);
+
+		/**
+		 * Implementation of jacobian for kinematics model, by Alastair Barrow
+		 *
+		 * @param angles Current joint angles
+		 *
+		 * @return Jacobian matrix for calculating forces
+		 */		
 		gmtl::Matrix33d jacobian(const StamperKinematicImpl::Angle& angles);
+
+		/**
+		 * Implementation of Inverse Kinematics equation for kinematics model, by Alastair Barrow
+		 *
+		 * @param angles Angle structure to store calculated joint angles to
+		 * @param worldPosition Current cartesian position of end effector
+		 */
 		void IK(StamperKinematicImpl::Angle& angles, const gmtl::Vec3d& worldPosition);
-		gmtl::Vec3d pos_; //Lets assume the device starts off roughly in the centre of the workspace
+		
+		gmtl::Vec3d pos_; /**< Internal position state */
 	};
 }
 

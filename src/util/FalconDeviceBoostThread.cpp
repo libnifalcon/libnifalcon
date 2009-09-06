@@ -24,7 +24,7 @@ namespace libnifalcon
 	{
 	}
 
-	void FalconDeviceBoostThread::getPosition(double pos[3])
+	void FalconDeviceBoostThread::getPosition(boost::array<double, 3> pos)
 	{
 		pos[0] = m_position[0];
 		pos[1] = m_position[1];
@@ -36,7 +36,7 @@ namespace libnifalcon
 		if(!m_runThreadLoop)
 		{
 			m_runThreadLoop = true;
-			m_ioThread = new boost::thread(boost::bind(&libnifalcon::FalconDeviceBoostThread::runThreadLoop, this));
+			m_ioThread.reset(new boost::thread(boost::bind(&libnifalcon::FalconDeviceBoostThread::runThreadLoop, this)));
 		}
 	}
 

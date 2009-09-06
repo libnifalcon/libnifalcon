@@ -19,6 +19,10 @@ namespace libnifalcon
 	class FalconGripFourButton : public FalconGrip
 	{
 	public:
+		/**
+		 * Enumeration for the default 4 button grip that comes with the falcon
+		 *
+		 */
 		enum
 		{
 			BUTTON_1 = 0x1,
@@ -26,15 +30,31 @@ namespace libnifalcon
 			BUTTON_3 = 0x4,
 			BUTTON_4 = 0x8
 		};
-
+		
+		/**
+		 * Constructor
+		 *
+		 */
 		FalconGripFourButton() : FalconGrip(4,0)
 		{
 		}
 
+		/**
+		 * Destructor
+		 *
+		 */
 		~FalconGripFourButton()
 		{
 		}
 
+		/**
+		 * Parses data that the firmware retrieved, stores button status internally
+		 *
+		 * @param size Size of data buffer being passed in
+		 * @param data Raw buffer of grip data, taken from data received from falcon
+		 *
+		 * @return True as long as size is 1, since we're still not sure how to parse whether or not we have the correct grip type
+		 */
 		bool runGripLoop(int size, uint8_t* data)
 		{
 			//Assuming this to always be 1, since the data can easily be packed into a nibble

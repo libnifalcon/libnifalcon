@@ -1,11 +1,11 @@
 /***
  * @file FalconComm.h
- * @brief Base class for FTDI communications policy classes
+ * @brief Base class for falcon communications policy classes
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 
@@ -21,7 +21,7 @@ namespace libnifalcon
 	{
 	public:
 		enum {
-			FALCON_COMM_DEVICE_ERROR = 2000,  /*!< Device driver specific error, check getDeviceErrorCode */
+			FALCON_COMM_DEVICE_ERROR = 2000, /*!< Device driver specific error, check getDeviceErrorCode */
 			FALCON_COMM_NOT_INITIALIZED, /*!< Device drivers not initialized */
 			FALCON_COMM_DEVICE_NOT_FOUND_ERROR, /*!< No devices found on the system */
 			FALCON_COMM_DEVICE_NOT_VALID_ERROR, /*!< Device not opened */
@@ -151,11 +151,39 @@ namespace libnifalcon
 		 */
 		bool isCommOpen() { return m_isCommOpen; }
 
+		/**
+		 * Reset the internal state of the communications object (bytes read/written, etc...)
+		 *
+		 *
+		 */
 		virtual void reset() {}
 
+		/**
+		 * Checks to see whether there are bytes available to read from the object
+		 *
+		 * @return True if comm object has bytes available to read
+		 */
 		bool hasBytesAvailable() { return m_hasBytesAvailable; }
+
+		/**
+		 * Returns the number of bytes available to read (buffered from object)
+		 *
+		 * @return Number of bytes available to read
+		 */
 		unsigned int getBytesAvailable() { return m_bytesAvailable; }
+
+		/**
+		 * Sets the number of bytes that are ready for reading
+		 *
+		 * @return Number of bytes available to read
+		 */
 		virtual void setBytesAvailable(unsigned int b) { m_bytesAvailable = b; }
+
+		/**
+		 * Polls the object for confirmation of write/read return
+		 *
+		 *
+		 */
 		virtual void poll() {}
 	protected:
 		const static unsigned int MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */
@@ -165,9 +193,8 @@ namespace libnifalcon
 		int m_lastBytesRead;	/**< Number of bytes read in last read operation */
 		int m_lastBytesWritten; /**< Number of bytes written in the last write operation */
 		bool m_isCommOpen; 	/**< Whether or not the communications are open */
-		bool m_hasBytesAvailable;
-		int m_bytesAvailable;
-		bool m_requiresPoll;
+		bool m_hasBytesAvailable; /**< Whether or not the object has bytes available to read */
+		int m_bytesAvailable; /**< Number of bytes object has available to read */
 	};
 
 };

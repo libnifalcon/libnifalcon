@@ -1,7 +1,7 @@
 /***
  * @file FalconKinematic.h
  * @brief Base class for falcon kinematic classes
- * @author Kyle Machulis (kyle@nonpolynomial.com) / Kevin Ouellet (kouellet@users.sourceforge.net)
+ * @author Kyle Machulis (kyle@nonpolynomial.com) / Alastair Barrow / Kevin Ouellet
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *

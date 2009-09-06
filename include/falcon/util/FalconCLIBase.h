@@ -21,26 +21,56 @@ namespace libnifalcon
 {
 	class FalconCLIBase
 	{
-	protected:
-		boost::shared_ptr<FalconDevice> m_falconDevice;
-		boost::program_options::options_description m_progOptions;
-		boost::program_options::variables_map m_varMap;
-		virtual void addOptions(int value);
-		virtual bool parseOptions(int argc, char** argv);
-		void outputProgramOptions();
-		bool calibrateDevice();
-		bool m_displayCalibrationMessage;
 	public:
+		/**
+		 * Constructor
+		 */
 		FalconCLIBase();
-		~FalconCLIBase()
+
+		/**
+		 * Destructor
+		 */
+		virtual ~FalconCLIBase()
 		{
 		}
 
+		/**
+		 * Enumeration of options that this class provides
+		 */
 		enum {
-			DEVICE_OPTIONS = 0x1,
-			COMM_OPTIONS = 0x2,
-			FIRMWARE_OPTIONS = 0x4
+			DEVICE_OPTIONS = 0x1, /**< Allows user to choose device index, see device count, etc... */
+			COMM_OPTIONS = 0x2,  /**< Allows user to choose communications type. Not commonly used since comm is usually set by default in FalconDevice now (see FalconDevice constructor). */
+			FIRMWARE_OPTIONS = 0x4 /**< Allows user to choose firmware type, load firmware, etc... */
 		};
+	protected:
+		boost::shared_ptr<FalconDevice> m_falconDevice; /**< Internal device structure */
+		boost::program_options::options_description m_progOptions; /**< Structure of options that we'll allow */
+		boost::program_options::variables_map m_varMap; /**< Options passed to us through the command line */
+		bool m_displayCalibrationMessage; /**< String to display with calibration instructions */
+		
+		/**
+		 * Builds options map. Overridden to add application specific options
+		 */
+		virtual void addOptions(int value); 
+
+		/**
+		 * Parses options off command line. Overridden to handle application specific options
+		 *
+		 * @return True if command line options are parsed correctly, false otherwise
+		 */
+		virtual bool parseOptions(int argc, char** argv);
+
+		/**
+		 * Prints help message
+		 */
+		void outputProgramOptions();
+
+		/**
+		 * Conveinence function for handling device calibration 
+		 */
+		bool calibrateDevice();
+
+
 	private:
 		DECLARE_LOGGER();
 

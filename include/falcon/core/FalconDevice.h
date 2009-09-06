@@ -5,7 +5,7 @@
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 
@@ -39,14 +39,15 @@ namespace libnifalcon
 		};
 
 		enum {
-			FALCON_LOOP_FIRMWARE = 0x1,
-			FALCON_LOOP_KINEMATIC = 0x2,
-			FALCON_LOOP_GRIP = 0x4
+			FALCON_LOOP_FIRMWARE = 0x1, /**< runIOLoop should run firmware update (device read/write) */
+			FALCON_LOOP_KINEMATIC = 0x2, /**< runIOLoop should run kinematic update (end effector position and force calculation) */
+			FALCON_LOOP_GRIP = 0x4  /**< runIOLoop should run grip information update */
 		};
 
 		/**
 		 * Constructor
 		 *
+		 * Sets the falcon communications device to the default for the system (FTD2XX for windows, libusb-1.0 for anything else)
 		 */
 		FalconDevice();
 

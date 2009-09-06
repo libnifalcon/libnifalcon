@@ -20,18 +20,59 @@ namespace libnifalcon
 	class FalconDeviceBoostThread : public FalconDevice
 	{
 	public:
+		/**
+		 * Constructor
+		 */
 		FalconDeviceBoostThread();
+
+		/**
+		 * Destructor
+		 */
 		virtual ~FalconDeviceBoostThread();
-		void getPosition(double pos[3]);
+
+		/**
+		 * Starts a thread that runs FalconDevice::runIOLoop constantly
+		 */		
 		void startThread();
+
+		/**
+		 * Runs IO loop. Overridden to implement application specific functionality
+		 */		
 		virtual void runThreadLoop();
+
+		/**
+		 * Stops thread if running
+		 */
 		void stopThread();
+
+		/**
+		 * Thread run status
+		 *
+		 * @return True if running, false otherwise
+		 */
 		bool isThreadRunning() { return m_runThreadLoop; }
+		
+		/**
+		 * Thread safe position return
+		 */
+		void getPosition(boost::array<double, 3>& pos);
 	protected:
+		/**
+		 * Wrapper function for dealing with device communication
+		 */
 		void runDeviceComm();
-		boost::thread* m_ioThread;
-		double m_localPosition[3];
-		bool m_runThreadLoop;
+
+		/**
+		 * Internal thread object
+		 */
+		boost::shared_ptr<boost::thread> m_ioThread;
+
+		/**
+		 * Internal position storage
+		 */
+		boost::array<double, 3> m_localPosition;
+
+		bool m_runThreadLoop; /**< Internal thread execution state. Thread loop exits if this is false. */
 	};
 }
 #endif

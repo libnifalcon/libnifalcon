@@ -1,3 +1,11 @@
+/***
+ * @file FalconFirmwareBinaryNvent.h
+ * @brief Utility class for packing novint falcon firmware into shipped executables. Binary from latest nVent software release.
+ *
+ * Project info at http://libnifalcon.sourceforge.net/
+ *
+ */
+
 #ifndef FALCONFIRMWAREBINARYNVENT_H
 #define FALCONFIRMWAREBINARYNVENT_H
 #include <stdint.h>
