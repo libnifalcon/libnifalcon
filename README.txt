@@ -21,7 +21,7 @@ More information about the Novint Falcon can be found at
 
 http://home.novint.com
 
-Technical information, including protocol and hardware information, is available at
+Technical information, including protocol and hardware information, is available at the libnifalcon website
 
 http://libnifalcon.nonpolynomial.com
 
@@ -61,27 +61,46 @@ OS X: OK - RECOMMENDED
 
 Note that libnifalcon has been written in such a way that which comm library you use should have little effect on the cross-platform performance of your code. However, this is more of a hope than a promise.
 
+== What Comes With libnifalcon ==
+
+With libnifalcon, you get
+
+* libnifalcon
+** Provides device access to the falcon
+* libnifalcon_cli_base (optional, requires boost::program_options library)
+** Provides base class for small test applications for the falcon
+* libnifalcon_boost_thread (optional, requires boost::thread library)
+** Provides example of threaded device support for the falcon
+* Example Programs (all require libnifalcon, plus other libraries as specified)
+** findfalcons - Prints out the number of falcon devices connected, opens first one, runs simple test (changes LED color, runs a few thousand I/O loops). Good for making sure things 'just work'.
+** barrow_mechanics - Alastair Barrow's original implementation of the RL Stamper kinematics system used in the libnifalcon kinematics core
+** falcon_led (requires libnifalcon_cli_base) - Simple example application for extending FalconCLIBase class.
+** falcon_mouse (requires libnifalcon_cli_base) - Lets the falcon position control the mouse cursor
+** falcon_test_cli (requires libnifalcon_cli_base) - Suite of test scenes for the falcon (cube, walls, timing tests, etc...)
+* SWIG bindings (requires SWIG and whatever language bindings you want to use)
+** FalconBridge proxy class for accessing the falcon from other languages. Tested with Java and Python so far.
+
 == Platform Specifics ==
 
 === Windows ===
 
-- If you are using the falcon on Windows, even if it's a Windows VM, make sure it's plugged in directly to a port on the machine you're on. Hubs don't work with the falcon on Windows.
-- NovInt uses the stock ftd2xx drivers, and it is recommended to use a ftd2xx version of libnifalcon on windows. If you have installed the drivers from NovInt's website, access through libnifalcon should "just work".
-- Building under Visual Studio will only work for STATIC libraries, as I'm too lazy to add the declspec calls.
+* If you are using the falcon on Windows, even if it's a Windows VM, make sure it's plugged in directly to a port on the machine you're on. Hubs don't work with the falcon on Windows.
+* NovInt uses the stock ftd2xx drivers, and it is recommended to use a ftd2xx version of libnifalcon on windows. If you have installed the drivers from NovInt's website, access through libnifalcon should "just work".
+* Building under Visual Studio will only work for STATIC libraries, as I'm too lazy to add the declspec calls.
 
 === Linux ===
 
-- If you are using the falcon on Linux, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Linux Box causes it to work erractically.
-- Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root. There's a sample udev file in the "linux" directory of the distribution that can help.
+* If you are using the falcon on Linux, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Linux Box causes it to work erractically.
+* Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root. There's a sample udev file in the "linux" directory of the distribution that can help.
 
 === OS X ===
 
-- If you are using the falcon on OS X, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Mac causes it to work erractically.
+* If you are using the falcon on OS X, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Mac causes it to work erractically.
 
 == Credits ==
 
-libnifalcon is maintained by Kyle Machulis
-More information at Nonpolynomial Labs - http://www.nonpolynomial.com
+libnifalcon is developed and maintained and generally the fault of Kyle Machulis
+More information on Kyle can be found at Nonpolynomial Labs - http://www.nonpolynomial.com
 
 Kinematics development by Kevin Ouellet and Alastair Barrow
 
