@@ -4,7 +4,7 @@
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 

@@ -2,7 +2,7 @@
  * @file FalconFirmwareBinaryTest.h
  * @brief Utility class for packing novint falcon firmware into shipped executables. Binary from NOVINT.BIN file in falcon driver distribution.
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 

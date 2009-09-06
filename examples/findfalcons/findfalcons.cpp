@@ -8,7 +8,7 @@
  *
  * $HeadURL$
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  */
 

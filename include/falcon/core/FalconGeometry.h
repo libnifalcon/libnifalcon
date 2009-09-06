@@ -5,7 +5,7 @@
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
  *
- * Project info at http://libnifalcon.sourceforge.net/
+ * Project info at http://libnifalcon.nonpolynomial.com/
  *
  * Many of the following values refer to a diagram from R.E. Stamper Kinematics Paper, page 30
  * Viewable at http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf
