@@ -15,15 +15,15 @@ libnifalcon is now a supported device in the H3D Haptics Framework. More informa
 
 http://www.h3d.org
 
-== NovInt Falcon Information  ==
+== Novint Falcon Information  ==
 
-More information about the NovInt Falcon can be found at 
+More information about the Novint Falcon can be found at 
 
 http://home.novint.com
 
 Technical information, including protocol and hardware information, is available at
 
-http://wiki.libnifalcon.sourceforge.net
+http://libnifalcon.nonpolynomial.com
 
 == Library Requirements ==
 
@@ -41,7 +41,7 @@ http://www.ftdichip.com/Drivers/D2XX.htm
 
 === libusb 1.0 (Recommended for Linux or Mac) ===
 
-http://libusb.wiki.sourceforge.net/Libusb1.0
+http://www.libusb.org/
 
 == ftd2xx versus libusb 1.0 ==
 
@@ -53,7 +53,7 @@ Linux: Untested
 64-bit Linux: Untested
 OS X: Untested
 
-libusb-1.0.1:
+libusb-1.0 (use whatever the latest version is. As of this writing, 1.0.2):
 Windows: Not Available for Windows
 Linux: OK - RECOMMENDED
 64-bit Linux: OK - RECOMMENDED
@@ -90,3 +90,17 @@ Jared Allen
 Edgar Berdahl
 Devanshi Shah
 Stephen Sinclair
+
+== Licenses ==
+
+(License text for all following licenses is available in the license directory)
+
+libnifalcon is licensed under the BSD license, with the following copyrights:
+
+libnifalcon is Copyright 2007-2009 Kyle Machulis/Nonpolynomial Labs
+
+libnifalcon Kinematics Core is Copyright 2007-2008 Kevin Ouellet, 2009 Alastair Barrow, 2007-2009 Kyle Machulis
+
+libnifalcon uses GMTL, which is licensed under LGPL 3.0 with header exception.
+
+On some platforms, libnifalcon uses libusb-1.0, which is licensed under LGPL 2.1.
