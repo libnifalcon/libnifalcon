@@ -57,7 +57,7 @@ namespace libnifalcon
 		 *
 		 * @return true if parsing successful, false otherwise
 		 */
-		virtual bool runGripLoop(int size, uint8_t* data) = 0;
+		virtual bool runGripLoop(int size, const uint8_t* data) = 0;
 
 		/**
 		 * Returns the number of digital inputs available on the current grip

@@ -55,7 +55,7 @@ namespace libnifalcon
 		 *
 		 * @return True as long as size is 1, since we're still not sure how to parse whether or not we have the correct grip type
 		 */
-		bool runGripLoop(int size, uint8_t* data)
+		bool runGripLoop(int size, const uint8_t* data)
 		{
 			//Assuming this to always be 1, since the data can easily be packed into a nibble
 			if(size != 1)

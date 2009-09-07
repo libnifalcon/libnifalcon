@@ -93,7 +93,7 @@ namespace libnifalcon
 		 *
 		 * @return Byte buffer with grip data
 		 */
-		virtual uint8_t* getGripInfo() = 0;
+		virtual const uint8_t* getGripInfo() = 0;
 
 		/**
 		 * Sets the instantious force (in whatever units the falcon takes) for the next I/O loop
