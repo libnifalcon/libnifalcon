@@ -15,7 +15,7 @@
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconCLIBase.h"
 #include "falcon/util/FalconFirmwareBinaryNvent.h"
-#include "falcon/kinematic/stamper/stamperUtils.h"
+#include "falcon/kinematic/stamper/StamperUtils.h"
 #include "falcon/core/FalconGeometry.h"
 #include "falcon/gmtl/gmtl.h"
 
