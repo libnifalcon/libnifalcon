@@ -9,7 +9,7 @@
  *
  */
 
-#include "falcon_comm_impl/comm/FalconCommFTD2XX.h"
+#include "falcon/comm/FalconCommFTD2XX.h"
 
 #ifdef WIN32
 #include <windows.h>

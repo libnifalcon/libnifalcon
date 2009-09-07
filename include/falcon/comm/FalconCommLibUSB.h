@@ -34,8 +34,10 @@ namespace libnifalcon
  * However, due to our need to access the falcon at as close to a sustained 1khz rate as possible, we needed
  * to use a non-blocking communications layer.
  *
- * FalconCommLibUSB is usually built directly into the libnifalcon core library. This header is usually
- * not available in distributions or installations of the driver.
+ * FalconCommLibUSB is built directly into the libnifalcon core library, as is chosen for the user
+ * by default by the FalconDevice constructor, so it is usually not needed.
+ * However, it is left here for code compatibility for code that already used comm behavior setting, which
+ * was required before libnifalcon v1.0
  */
 
 	class FalconCommLibUSB : public FalconComm
