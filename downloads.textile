@@ -6,6 +6,7 @@ title: Downloads
 <H1>Releases</H1>
 
 |<B>Version</B>|<B>Date</B>|<B>Page</B>|
+|1.0|2009-09-06|"Download":https://sourceforge.net/projects/libnifalcon/files/libnifalcon/1.0/libnifalcon-1.0.tar.gz/download|
 |1.0 beta 4|2009-05-18|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=683431|
 |1.0 beta 3|2009-03-15|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=668255|
 |1.0 beta 2|2008-12-08|"Download":http://sourceforge.net/project/showfiles.php?group_id=210759&package_id=253148&release_id=645666|
