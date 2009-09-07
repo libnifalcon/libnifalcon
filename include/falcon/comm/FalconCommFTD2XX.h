@@ -24,8 +24,10 @@ namespace libnifalcon
  * be used on Windows, where the FTD2XX driver is the factory standard driver for the falcon. This means
  * that libnifalcon code can work alongside the regular HDAL drivers.
  *
- * FalconCommFTD2XX is usually built directly into the libnifalcon core library. This header is usually
- * not available in distributions or installations of the driver.
+ * FalconCommFTD2XX is built directly into the libnifalcon core library, as is chosen for the user
+ * by default by the FalconDevice constructor, so it is usually not needed.
+ * However, it is left here for code compatibility for code that already used comm behavior setting, which
+ * was required before libnifalcon v1.0
  */
 	class FalconCommFTD2XX : public FalconComm
 	{
