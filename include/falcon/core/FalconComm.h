@@ -158,7 +158,7 @@ namespace libnifalcon
 		 */
 		virtual bool write(uint8_t* str, unsigned int size) = 0;
 		
-		/**
+ 		/**
 		 * Read a specified number of bytes from the device
 		 *
 		 * @param[out] str Buffer to read data into
@@ -228,8 +228,6 @@ namespace libnifalcon
 
 		/**
 		 * Reset the internal state of the communications object (bytes read/written, etc...)
-		 *
-		 *
 		 */
 		virtual void reset() {}
 
@@ -256,8 +254,6 @@ namespace libnifalcon
 
 		/**
 		 * Polls the object for confirmation of write/read return
-		 *
-		 *
 		 */
 		virtual void poll() {}
 		

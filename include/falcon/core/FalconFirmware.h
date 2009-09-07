@@ -29,16 +29,36 @@ namespace libnifalcon
  * @ingroup CoreClasses
  * @ingroup FirmwareClasses
  *
- * Firmware dictates the format we talk to the falcon in after we've loaded a certain firmware. We assume all falcon firmware
- * provides a certain set of functions
+ * Firmware dictates the format we talk to the falcon in after we've loaded a certain firmware. We assume
+ * all falcon firmware provides a certain set of functions:
  *
- * - Setting forces
- * - Setting LED status
- * - Getting joint angles
- * - Getting grip information (buttons pressed, etc...)
- * - Getting calibration information
+ * - Input
+ *  - Set an instantaneous power level for each motor
+ *  - Turn LEDs on/off
+ *  - Set homing mode on/off
+ * - Output
+ *  - Get values of the motor encoders
+ *  - Relay information from the grip (Buttons pressed, etc...)
+ *  - Homing mode status
  * 
- * This class provides the pure virtual functions that need to be filled in by specific firmware implementations.
+ * This class provides the pure virtual functions that need to be filled in by specific
+ * firmware implementations.
+ *
+ * @section HomingModeExplanation Homing Mode
+ *
+ * Homing mode is a feature of the firmware that allows the falcon to self-correct the origin of the grip.
+ * The homing mode bit must be set in each input packet sent in order for the falcon to stay homed.
+ *
+ * It is recommended that any program using the falcon require the falcon to be homed before enacting
+ * any torques calculated from positions, as the transfer from non-homed to homed completely resets
+ * the coordinate system, and will cause large errors in calculations. Since each motor is decently
+ * powerful, these errors can lead to violence.
+ *
+ * To home the falcon:
+ * 
+ * - Send input packets with homing mode on
+ * - Pull the grip all the way out, then push it in
+ * - Watch the output packets from the falcon, waiting for all 3 homing mode bits to be set
  */
 	class FalconFirmware : public FalconCore
 	{

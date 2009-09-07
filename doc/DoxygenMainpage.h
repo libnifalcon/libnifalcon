@@ -14,6 +14,26 @@ libnifalcon provides basic functionality to connect to the falcon and load firmw
 
 Here's where I'd put some design documentation if I had it.
 
+@section libnifalconHardwareInformation Hardware Information
+
+Pictures of falcon disassembly, thanks to Kevin Ouellet.
+
+http://picasaweb.google.com/kouellet/FalconProject?authkey=kAvHYd9lo5A
+
+Motors: Mabuchi RS-555PH, number 15280
+
+Inscription on Motor:
+RS-555PH-15280
+(Mabuchi LOGO) MADE IN CHINA
+TD427420
+
+The falcon uses a FTDI FT232R Chip to communicate with the host computer. Datasheet at
+
+http://www.ftdichip.com/Documents/DataSheets/DS_FT232R.pdf
+
+The falcon uses a TI TMS320R2811 DSP Chip for device control. Datasheet at
+
+http://focus.ti.com/docs/prod/folders/print/tms320r2811.html
 */
 
 /**

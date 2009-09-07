@@ -16,6 +16,12 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconGripFourButton
+ * @ingroup GripClasses
+ *
+ * This class represents the default 4 button sphere grip that comes with the falcon.
+ */	
 	class FalconGripFourButton : public FalconGrip
 	{
 	public:
@@ -29,7 +35,7 @@ namespace libnifalcon
 			BUTTON_2 = 0x2,
 			BUTTON_3 = 0x4,
 			BUTTON_4 = 0x8
-		};
+		} FourButtonGripButtons;
 		
 		/**
 		 * Constructor

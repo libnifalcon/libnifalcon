@@ -19,6 +19,22 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconCLIBase
+ * @ingroup UtilityClasses
+ *
+ * FalconCLIBase provides an simple framework for building test applications with libnifalcon. It wraps the information needed
+ * from the user into a set of boost::program_options, and does the work of parsing command line options for:
+ * 
+ * - Device counts and connections
+ * - Firmware loading
+ * - Communications (if more that one comm core is available)
+ *
+ * The FalconCLIBase class is only available if the boost::program_options library is available on the system.
+ *
+ * See the falcon_test_cli program for an example of a test suite program built using FalconCLIBase
+ */
+
 	class FalconCLIBase
 	{
 	public:

@@ -11,6 +11,10 @@
 #include <stdint.h>
 
 namespace libnifalcon {
+	/**
+	 * Array of byte values that make up the nvent firmware. Firmware is hex2000 encoded file that
+	 * represents the memory layout of the TMS320 DSP chip.
+	 */
 	const static uint8_t NOVINT_FALCON_TEST_FIRMWARE[] = {
 	0xaa,0x08,0x00,0x00,0x00,0x00,0x00,0x00,
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -929,6 +933,6 @@ namespace libnifalcon {
 	0x1a,0x76,0x0c,0xf6,0x00,0x77,0x69,0xff,
 	0x06,0x00,0x00,0x00,
 	};
-	const static unsigned int NOVINT_FALCON_TEST_FIRMWARE_SIZE = 7324;
+	const static unsigned int NOVINT_FALCON_TEST_FIRMWARE_SIZE = 7324; /**< Size of firmware array */
 }
 #endif //FALCONFIRMWAREBINARYTEST_H

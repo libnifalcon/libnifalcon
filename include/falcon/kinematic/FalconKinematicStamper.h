@@ -1,6 +1,6 @@
 /***
  * @file FalconKinematicStamper.h
- * @brief IK and DK implementation for the Novint Falcon based on paper by R.E. Stamper (http://libnifalcon.wiki.sourceforge.net/space/showimage/PhD_97-4.pdf)
+ * @brief IK and DK implementation for the Novint Falcon based on paper by R.E. Stamper (http://docs.nonpolynomial.com/libnifalcon/pdf/StamperThesis.pdf)
  * @author Alastair Barrow / Kyle Machulis
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
@@ -18,6 +18,17 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconKinematicStamper
+ * @ingroup KinematicsClasses
+ *
+ * This class is an implementation of the kinematics for a haptic device similar to the Novint Falcon, created by
+ * RL Stamper in his PhD Thesis. The thesis is available at
+ *
+ * http://docs.nonpolynomial.com/libnifalcon/pdf/StamperThesis.pdf
+ *
+ * This implementation was written by Alastair Barrow. The original code is available in the barrow_mechanics example.
+ */
 
 	class FalconKinematicStamper : public FalconKinematic
 	{

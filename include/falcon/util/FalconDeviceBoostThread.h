@@ -17,6 +17,16 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconDeviceBoostThread
+ * @ingroup UtilityClasses
+ *
+ * The FalconDeviceBoostThread class is a sample device that uses the boost::thread class to run the
+ * communications loop to the falcon. 
+ *
+ * The FalconDeviceBoostThread class is only available if the boost::thread library is available on the system.
+ */
+
 	class FalconDeviceBoostThread : public FalconDevice
 	{
 	public:

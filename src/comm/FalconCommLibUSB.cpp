@@ -15,10 +15,11 @@
 #include <cstring>
 #include "libusb.h"
 
-//Taken from LibFTDI
-//I just don't want to wait for the libusb 1.0 port of libftdi
-//And I don't exactly want to do it myself
-//So, here we are. File level defines.
+// Taken from LibFTDI
+// http://www.intra2net.com/en/developer/libftdi/
+// I just don't want to wait for the libusb 1.0 port of libftdi
+// And I don't exactly want to do it myself
+// So, here we are. File level defines.
 #define SIO_RESET          0 /* Reset the port */
 #define SIO_MODEM_CTRL     1 /* Set the modem control register */
 #define SIO_SET_FLOW_CTRL  2 /* Set flow control register */

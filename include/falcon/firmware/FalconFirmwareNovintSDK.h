@@ -17,6 +17,87 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconFirmwareNovintSDK
+ * @ingroup FirmwareClasses
+ *
+ * FalconFirmwareNovintSDK implements the firmware communications strategy for the firmware
+ * that comes with the Novint drivers, and with the nVent software.
+ *
+ * @section FirmwareIntro Intro to Novint Firmware Format
+ *
+ * 16 bytes sent to the Falcon causes 16 bytes to be returned. It's expected that the host will
+ * be constantly polling the falcon to set motor positions, as it is assumed that the PID loops
+ * for the control exist in the software, not the hardware.
+ *
+ * Input and output strings are printable. Each string starts with 0x3c ('<') and ends with
+ * 0x3e ('>'), and the byte range is 0x41 ('A') to 0x50 ('P').
+ * 
+ * A null input/output string looks like:
+ *
+ * <AAAAAAAAAAAAAA>
+ *
+ * However, after any amount of usage, the input/output string will probably look something like:
+ *
+ * <HNGPOKOPFPOPAA>
+ *
+ * @section FirmwareInputLayout Input Layout (To Controller)
+ * 
+ * 0x3C 0x(g0) 0x(g1) 0x(g2) 0x(g3) 0x(h0) 0x(h1) 0x(h2) 0x(h3) 0x(i0) 0x(i1) 0x(i2) 0x(i3) 0x(j0) 0x(k0) 0x3E
+ *
+ * Input Packet Byte Definitions:
+ * - 0x3C - Start Byte
+ * - g thru i - Instantanious Motor Torque for the 3 feedback motors
+ * - j - Homing and LED Control
+ * - k - Unknown
+ * - 0x3E - End Byte
+ * 
+ * Homing and LED Controls (Value of j0 byte):
+ * - 0x02 - Red LED On
+ * - 0x04 - Green LED On
+ * - 0x08 - Blue LED On
+ * - 0x10 - Homing Mode On
+ * 
+ * @section FirmwareOutputLayout Output Layout (To Controller)
+ * 
+ * 0x3C 0x(m0) 0x(m1) 0x(m2) 0x(m3) 0x(n0) 0x(n1) 0x(n2) 0x(n3) 0x(o0) 0x(o1) 0x(o2) 0x(o3) 0x4(p0) 0x(q0) 0x3E
+ * 
+ * Output packet byte definitions:
+ * - 0x3C - Start Byte
+ * - m thru o - Axis Position Report
+ * - p - Buttons and Homing Control Report
+ * - q - Unknown
+ * - 0x3E - End Byte
+ * 
+ * Buttons and Homing Control Report (Value of j0 byte) - Directions taken from looking
+ * at the Falcon from the front:
+ * - 0x01 - Far Right Button Down
+ * - 0x02 - Center (Forward) Button Down
+ * - 0x04 - Center (Circle) Button Down
+ * - 0x08 - Far Left Button Down
+ * - 0x10 - (If homing mode on) Top Encoder Homed
+ * - 0x20 - (If homing mode on) Right Encoder Homed
+ * - 0x40 - (If homing mode on) Left Encoder Homed
+ *
+ * @section FirmwareOutputLayout Motor Value Extraction Example
+ * 
+ * Retrieving/Setting Axis Position:
+ * - Retrieving: Subtract 0x41 for all bytes of the 32-bit integer representation.
+ * - Setting: Add 0x41.
+ * 
+ * Example:
+ * 
+ * -# Test GUI gives us 1447 for first encoder, so that's the number we're trying to get to in the end.
+ * -# Driver gives us (positions represented by .s can be ignored): <JFBA..........>
+ * -# Translate to ascii values: 0x3c 0x4A 0x46 0x4B 0x50
+ * -# Drop first byte since it's just a marker: 0x4A 0x46 0x4B 0x50
+ * -# Subtract 0x41 (ASCII value for A) from all bytes: 0x9 0x5 0xA 0xF
+ * -# //(For readability only, not in the drivers)// Reverse into Big Endian: 0xF 0xA 0x5 0x9
+ * -# Shift into 16 bit number: 0xFA59
+ * -# Twos compliment conversion (~x+1): 0x05A7
+ * -# Decimal conversion (16 bit signed): 1447
+ * 
+ */
 	class FalconFirmwareNovintSDK : public FalconFirmware
 	{
 	public:

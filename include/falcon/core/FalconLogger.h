@@ -8,7 +8,7 @@
  *
  */
 
-/***
+/*
  * Found this code at http://gonium.net/md/ in the Code Kata articles - Can't find a license, but I'm hoping it's MIT. :) Much thanks to the author
  * for saving me a massive amount of time, since I was planning on doing this myself.
  *
@@ -17,47 +17,47 @@
  *
  * To initialize a logger for console output:
  *
-
-#ifdef ENABLE_LOGGING
-#include <log4cxx/logger.h>
-#include <log4cxx/basicconfigurator.h>
-#include <log4cxx/helpers/exception.h>
-#include <log4cxx/patternlayout.h>
-#include <log4cxx/consoleappender.h>
-static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
-#endif
-
-#ifdef ENABLE_LOGGING
-void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
-  log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
-  log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
-  log4cxx::BasicConfigurator::configure(appender);
-  log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
-  rootlogger->setLevel(level);
-}
-#endif
-
-int main()
-{
-#ifdef ENABLE_LOGGING
-  std::string logPattern(TTCC_CONVERSION_PATTERN);
-  log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
-  configureLogging(logPattern, logLevel);
-#endif
-...
-}
-
+ * 
+ * #ifdef ENABLE_LOGGING
+ * #include <log4cxx/logger.h>
+ * #include <log4cxx/basicconfigurator.h>
+ * #include <log4cxx/helpers/exception.h>
+ * #include <log4cxx/patternlayout.h>
+ * #include <log4cxx/consoleappender.h>
+ * static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
+ * #endif
+ * 
+ * #ifdef ENABLE_LOGGING
+ * void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
+ *   log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
+ *   log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
+ *   log4cxx::BasicConfigurator::configure(appender);
+ *   log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
+ *   rootlogger->setLevel(level);
+ * }
+ * #endif
+ * 
+ * int main()
+ * {
+ * #ifdef ENABLE_LOGGING
+ *   std::string logPattern(TTCC_CONVERSION_PATTERN);
+ *   log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("DEBUG");
+ *   configureLogging(logPattern, logLevel);
+ * #endif
+ * ...
+ * }
+ * 
  *
  * To log:
  *
-
-class Foo
-{
-	Foo() : INIT_LOGGING("Foo") {}
-	LogSomething() { int num = 1;  LOG_INFO("Look! A Number! " << num);  }
-}
-
-*/
+ * 
+ * class Foo
+ * {
+ * 	Foo() : INIT_LOGGING("Foo") {}
+ * 	LogSomething() { int num = 1;  LOG_INFO("Look! A Number! " << num);  }
+ * }
+ * 
+ */
 
 #ifndef FALCON_LOGGING
 #define FALCON_LOGGING
