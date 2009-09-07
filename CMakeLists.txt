@@ -42,7 +42,10 @@ INITIALIZE_BUILD()
 #Common Options
 
 OPTION_LIBRARY_BUILD_STATIC(ON)
-OPTION_LIBRARY_BUILD_SHARED(ON)
+#We can't build shared on MSVC yet
+IF(NOT MSVC)
+  OPTION_LIBRARY_BUILD_SHARED(ON)
+ENDIF(NOT MSVC)
 OPTION_FAST_MATH(ON)
 OPTION_ARCH_OPTS(ON)
 OPTION_GPROF(OFF)
@@ -85,10 +88,12 @@ ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
 SET(Boost_USE_MULTITHREADED ON)
 SET(Boost_USE_STATIC_LIBS ON)
 
-FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options thread)
+FIND_PACKAGE(Boost REQUIRED)
 IF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
 ENDIF(NOT Boost_FOUND)
+
+FIND_PACKAGE(Boost COMPONENTS program_options thread)
 
 ######################################################################################
 # Project specific globals

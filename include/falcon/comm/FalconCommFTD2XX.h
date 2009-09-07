@@ -117,7 +117,7 @@ namespace libnifalcon
 		 *
 		 * @return True if (size) amount of bytes is written successfully, false otherwise. Error code set if false.
 		 */
-		virtual bool writeBlocking(uint8_t* str, unsigned int size) { return write(buffer, size); }
+		virtual bool writeBlocking(uint8_t* str, unsigned int size) { return write(str, size); }
 
 		/**
 		 * Sets the communications mode and initializes the device to load firmware
