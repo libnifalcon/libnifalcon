@@ -17,6 +17,15 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconGrip
+ * @ingroup CoreClasses
+ * @ingroup GripClasses
+ *
+ * Grip classes define how we deal with whatever grip might appear on the falcon. The base class tries to be as generic as possible,
+ * allowing for up to 32 digital inputs and 128 analog inputs. 
+ */
+	
 	class FalconGrip : public FalconCore
 	{
 	public:

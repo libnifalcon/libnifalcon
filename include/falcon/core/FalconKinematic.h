@@ -19,6 +19,15 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconKinematic
+ * @ingroup CoreClasses
+ * @ingroup KinematicsClasses
+ *
+ * The Kinematic base class provides virtual functions for forward and inverse kinematic functions, as well
+ * as utility functions that all kinematics cores can share.
+ *
+ */
 	class FalconKinematic : public FalconCore
 	{
 	public:

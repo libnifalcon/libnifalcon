@@ -72,7 +72,7 @@ namespace libnifalcon
 		 * Note: Origin subject to change based on kinematics system. Use the workspaceOrigin() function to get what the system thinks
 		 * its origin is.
 		 *
-		 * @param encoders Encoder values for the 3 legs
+		 * @param angles Encoder values for the 3 legs
 		 * @param position Array to write result into
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)

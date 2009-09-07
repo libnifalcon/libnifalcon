@@ -17,6 +17,69 @@
 
 namespace libnifalcon
 {
+
+/**
+ * @class FalconComm
+ * @ingroup CoreClasses
+ * @ingroup CommClasses
+ *
+ * FalconComm is the base class for all communications behavior implementations. The Falcon itself uses an
+ * FTDI chip to talk to the computer, so these will most likely be proxies to either an FTDI library
+ * (like FTD2XX), or reimplementation of FTDI calls (like our libusb implementation).
+ *
+ * FalconComm is responsible for handling a few different tasks
+ * - Getting the count of devices connected to the system
+ * - Opening and closing the connection to the device
+ * - Establishing modes (firmware and normal)
+ * - Reading data from and writing data to the device
+ *
+ * All communications objects are considered to be non-blocking, and should reimplement a poll function to
+ * maintain this. Both FTD2XX and libusb, the two implementations of the FalconComm class as of this
+ * writing, operate in a non-blocking way. If blocking calls are required (currently only used for loading
+ * firmware), blocking functions are provided but are specified as such to warn the user.
+ *
+ * As mentioned above, the falcon can operate in two modes
+ * - Firmware - Used to load firmware to the device
+ * - Normal - Used to communicate with the device after firmware is loaded
+ *
+ * To get the device into firmware mode, the follow set of steps needs to happen:
+ *
+ * -# Clear send and receive buffers
+ * -# Set FTDI latency timer to 16ms
+ * -# Set line properties to 8N1
+ * -# Set baud to 9600
+ * -# Disable flow control
+ * -# Set RTS low
+ * -# Set DTR low
+ * -# Set DTR high
+ * -# Send 3 bytes: 0x0a 0x43 0x0d
+ * -# Receive 5 bytes: 0x00 0xa 0x44 0x2c 0xd
+ * -# Set DTR low
+ * -# Set baud to new value (0x15 in control message)
+ * -# Send 1 byte: 0x40
+ * -# Receive 1 byte: 0x41
+ *
+ * Once this set of commands has been run and the send/receives match what is listed above, we can continue
+ * with loading the firmware. The actual firmware loading simply consists of sending 128 byte blocks of the
+ * firmware to the device, and receiving back those blocks for error checking. This happens in the
+ * FalconFirmware::loadFirmware function.
+ *
+ * Child classes of FalconComm implement the above code in their setFirmwareMode() function.
+ *
+ * Once firmware is loaded, the falcon needs to be returned to normal mode in order to exchange useful data
+ * with the driver. To do this, we execute the following steps:
+ *
+ * -# Set the FTDI latency timer to 1ms
+ * -# Set the baud rate to the appropriate value (0x2 in control message)
+ * -# Clear send and receive buffers
+ *
+ * After this, the falcon will be in normal communications mode, and regular I/O can begin. I/O specifics
+ * are defined in the firmware classes of libnifalcon.
+ *
+ * While FalconComm is mainly geared toward making sure we can talk to the device, it can also be used for
+ * test purposes, like building network interfaces to emulate the falcon hardware.
+ */
+ 
 	class FalconComm : public FalconCore
 	{
 	public:
@@ -41,12 +104,14 @@ namespace libnifalcon
 			m_hasBytesAvailable(false),
 			m_bytesAvailable(0)
 		{}
+		
 		/**
 		 * Destructor
 		 *
 		 *
 		 */
 		virtual ~FalconComm() {}
+		
 		/**
 		 * Returns the number of devices connected to the system
 		 *
@@ -55,6 +120,7 @@ namespace libnifalcon
 		 * @return True if count was retreived correctly, false otherwise. Error code set if false.
 		 */
 		virtual bool getDeviceCount(unsigned int& count) = 0;
+		
 		/**
 		 * Opens the device at the specified index
 		 *
@@ -63,6 +129,7 @@ namespace libnifalcon
 		 * @return True if device is opened successfully, false otherwise. Error code set if false.
 		 */
 		virtual bool open(unsigned int index) = 0;
+		
 		/**
 		 * Closes the device, if open
 		 *
@@ -70,6 +137,7 @@ namespace libnifalcon
 		 * @return True if device is closed successfully, false otherwise. Error code set if false.
 		 */
 		virtual bool close() = 0;
+		
 		/**
 		 * Read a specified number of bytes from the device
 		 *
@@ -79,6 +147,7 @@ namespace libnifalcon
 		 * @return True if (size) amount of bytes is read successfully, false otherwise. Error code set if false.
 		 */
 		virtual bool read(uint8_t* str, unsigned int size) = 0;
+		
 		/**
 		 * Write a specified number of bytes to the device
 		 *
@@ -88,6 +157,7 @@ namespace libnifalcon
 		 * @return True if (size) amount of bytes is written successfully, false otherwise. Error code set if false.
 		 */
 		virtual bool write(uint8_t* str, unsigned int size) = 0;
+		
 		/**
 		 * Read a specified number of bytes from the device
 		 *
@@ -97,6 +167,7 @@ namespace libnifalcon
 		 * @return True if (size) amount of bytes is read successfully, false otherwise. Error code set if false.
 		 */
 		virtual bool readBlocking(uint8_t* str, unsigned int size) = 0;
+		
 		/**
 		 * Write a specified number of bytes to the device
 		 *
@@ -114,6 +185,7 @@ namespace libnifalcon
 		 * @return True if device is successfully set to load firwmare, false otherwise. Error code set if false.
 		 */
 		virtual bool setFirmwareMode() = 0;
+		
 		/**
 		 * Sets the communications mode and initializes the device to run in normal operation
 		 *
@@ -129,6 +201,7 @@ namespace libnifalcon
 		 * @return Number of bytes read
 		 */
 		int getLastBytesRead()  {return m_lastBytesRead; }
+		
 		/**
 		 * Returns the number of bytes returned in the last write function
 		 *
@@ -136,6 +209,7 @@ namespace libnifalcon
 		 * @return Number of bytes written
 		 */
 		int getLastBytesWritten()  {return m_lastBytesWritten; }
+		
 		/**
 		 * Returns the device specific error code for in-depth debugging
 		 *
@@ -143,6 +217,7 @@ namespace libnifalcon
 		 * @return Index for the communication policy specific error code
 		 */
 		int getDeviceErrorCode() { return m_deviceErrorCode; }
+		
 		/**
 		 * Returns whether the device is open or not
 		 *
@@ -185,6 +260,7 @@ namespace libnifalcon
 		 *
 		 */
 		virtual void poll() {}
+		
 	protected:
 		const static unsigned int MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */
 		const static unsigned int FALCON_VENDOR_ID = 0x0403; /**< USB Vendor ID for the Falcon */

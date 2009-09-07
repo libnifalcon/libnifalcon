@@ -9,7 +9,7 @@ libnifalcon is a development library for the NovInt Falcon, and is an open sourc
 
 libnifalcon provides basic functionality to connect to the falcon and load firmware to the internal microcontroller. In addition, it comes with sample functionality made available through the firmware available in NovInt's drivers (the novint.bin file in TestUtilties and the nifalcon_test_fw files for the library source). This firmware is distributed in the firmware directory of the source distribution, and is required for the findfalcons utility to run.
 
-Compilation directions are included in the INSTALL.txt file
+Compilation directions are included in the COMPILE.txt file
 
 libnifalcon is now a supported device in the H3D Haptics Framework. More information on this is available at
 

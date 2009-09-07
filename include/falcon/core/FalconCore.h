@@ -16,6 +16,13 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconCore
+ * @ingroup CoreClasses
+ *
+ * FalconCore is a simple base class that all libnifalcon objects derive from. It provides a common error
+ * handling interface to child objects. 
+ */
 	class FalconCore
 	{
 	public:

@@ -25,6 +25,34 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconDevice
+ * @ingroup CoreClasses
+ *
+ * FalconDevice is a conveinence class that ties together all of the components in libnifalcon to create
+ * a simple, usable single object for accessing and controlling a novint falcon. It does this by using
+ * a templated version of the pimpl idiom to fulfill the following behaviors:
+ *
+ * - Communication (set automatically in the constructor)
+ * - Firmware
+ * - Grip
+ * - Kinematics
+ *
+ * Once these behaviors are established, FalconDevice can be used to get/set common parameters (end
+ * effector position, force generation, LED status, button/grip status, etc...) without have to refer
+ * to the specific behavior class.
+ *
+ * The most common use of libnifalcon will look something like
+ *
+ * - Create FalconDevice object
+ * - Set behaviors
+ * - Open device
+ * - Start running the FalconDevice::runIOLoop function until falcon control is no longer needed
+ * - Close device
+ *
+ * All of the above functions can be achieved through using the FalconDevice object.
+ */
+
 	class FalconDevice : public FalconCore
 	{
 	public:

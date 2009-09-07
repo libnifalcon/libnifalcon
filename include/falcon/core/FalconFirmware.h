@@ -3,10 +3,8 @@
  * @brief Base class for firmware policy classes
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @version $Id$
- * @copyright (c) 2007-2008 Nonpolynomial Labs/Kyle Machulis
+ * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
- *
- * $HeadURL$
  *
  * Project info at http://libnifalcon.nonpolynomial.com/
  *
@@ -26,6 +24,22 @@
 
 namespace libnifalcon
 {
+/**
+ * @class FalconFirmware
+ * @ingroup CoreClasses
+ * @ingroup FirmwareClasses
+ *
+ * Firmware dictates the format we talk to the falcon in after we've loaded a certain firmware. We assume all falcon firmware
+ * provides a certain set of functions
+ *
+ * - Setting forces
+ * - Setting LED status
+ * - Getting joint angles
+ * - Getting grip information (buttons pressed, etc...)
+ * - Getting calibration information
+ * 
+ * This class provides the pure virtual functions that need to be filled in by specific firmware implementations.
+ */
 	class FalconFirmware : public FalconCore
 	{
 	public:
@@ -34,14 +48,14 @@ namespace libnifalcon
 			GREEN_LED=0x2,		/**< Flag to control Green LED */
 			BLUE_LED=0x4,		/**< Flag to control Blue LED */
 			RED_LED=0x8			/**< Flag to control Red LED  */
-		};
+		} FalconFirmwareLEDValues;
 
 		enum
 		{
 			ENCODER_1_HOMED = 0x1, /**< Flag for encoder homing for motor 1 */
 			ENCODER_2_HOMED = 0x2, /**< Flag for encoder homing for motor 2 */
 			ENCODER_3_HOMED = 0x4, /**< Flag for encoder homing for motor 3 */
-		};
+		} FalconFirmwareHomingValues;
 
 		enum {
 			FALCON_FIRMWARE_NO_COMM_SET = 3000, /**< Error for no communications policy set */
@@ -49,7 +63,7 @@ namespace libnifalcon
 			FALCON_FIRMWARE_NO_FIRMWARE_LOADED, /**< Error for no firmware loaded */
 			FALCON_FIRMWARE_FILE_NOT_VALID, /**< Error for firmware file missing */
 			FALCON_FIRMWARE_CHECKSUM_MISMATCH /**< Error for checksum mismatch during firmware loading */
-		};
+		} FalconFirmwareErrorValues;
 
 
 		/**
@@ -203,7 +217,8 @@ namespace libnifalcon
 		 * otherwise proper firmware loading events
 		 *
 		 * @param skip_checksum Whether or not to skip checksum tests when loading firmware (useful with ftd2xx on non-windows platforms)
-		 *
+		 * @param firmware_size Size of the raw buffer we're passing to the firmware
+		 * @param buffer Raw buffer loaded with binary falcon firmware
 		 * @return true if firmware is loaded successfully, false otherwise
 		 */
 		bool loadFirmware(bool skip_checksum, const unsigned int& firmware_size, uint8_t* buffer);
