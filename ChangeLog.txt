@@ -2,14 +2,15 @@ libnifalcon ChangeLog
 =====================
 Numbers refer to bug listings for libnifalcon bug tracking system
 
-2009-08-30 Kyle Machulis <kyle@nonpolynomial.com>
-	* Release v1.0
+2009-09-06 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1.0 Final
 	* Upgraded build system support to work with new Compily Buildd system (http://www.github.com/qdot/compily_buildd)
 	* Integrated Alastair Barrow's new kinematics core based on the RL Stamper paper (replacing Kevin Ouellet's implementation)
 	* Added SWIG support with python and java builds and examples
 	* Removed libftdi support since libusb 1.0 works on all platforms and libftdi is the only library using non-polling updates
-	* Defaulted comm libraries in FalconDevice (ftd2xx on windows, libusb-1.0 everywhere else). Developers no longer have class level access to specific comm cores in compiled library.
+	* Defaulted comm libraries in FalconDevice (ftd2xx on windows, libusb-1.0 everywhere else).
 	* Restored falcon_mouse example, since building is more stable
+	* Documented a whole bunch. Doxygen now puts out something resembling a manual.
 	* Decided it was time to kick out of the beta phase and just be done with v1.0.
 2009-05-17 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1 beta 4
