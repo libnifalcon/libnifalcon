@@ -2,7 +2,11 @@
 @mainpage  libnifalcon
 @author kyle@nonpolynomial.com
 
-Cross-platform driver for the novint falcon
+Cross-platform driver for the novint falcon.
+
+Software website: http://libnifalcon.nonpolynomial.com
+
+Novint Falcon website: http://home.novint.com
 
 @section libnifalconIntro Introduction
 
@@ -12,28 +16,43 @@ libnifalcon provides basic functionality to connect to the falcon and load firmw
 
 @section libnifalconDesignOverview Design Overview
 
-Here's where I'd put some design documentation if I had it.
+The main design goal of libnifalcon is to make a driver that's as flexible as the hardware itself. The Novint Falcon provides many extendable features, such as firmware loading and grip switch. We tried to design libnifalcon with the same idea.
+
+Access to the falcon consists of 4 'behaviors':
+
+- Communications - How we talk to the hardware
+- Firmware - How the embedded hardware works and communicates
+- Kinematics - The ability to get the position of the end effector (the grip) and apply forces to it
+- Grip - Access to all the features of any manufactured grip
+
+libnifalcon ships with a stable set of classes implementing all of these behaviors. Each of these behaviors can be switched out as needed under the libnifalcon::FalconDevice class, meaning that the driver can be used both for simple device access, and as well as research on new firmware, grip hardware, and kinematics system. Here's a few ideas for usages of libnifalcon outside of just getting the falcon to work on your non-windows platform:
+
+- Education
+ - Mechanical Engineering (dynamics)
+ - Computer Engineering (hardware drivers, firmware/dsp development)
+ - Computer Science (hardware drivers, software organization)
+ - HCI (haptics, grip development)
+- Audio (physical instrument interfaces)
+- Animatronics
+- Punching anyone who gets too near your falcon
+ 
+@section libnifalconShouldIUseIt Should You Use libnifalcon?
+
+One thing to note if you're new to haptics: libnifalcon is simply a driver for a certain piece of haptics hardware. It is not a haptic scene graph. This means that, while we have examples for implementing collision with some simple geometry, it's not really meant for haptics research usage unless you're looking to do very specific kinematics or grip interface work with this piece of hardware. We expect that libnifalcon will more normally be implemented as part of a larger haptics framework, such as:
+
+- H3D - http://www.h3d.org (libnifalcon support exists in source repository as of August 2009)
+- Chai3d - http://www.chai3d.org/ (not currently directly supported by developers, but soon hopefully!)
 
 @section libnifalconHardwareInformation Hardware Information
 
-Pictures of falcon disassembly, thanks to Kevin Ouellet.
-
-http://picasaweb.google.com/kouellet/FalconProject?authkey=kAvHYd9lo5A
-
-Motors: Mabuchi RS-555PH, number 15280
-
-Inscription on Motor:
-RS-555PH-15280
-(Mabuchi LOGO) MADE IN CHINA
-TD427420
-
-The falcon uses a FTDI FT232R Chip to communicate with the host computer. Datasheet at
-
-http://www.ftdichip.com/Documents/DataSheets/DS_FT232R.pdf
-
-The falcon uses a TI TMS320R2811 DSP Chip for device control. Datasheet at
-
-http://focus.ti.com/docs/prod/folders/print/tms320r2811.html
+- Pictures of falcon disassembly, thanks to Kevin Ouellet - http://picasaweb.google.com/kouellet/FalconProject?authkey=kAvHYd9lo5A
+- Motors
+ - Mabuchi RS-555PH, number 15280
+ - Inscription on Motor: RS-555PH-15280 (Mabuchi LOGO) MADE IN CHINA TD427420
+- Communications Chip: FTDI FT232R
+ - Datasheet: http://www.ftdichip.com/Documents/DataSheets/DS_FT232R.pdf
+- Internal DSP chip for machine control: TI TMS320RMS2811 
+ - Datasheet: http://focus.ti.com/docs/prod/folders/print/tms320r2811.html
 */
 
 /**
