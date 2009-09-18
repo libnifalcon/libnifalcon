@@ -25,7 +25,7 @@ BUILDSYS_BUILD_EXE(
   )
 
 ######################################################################################
-# Build function for findfalcons (C++ version)
+# Build function for findfalcons
 ######################################################################################
 
 SET(SRCS 
@@ -42,6 +42,23 @@ BUILDSYS_BUILD_EXE(
   SHOULD_INSTALL TRUE
   )
 
+######################################################################################
+# Build function for findfalcons_multi
+######################################################################################
+
+SET(SRCS 
+  findfalcons_multi/findfalcons_multi.cpp
+  )
+
+BUILDSYS_BUILD_EXE(
+  NAME findfalcons_multi
+  SOURCES "${SRCS}" 
+  CXX_FLAGS "${DEFINE}" 
+  LINK_LIBS "${LIBNIFALCON_EXE_LINK_LIBS}" 
+  LINK_FLAGS FALSE 
+  DEPENDS ${libnifalcon_LIBRARY}_DEPEND
+  SHOULD_INSTALL TRUE
+  )
 
 ######################################################################################
 # Build function for falcon_led
