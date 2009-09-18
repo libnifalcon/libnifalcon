@@ -33,11 +33,11 @@ static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] -
  * Statically initialize the log4cxx library.
  */
 void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
-  log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
-  log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
-  log4cxx::BasicConfigurator::configure(appender);
-  log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
-  rootlogger->setLevel(level);
+	log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
+	log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
+	log4cxx::BasicConfigurator::configure(appender);
+	log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
+	rootlogger->setLevel(level);
 }
 #endif
 
@@ -83,52 +83,55 @@ void runFalconTest()
 		return;
 	}
 
-	std::cout << "Opening falcon" << std::endl;
-
-	if(!dev.open(0))
+	for(int z = 0; z < num_falcons; ++z)
 	{
-		std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
-		return;
-	}
-	std::cout << "Opened falcon" << std::endl;
+		std::cout << "Opening falcon " << z + 1  << std::endl;
 
-	if(!dev.isFirmwareLoaded())
-	{
-		std::cout << "Loading firmware" << std::endl;
-		for(int i = 0; i < 10; ++i)
+		if(!dev.open(z))
 		{
-			if(!dev.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
-			{
-				std::cout << "Could not load firmware" << std::endl;
-				return;
-			}
-			else
-			{
-				std::cout <<"Firmware loaded" << std::endl;
-				break;
-			}
-		}
-		if(!dev.isFirmwareLoaded())
-		{
-			std::cout << "Firmware didn't load correctly. Try running findfalcons again" << std::endl;
+			std::cout << "Cannot open falcon - Error: " << std::endl; // << dev.getErrorCode() << std::endl;
 			return;
 		}
-	}
+		std::cout << "Opened falcon" << std::endl;
 
-	for(int j = 0; j < 3; ++j)
-	{
-		f->setLEDStatus(2 << (j % 3));
-		for(int i = 0; i < 1000; )
+		if(!dev.isFirmwareLoaded())
 		{
-			if(dev.runIOLoop()) ++i;
-			else continue;
-			printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d \n", (j*1000)+i,  f->getEncoderValues()[0], f->getEncoderValues()[1], f->getEncoderValues()[2]);
-			++count;
+			std::cout << "Loading firmware" << std::endl;
+			for(int i = 0; i < 10; ++i)
+			{
+				if(!dev.getFalconFirmware()->loadFirmware(true, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
+				{
+					std::cout << "Could not load firmware" << std::endl;
+					return;
+				}
+				else
+				{
+					std::cout <<"Firmware loaded" << std::endl;
+					break;
+				}
+			}
+			if(!dev.isFirmwareLoaded())
+			{
+				std::cout << "Firmware didn't load correctly. Try running findfalcons again" << std::endl;
+				return;
+			}
 		}
-	}
-	f->setLEDStatus(0);
-	dev.runIOLoop();
-	dev.close();
+
+		for(int j = 0; j < 3; ++j)
+		{
+			f->setLEDStatus(2 << (j % 3));
+			for(int i = 0; i < 1000; )
+			{
+				if(dev.runIOLoop()) ++i;
+				else continue;
+				printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d \n", (j*1000)+i,  f->getEncoderValues()[0], f->getEncoderValues()[1], f->getEncoderValues()[2]);
+				++count;
+			}
+		}
+		f->setLEDStatus(0);
+		dev.runIOLoop();
+		dev.close();
+	}	
 }
 
 int main(int argc, char** argv)
