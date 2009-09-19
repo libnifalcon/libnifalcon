@@ -9,6 +9,7 @@
  *
  */
 
+#include <boost/bind.hpp>
 #include "falcon/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
@@ -84,9 +85,8 @@ namespace libnifalcon
 		{
 			close();
 		}
-		libusb_free_transfer(in_transfer);
-		libusb_free_transfer(out_transfer);
-		libusb_exit(m_usbContext);
+		reset();
+		//libusb_exit(m_usbContext);
 		delete m_tv;
 		LOG_INFO("Destructing object");
 	}
@@ -108,21 +108,6 @@ namespace libnifalcon
 		LOG_INFO("Setting libusb debug level to 0");
 		libusb_set_debug(m_usbContext, 0);
 #endif
-		out_transfer = libusb_alloc_transfer(0);
-		if (!out_transfer)
-		{
-			m_errorCode = FALCON_COMM_DEVICE_ERROR;
-			LOG_ERROR("Cannot allocate outbound transfer");
-			return false;
-		}
-		in_transfer = libusb_alloc_transfer(0);
-		if (!in_transfer)
-		{
-			m_errorCode = FALCON_COMM_DEVICE_ERROR;
-			LOG_ERROR("Cannot allocate inbound transfer");
-			return false;
-		}
-
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
@@ -238,9 +223,10 @@ namespace libnifalcon
 			LOG_ERROR("Cannot tx purge - Device error code " << m_deviceErrorCode);
 			return false;
 		}
-
+		reset();
 		m_isCommOpen = true;
 		setNormalMode();
+
 		return true;
 	}
 
@@ -254,7 +240,7 @@ namespace libnifalcon
 			return false;
 		}
 		m_isCommOpen = false;
-		reset();
+
 		if ((m_deviceErrorCode = libusb_release_interface(m_falconDevice, 0)) < 0)
 		{
 			m_errorCode = FALCON_COMM_DEVICE_ERROR;
@@ -263,6 +249,7 @@ namespace libnifalcon
 		}
 
 		libusb_close(m_falconDevice);
+		reset();
 		m_falconDevice = NULL;
 		return true;
 	}
@@ -302,9 +289,6 @@ namespace libnifalcon
 			m_bytesAvailable = 0;
 			m_hasBytesAvailable = false;
 		}
-
-
-
 		return true;
 	}
 
@@ -319,6 +303,14 @@ namespace libnifalcon
 		}
 
 		m_lastBytesWritten = size;
+		in_transfer = libusb_alloc_transfer(0);
+		if (!in_transfer)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			LOG_ERROR("Cannot allocate inbound transfer");
+			return false;
+		}
+
 		libusb_fill_bulk_transfer(in_transfer, m_falconDevice, 0x02, buffer,
 								  size, FalconCommLibUSB::cb_in, this, 0);
 		libusb_submit_transfer(in_transfer);
@@ -588,7 +580,7 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::poll()
 	{
-		libusb_handle_events_timeout(NULL, m_tv);
+		libusb_handle_events_timeout(m_usbContext, m_tv);
 	}
 
 	void FalconCommLibUSB::reset()
@@ -616,6 +608,14 @@ namespace libnifalcon
 
 		//Try to read over 64 and you'll fry libusb-1.0. Try to read under
 		//64 and you'll fry OS X. So, read 64.
+		out_transfer = libusb_alloc_transfer(0);
+		if (!out_transfer)
+		{
+			m_errorCode = FALCON_COMM_DEVICE_ERROR;
+			LOG_ERROR("Cannot allocate outbound transfer");
+			return;
+		}
+
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
@@ -638,11 +638,11 @@ namespace libnifalcon
 	void FalconCommLibUSB::cb_in(struct libusb_transfer *transfer)
 	{
 		((FalconCommLibUSB*)transfer->user_data)->setSent();
+		libusb_free_transfer(transfer);
 	}
 
 	void FalconCommLibUSB::cb_out(struct libusb_transfer *transfer)
 	{
-
 		if(transfer->status == LIBUSB_TRANSFER_COMPLETED && transfer->actual_length >= 2)
 		{
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(transfer->actual_length);
@@ -660,6 +660,7 @@ namespace libnifalcon
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(false);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
+		libusb_free_transfer(transfer);
 	}
 
 }
