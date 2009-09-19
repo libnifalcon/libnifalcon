@@ -170,6 +170,7 @@ namespace libnifalcon
 	bool FalconFirmware::isFirmwareLoaded()
 	{
 		resetFirmwareState();
+		m_outputCount = 0;
 		for(unsigned int j = 0; j < 10; ++j)
 		{
 			for(unsigned int i = 0; i < 100; ++i)
