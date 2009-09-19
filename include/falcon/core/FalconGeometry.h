@@ -28,8 +28,8 @@ namespace libnifalcon
 	const static double d = 0.01125; /*!< Length of shin to end effector connection joint, in meters */
 	const static double e = d; /*!< Length of knee to shin connection joint, in meters */
 	const static double f = -0.025; /*!< Length from shin connection point to end effector center, v component, in meters */
-	const static double r = 0.02309; /*!< Distance from fixed frame origin to leg base, u component, in meters */
-	const static double s = -0.0400; /*!< Distance from fixed frame origin to leg base, v component, in meters */
+	const static double r = 0.0400; /*!< Distance from fixed frame origin to leg base, u component, in meters */
+	const static double s = -0.02309; /*!< Distance from fixed frame origin to leg base, v component, in meters */
 
 	const static double PI = 3.14159265; /*!< PI Constant, to save having to include one */
 	const static double OFFSET_ANGLE = (PI/12); /*!< Offset of each axis from the desk plane (15 degrees) */
