@@ -2,6 +2,13 @@ libnifalcon ChangeLog
 =====================
 Numbers refer to bug listings for libnifalcon bug tracking system
 
+2009-09-20 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1.0.1
+	* Fixed bug with connecting to/using multiple falcons using libusb communications
+	* Added adjusted geometry measurements by Niall Begley
+	* Fixed bug with reloading firmware through reused FalconDevice object
+	* Added ability to test multiple falcons to findfalcons
+	* Added findfalcons_multi example to test multiple falcons with simultanious access
 2009-09-06 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1.0 Final
 	* Upgraded build system support to work with new Compily Buildd system (http://www.github.com/qdot/compily_buildd)

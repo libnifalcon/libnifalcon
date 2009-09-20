@@ -1,7 +1,7 @@
 libnifalcon 
 ===========
 Kyle Machulis <kyle@nonpolynomial.com>
-Version 1.0.0, August 30, 2009
+Version 1.0.1, September 20, 2009
 
 == Description ==
 
@@ -72,7 +72,8 @@ With libnifalcon, you get
 * libnifalcon_boost_thread (optional, requires boost::thread library)
 ** Provides example of threaded device support for the falcon
 * Example Programs (all require libnifalcon, plus other libraries as specified)
-** findfalcons - Prints out the number of falcon devices connected, opens first one, runs simple test (changes LED color, runs a few thousand I/O loops). Good for making sure things 'just work'.
+** findfalcons - Prints out the number of falcon devices connected, opens each of them (one at a time), runs simple test (changes LED color, runs a few thousand I/O loops). Good for making sure things 'just work'.
+** findfalcons_multi - Same as findfalcons, but all falcons at once. For testing multiple communications/devices.
 ** barrow_mechanics - Alastair Barrow's original implementation of the RL Stamper kinematics system used in the libnifalcon kinematics core
 ** falcon_led (requires libnifalcon_cli_base) - Simple example application for extending FalconCLIBase class.
 ** falcon_mouse (requires libnifalcon_cli_base) - Lets the falcon position control the mouse cursor
@@ -106,7 +107,11 @@ Kinematics development by Kevin Ouellet and Alastair Barrow
 
 Contributions by 
 Jared Allen
+Alastair Barrow
+Niall Begley
 Edgar Berdahl
+Steven Martin
+Kevin Ouellet
 Devanshi Shah
 Stephen Sinclair
 
@@ -120,6 +125,49 @@ libnifalcon is Copyright 2007-2009 Kyle Machulis/Nonpolynomial Labs
 
 libnifalcon Kinematics Core is Copyright 2007-2008 Kevin Ouellet, 2009 Alastair Barrow, 2007-2009 Kyle Machulis
 
-libnifalcon uses GMTL, which is licensed under LGPL 3.0 with header exception.
+libnifalcon uses GMTL, part of GGT, which is licensed under LGPL 3.0 with header exception.
+
+---------------------
+
+GGT: The Generic Graphics Toolkit
+Copyright (C) 2001,2002 Allen Bierbaum
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+---------------------
 
 On some platforms, libnifalcon uses libusb-1.0, which is licensed under LGPL 2.1.
+
+---------------------
+
+libusb 1.0
+Copyright (C) 2007-2008 Daniel Drake <dsd@gentoo.org>
+Copyright (c) 2001 Johannes Erdfelt <johannes@erdfelt.com>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+---------------------
