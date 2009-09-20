@@ -126,22 +126,24 @@ void runFalconTest()
 		}
 	}
 
-	/*
-	
-	for(int j = 0; j < 3; ++j)
+	for(int i = 0; i < num_falcons; ++i)
 	{
-		f->setLEDStatus(2 << (j % 3));
-		for(int i = 0; i < 1000; )
+		f = dev[i].getFalconFirmware();
+		for(int j = 0; j < 3; ++j)
 		{
-			if(dev.runIOLoop()) ++i;
-			else continue;
-			printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d \n", (j*1000)+i,  f->getEncoderValues()[0], f->getEncoderValues()[1], f->getEncoderValues()[2]);
-			++count;
+			f->setLEDStatus(2 << (j % 3));
+			for(int k = 0; k < 1000; )
+			{
+				if(dev[i].runIOLoop()) ++k;
+				else continue;
+				printf("Loops: %8d | Enc1: %5d | Enc2: %5d | Enc3: %5d \n", (j*1000)+k,  f->getEncoderValues()[0], f->getEncoderValues()[1], f->getEncoderValues()[2]);
+				++count;
+			}
 		}
+		f->setLEDStatus(0);
+		dev[i].runIOLoop();
 	}
-	f->setLEDStatus(0);
-	dev.runIOLoop();
-	*/
+
 	for(int i = 0; i < num_falcons; ++i)
 	{
 		dev[i].close();
