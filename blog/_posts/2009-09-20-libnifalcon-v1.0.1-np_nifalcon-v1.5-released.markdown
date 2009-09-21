@@ -24,7 +24,7 @@ Next up, np\_nifalcon, the external for [Max/MSP][2] and [PureData][3], has been
 
 Source and some binary packages are available at
 
-[https://sourceforge.net/projects/libnifalcon/files/libnifalcon Max_Pd External/1.5/][4]
+[https://sourceforge.net/projects/libnifalcon/files/libnifalcon Max\_Pd External/1.5/][4]
 
 Finally, to show off some of what's been going on with people using libnifalcon, here's a video of the library being used with [HAPI][5], [Blender Game Engine][6] and [Bullet][7]
 
@@ -33,7 +33,7 @@ Finally, to show off some of what's been going on with people using libnifalcon,
 [1]: https://sourceforge.net/projects/libnifalcon/files/libnifalcon/1.0.1/
 [2]: http://www.cycling74.com
 [3]: http://www.puredata.info
-[4]: https://sourceforge.net/projects/libnifalcon/files/libnifalcon%20Max_Pd%20External/1.5/
+[4]: https://sourceforge.net/projects/libnifalcon/files/libnifalcon Max_Pd External/1.5/
 [5]: http://www.h3d.org
 [6]: http://www.blender.org
 [7]: http://www.bulletphysics.com
