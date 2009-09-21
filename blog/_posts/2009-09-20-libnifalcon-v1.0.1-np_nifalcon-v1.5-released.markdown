@@ -14,13 +14,13 @@ Change List:
 * Added adjusted geometry measurements by Niall Begley
 * Fixed bug with reloading firmware through reused FalconDevice object
 * Added ability to test multiple falcons to findfalcons
-* Added findfalcons_multi example to test multiple falcons with simultanious access
+* Added findfalcons\_multi example to test multiple falcons with simultanious access
 
 Files are available at
 
 [https://sourceforge.net/projects/libnifalcon/files/libnifalcon/1.0.1/][1]
 
-Next up, np_nifalcon, the external for [Max/MSP][2] and [PureData][3], has been updated to version 1.5. I basically rewrote the external, it's much more stable now, as well as providing more management options for users. 
+Next up, np\_nifalcon, the external for [Max/MSP][2] and [PureData][3], has been updated to version 1.5. I basically rewrote the external, it's much more stable now, as well as providing more management options for users. 
 
 Source and some binary packages are available at
 
