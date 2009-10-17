@@ -649,13 +649,11 @@ namespace libnifalcon
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(true);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
 		}
-		//We will always at least get modem status bytes back
-		//If we get nothing back, we have disconnected.
-		//Thanks to Devanshi Shah for this fix.
 		else
 		{
-			LOG_ERROR("Device disconnected");
-			((FalconCommLibUSB*)transfer->user_data)->m_isCommOpen = false;
+			// We can't assume 0 bytes back = disconnected on linux, as it causes massive problems
+			// with other applications (mainly Pd). So, just set that we got nothing back and try to figure out
+			// some other way to detect unplugs
 			((FalconCommLibUSB*)transfer->user_data)->setBytesAvailable(0);
 			((FalconCommLibUSB*)transfer->user_data)->setHasBytesAvailable(false);
 			((FalconCommLibUSB*)transfer->user_data)->setReceived();
