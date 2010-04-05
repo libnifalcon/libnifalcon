@@ -24,6 +24,7 @@
 #include "falcon/util/FalconCLIBase.h"
 #include "FalconLoopTimeTest.h"
 #include "FalconCubeTest.h"
+#include "FalconSphereTest.h"
 #include "FalconWallTest.h"
 #include "FalconColorTest.h"
 
@@ -60,6 +61,7 @@ public:
 			("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
 #endif
 			("cube_test", "Presents a cube-shaped surface to touch")
+			("sphere_test", "Presents a sphere-shaped surface to touch")
 			("color_test", "Fades LEDs based on the position of the end effector")
 			("x_wall_test", "Presents a wall surface to touch (force along x axis)")
 			("y_wall_test", "Presents a wall surface to touch (force along y axis)")
@@ -83,6 +85,12 @@ public:
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running cube test" << std::endl;
 			t.reset(new FalconCubeTest(m_falconDevice));
+		}
+		else if(m_varMap.count("sphere_test"))
+		{
+			while(!calibrateDevice() && !stop);
+			std::cout << "Running sphere test" << std::endl;
+			t.reset(new FalconSphereTest(m_falconDevice));
 		}
 		else if(m_varMap.count("color_test"))
 		{

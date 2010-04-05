@@ -154,8 +154,12 @@ namespace libnifalcon
 		}
 		else
 		{
-			std::cout << "No device index specified to open, cannot continue (--help for options)" << std::endl;
-			return false;
+                        // assume device index 0, if none given
+			if(!m_falconDevice->open(0))
+			{
+				std::cout << "Cannot open falcon device index 0 - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
+				return false;
+			}
 		}
 
 		//There's only one kind of firmware right now, so automatically set that.
@@ -256,26 +260,20 @@ namespace libnifalcon
 
 	bool FalconCLIBase::calibrateDevice()
 	{
-		bool homing = false;
 		m_falconDevice->getFalconFirmware()->setHomingMode(true);
 		m_falconDevice->runIOLoop();
 		if(!m_falconDevice->getFalconFirmware()->isHomed())
 		{
-			if(!homing)
+			m_falconDevice->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::RED_LED);
+			if(m_displayCalibrationMessage)
 			{
-				m_falconDevice->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::RED_LED);
-				if(m_displayCalibrationMessage)
-				{
-					std::cout << "Falcon not currently calibrated. Move control all the way out then push straight all the way in." << std::endl;
-					m_displayCalibrationMessage = false;
-				}
+				std::cout << "Falcon not currently calibrated. Move control all the way out then push straight all the way in." << std::endl;
+				m_displayCalibrationMessage = false;
 			}
-			homing = true;
 			return false;
 		}
 		std::cout << "Falcon calibrated successfully." << std::endl;
 		m_falconDevice->getFalconFirmware()->setLEDStatus(libnifalcon::FalconFirmware::GREEN_LED);
-		homing = false;
 		return true;
 	}
 }

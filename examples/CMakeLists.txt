@@ -96,6 +96,7 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     falcon_test_cli/FalconTestBase.cpp 
     falcon_test_cli/FalconLoopTimeTest.cpp 
     falcon_test_cli/FalconCubeTest.cpp 
+    falcon_test_cli/FalconSphereTest.cpp 
     falcon_test_cli/FalconWallTest.cpp 
     falcon_test_cli/FalconColorTest.cpp
     )

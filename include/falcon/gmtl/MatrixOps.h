@@ -436,7 +436,7 @@ namespace gmtl
    {
       //gmtlASSERT( ROWS == COLS && "invertFull only works with nxn matrices" );
 
-      const DATA_TYPE pivot_eps(1e-20);         // Epsilon for the pivot value test (delta with test against zero)
+      const DATA_TYPE pivot_eps(1e-10);         // Epsilon for the pivot value test (delta with test against zero)
 
       // Computer inverse of matrix using a Gaussian-Jordan elimination.
       // Uses max pivot at each point
@@ -468,7 +468,7 @@ namespace gmtl
 
          if(gmtl::Math::isEqual(DATA_TYPE(0),pivot_value,pivot_eps))
          {
-            std::cerr << "*** pivot = " << pivot_value << " in mat_inv. ***\n";
+            // std::cerr << "*** pivot = " << pivot_value << " in mat_inv. ***\n";
             result.setError();
             return result;
          }
@@ -551,6 +551,7 @@ namespace gmtl
              n        dimenstion of matrix a.
       */
 
+      const DATA_TYPE pivot_eps(1e-10);         // Epsilon for the pivot value test (delta with test against zero)
       const DATA_TYPE* a = src.getData();
       DATA_TYPE* b = result.mData;
 
@@ -601,9 +602,9 @@ namespace gmtl
          pivot = m[ r[ k] ][ c[ k] ];
 
 
-         if ( gmtl::Math::abs( pivot) <= 1e-20)
+         if ( gmtl::Math::abs( pivot) <= pivot_eps)
          {
-            std::cerr << "*** pivot = " << pivot << " in mat_inv. ***\n";
+            // std::cerr << "*** pivot = " << pivot << " in mat_inv. ***\n";
             result.setError();
             return result;
          }
