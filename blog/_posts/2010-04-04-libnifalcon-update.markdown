@@ -18,5 +18,4 @@ Plans for the near future:
 
 * Finally releasing binary libraries, because apparently building libnifalcon is kinda hard (not disputing that, I need some work on the build system)
 * Possibly start looking at grip circuits
-* Optimization of communications
-  * We've found that on OS X, at least, the falcon takes around 20% cpu per device running due to the polling calls. This seems kind of high, and means you can't run 4+ on one machine.
+* Optimization of communications - We've found that on OS X, at least, the falcon takes around 20% cpu per device running due to the polling calls. This seems kind of high, and means you can't run 4+ on one machine.
