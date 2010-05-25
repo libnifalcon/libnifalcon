@@ -26,15 +26,21 @@ namespace libnifalcon
 	{
 	public:
 		/**
-		 * Enumeration for the default 4 button grip that comes with the falcon
-		 *
+		 * Enumeration for the default 4 button grip that comes with the falcon.
+		 * This grip has plus and minus buttonsr, one button in the center and 
+		 * one pointing forward. For convenience also symbolic names are provided.
 		 */
 		enum
 		{
 			BUTTON_1 = 0x1,
 			BUTTON_2 = 0x2,
 			BUTTON_3 = 0x4,
-			BUTTON_4 = 0x8
+			BUTTON_4 = 0x8,
+		/* symbolic names */
+			PLUS_BUTTON    = 0x1,
+			FORWARD_BUTTON = 0x2,
+			CENTER_BUTTON  = 0x4,
+			MINUS_BUTTON   = 0x8
 		} FourButtonGripButtons;
 		
 		/**

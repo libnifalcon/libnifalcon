@@ -49,7 +49,7 @@ void FalconSphereTest::runFunction()
 
 	// increase radius
 	if(m_falconDevice->getFalconGrip()->getDigitalInputs() 
-	   & libnifalcon::FalconGripFourButton::BUTTON_1)
+	   & libnifalcon::FalconGripFourButton::PLUS_BUTTON)
 	{
 		m_plusButtonDown = true;
 	}
@@ -63,7 +63,7 @@ void FalconSphereTest::runFunction()
 
 	// decrease radius
 	if(m_falconDevice->getFalconGrip()->getDigitalInputs() 
-	   & libnifalcon::FalconGripFourButton::BUTTON_4)
+	   & libnifalcon::FalconGripFourButton::MINUS_BUTTON)
 	{
 		m_minusButtonDown = true;
 	}
@@ -75,23 +75,35 @@ void FalconSphereTest::runFunction()
 		return;
 	}
 
-	// make sphere soft radius
 	if(m_falconDevice->getFalconGrip()->getDigitalInputs() 
-	   & libnifalcon::FalconGripFourButton::BUTTON_3)
-	{
-		m_stiffness = 100.0;
-	} else{
-		m_stiffness = 1000.0;
-	}
-
-
-	// make sphere soft sticky
-	if(m_falconDevice->getFalconGrip()->getDigitalInputs() 
-	   & libnifalcon::FalconGripFourButton::BUTTON_2)
+	   & libnifalcon::FalconGripFourButton::FORWARD_BUTTON)
 	{
 		m_forwardButtonDown = true;
 	} else{
 		m_forwardButtonDown = false;
+	}
+
+	// make sphere soft radius or "slippery"
+	if(m_falconDevice->getFalconGrip()->getDigitalInputs() 
+	   & libnifalcon::FalconGripFourButton::CENTER_BUTTON)
+	{
+		if(m_forwardButtonDown)
+		{
+			m_stiffness = -300.0;
+                } 
+                else 
+                {
+			m_stiffness = 1000.0;
+                }
+	} else{
+                if(m_forwardButtonDown)
+                {
+			m_stiffness = 500.0;
+		} 
+		else 
+		{
+			m_stiffness = 100.0;
+		}
 	}
 
 
