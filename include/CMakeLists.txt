@@ -18,7 +18,6 @@ INSTALL(DIRECTORY
 INSTALL(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconFirmwareBinaryTest.h
   ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconFirmwareBinaryNvent.h
-  CONFIGURATIONS Debug Release
   DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util
 )
 
