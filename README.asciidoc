@@ -48,16 +48,14 @@ http://www.libusb.org/
 libnifalcon can use two different libraries to access the falcon:
 
 FTD2XX - Library distributed by FTDI themselves
-Windows: OK - RECOMMENDED
-Linux: Untested
-64-bit Linux: Untested
-OS X: Untested
+* Windows: OK - RECOMMENDED
+* Linux: Untested
+* OS X: Untested
 
 libusb-1.0 (use whatever the latest version is. As of this writing, 1.0.2):
-Windows: Not Available for Windows
-Linux: OK - RECOMMENDED
-64-bit Linux: OK - RECOMMENDED
-OS X: OK - RECOMMENDED
+* Windows: Not Available for Windows
+* Linux: OK - RECOMMENDED
+* OS X: OK - RECOMMENDED
 
 Note that libnifalcon has been written in such a way that which comm library you use should have little effect on the cross-platform performance of your code. However, this is more of a hope than a promise.
 
@@ -100,21 +98,20 @@ With libnifalcon, you get
 
 == Credits ==
 
-libnifalcon is developed and maintained and generally the fault of Kyle Machulis
-More information on Kyle can be found at Nonpolynomial Labs - http://www.nonpolynomial.com
+libnifalcon is developed and maintained and generally the fault of Kyle Machulis. More information on Kyle can be found at Nonpolynomial Labs - http://www.nonpolynomial.com
 
 Kinematics development by Kevin Ouellet and Alastair Barrow
 
 Contributions by 
-Jared Allen
-Alastair Barrow
-Niall Begley
-Edgar Berdahl
-Axel Kohlmeyer
-Steven Martin
-Kevin Ouellet
-Devanshi Shah
-Stephen Sinclair
+* Jared Allen
+* Alastair Barrow
+* Niall Begley
+* Edgar Berdahl
+* Axel Kohlmeyer
+* Steven Martin 
+* Kevin Ouellet
+* Devanshi Shah
+* Stephen Sinclair
 
 == Licenses ==
 
