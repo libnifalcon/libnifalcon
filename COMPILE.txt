@@ -44,8 +44,8 @@ cmake will search for any required libraries, and complain if you are missing an
 
 All NP labs libraries are compiled and tested on the following platforms:
 
-- Windows (XP Pro, mingw (gcc 4.4.0 TDM) and/or Visual Studio 2008)
-- OS X (10.5, Intel, gcc 4)
-- Linux (Ubuntu 8.04, gcc 4.3)
+- Windows (XP Pro/Win7, mingw (gcc 4.4.0 TDM) and/or Visual Studio 2008)
+- OS X (10.5/10.6, Intel, gcc 4)
+- Linux (Ubuntu 10.10, gcc 4.4)
 
 There is no guarentee a library will work on all platforms, or there may be different dependencies for different platforms. Compatibility issues with outside libraries may exist. If these happen, they will be listed in the README.txt file under "Platform Specific Issues". 
