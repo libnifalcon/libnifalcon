@@ -2,6 +2,12 @@ libnifalcon ChangeLog
 =====================
 Numbers refer to bug listings for libnifalcon bug tracking system
 
+2010-10-27 Kyle Machulis <kyle@nonpolynomial.com>
+	* Release v1.0.2
+	* Fixed include path for libusb to contain include directory
+	* Fixed various build system bugs
+	* Updated version of compily_buildd
+	* Added package files for Macports (Thanks to John Richards) and homebrew on OS X
 2009-09-20 Kyle Machulis <kyle@nonpolynomial.com>
 	* Release v1.0.1
 	* Fixed bug with connecting to/using multiple falcons using libusb communications
