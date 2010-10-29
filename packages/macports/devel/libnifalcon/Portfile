@@ -5,7 +5,7 @@
 PortSystem  1.0
 
 name        libnifalcon
-version     1.0.1
+version     1.0.2
 categories  devel
 platforms   darwin
 
@@ -24,15 +24,13 @@ depends_lib port:cmake \
             port:boost \
             port:libusb
 
-patchfiles patch-CMakeLists.txt.diff
-
 post-extract {
     file mkdir ${worksrcpath}/build
 }
 
 configure {
     system "cd ${worksrcpath}/build \
-            && cmake -DCMAKE_INSTALL_PREFIX=${prefix} -DPREFIX_DIR=${prefix} -G \"Unix Makefiles\" .."
+            && cmake -DCMAKE_INSTALL_PREFIX=${prefix} -G \"Unix Makefiles\" .."
 }
 
 build.dir       ${worksrcpath}/build
