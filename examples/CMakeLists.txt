@@ -67,7 +67,7 @@ BUILDSYS_BUILD_EXE(
 #Can't compile without program options
 IF(NOT Boost_PROGRAM_OPTIONS_FOUND)
   MESSAGE("Cannot compile falcon_led - Missing Boost Program Options")
-ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
+ELSE()
   SET(SRCS 
     falcon_led/falcon_led.cpp
     )
@@ -81,16 +81,7 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     DEPENDS nifalcon_cli_base_DEPEND
     SHOULD_INSTALL TRUE
     )
-ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
 
-######################################################################################
-# Build function for falcon_test_cli
-######################################################################################
-
-#Can't compile without program options
-IF(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  MESSAGE("Cannot compile falcon_test_cli - Missing Boost Program Options")
-ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
   SET(SRCS 
     falcon_test_cli/falcon_test_cli.cpp 
     falcon_test_cli/FalconTestBase.cpp 
@@ -110,7 +101,7 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     DEPENDS nifalcon_cli_base_DEPEND
     SHOULD_INSTALL TRUE
     )
-ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
+ENDIF()
 
 ######################################################################################
 # Build function for falcon_mouse

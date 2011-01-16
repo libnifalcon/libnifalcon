@@ -52,7 +52,7 @@ OPTION_GPROF(OFF)
 #Project specific options
 
 OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
-OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
+OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries on windows)" OFF)
 OPTION(BUILD_SWIG_BINDINGS "Build Java/Python bindings for libnifalcon" OFF)
 OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 
@@ -63,16 +63,12 @@ OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 #Find communications libraries
 IF(WIN32 OR FORCE_FTD2XX_BUILD)
   FIND_PACKAGE(libftd2xx REQUIRED)
-  IF(LIBFTD2XX_FOUND)
-    INCLUDE_DIRECTORIES(${LIBFTD2XX_INCLUDE_DIRS})
-    SET(LIBNIFALCON_REQ_LIBS ${LIBFTD2XX_LIBRARIES})
-  ENDIF(LIBFTD2XX_FOUND)
+  INCLUDE_DIRECTORIES(${LIBFTD2XX_INCLUDE_DIRS})
+  SET(LIBNIFALCON_REQ_LIBS ${LIBFTD2XX_LIBRARIES})
 ELSEIF(UNIX)
   FIND_PACKAGE(libusb-1.0 REQUIRED)
-  IF(LIBUSB_1_FOUND)
-    INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIRS})
-    SET(LIBNIFALCON_REQ_LIBS ${LIBUSB_1_LIBRARIES})
-  ENDIF(LIBUSB_1_FOUND)
+  INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIRS})
+  SET(LIBNIFALCON_REQ_LIBS ${LIBUSB_1_LIBRARIES})
 ENDIF()
 
 IF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
@@ -81,14 +77,11 @@ ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
 
 #Find boost, used all over the place
 SET(Boost_USE_MULTITHREADED ON)
-SET(Boost_USE_STATIC_LIBS ON)
-
-FIND_PACKAGE(Boost REQUIRED)
-IF(NOT Boost_FOUND)
-  MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
-ENDIF(NOT Boost_FOUND)
 
 FIND_PACKAGE(Boost COMPONENTS program_options thread)
+IF(NOT Boost_FOUND)
+  MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.40 headers to build")
+ENDIF(NOT Boost_FOUND)
 
 ######################################################################################
 # Project specific globals
