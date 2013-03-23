@@ -248,8 +248,8 @@ namespace libnifalcon
 			return false;
 		}
 
-		libusb_close(m_falconDevice);
 		reset();
+		libusb_close(m_falconDevice);
 		m_falconDevice = NULL;
 		return true;
 	}

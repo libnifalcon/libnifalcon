@@ -16,12 +16,15 @@
 namespace libnifalcon
 {
 
-	FalconDeviceBoostThread::FalconDeviceBoostThread() : m_runThreadLoop(false)
+	FalconDeviceBoostThread::FalconDeviceBoostThread() :
+		m_runThreadLoop(false),
+		m_ioThread((boost::thread*)NULL)
 	{
 	}
 
 	FalconDeviceBoostThread::~FalconDeviceBoostThread()
 	{
+    stopThread();
 	}
 
 	void FalconDeviceBoostThread::getPosition(boost::array<double, 3>& pos)
@@ -51,5 +54,7 @@ namespace libnifalcon
 	void FalconDeviceBoostThread::stopThread()
 	{
 		m_runThreadLoop = false;
+    if(m_ioThread)
+      m_ioThread->join();
 	}
 }

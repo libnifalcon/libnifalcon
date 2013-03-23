@@ -35,6 +35,7 @@ namespace libnifalcon
 
     FalconDevice::~FalconDevice()
 	{
+    close();
 	}
 
     bool FalconDevice::getDeviceCount(unsigned int& count)
