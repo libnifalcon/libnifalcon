@@ -6,6 +6,7 @@ SET(LIBNIFALCON_EXE_PO_LINK_LIBS
   ${libnifalcon_cli_base_LIBRARY}
   ${LIBNIFALCON_EXE_LINK_LIBS} 
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
   )
 
 ######################################################################################
