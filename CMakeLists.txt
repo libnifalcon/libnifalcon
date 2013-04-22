@@ -70,7 +70,7 @@ IF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
 ENDIF(NOT Boost_FOUND)
 
-FIND_PACKAGE(Boost COMPONENTS program_options thread)
+FIND_PACKAGE(Boost COMPONENTS program_options thread system)
 
 ######################################################################################
 # Project specific globals
