@@ -33,8 +33,13 @@ IF(Boost_THREAD_FOUND)
   SET(CPP_LINK_LIBS 
     ${libnifalcon_LIBRARY}
     ${LIBNIFALCON_REQ_LIBS}
-    ${Boost_THREAD_LIBRARY}
+    ${Boost_THREAD_LIBRARY}	
     )
+
+  # Boost thread requires system since 1.5x
+  IF(Boost_SYSTEM_FOUND)
+    LIST(APPEND CPP_LINK_LIBS "${Boost_SYSTEM_LIBRARY}")
+  ENDIF()
 
   SET(SRCS
 	"FalconDeviceBoostThread.cpp" 
