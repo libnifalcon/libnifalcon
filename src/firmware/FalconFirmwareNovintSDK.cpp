@@ -40,48 +40,46 @@ namespace libnifalcon
 	{
 		bool ret_val = false;
 		//m_rawData[m_rawDataSize] = 0;
+        m_currentOutputIndex = 0;
 		for(int i = 0; i < m_rawDataSize; ++i)
 		{
 			ret_val = false;
 			//Skip up to the next valid packet if need be
-			if(m_currentOutputIndex == 0)
-			{
-				if(m_rawData[i] != '<') continue;
-			}
-			m_rawOutputInternal[m_currentOutputIndex] = m_rawData[i];
-			++m_currentOutputIndex;
-			if(m_currentOutputIndex == 16 && m_rawOutputInternal[m_currentOutputIndex - 1] == '>')
-			{
-				memcpy(m_rawOutput, m_rawOutputInternal, 16);
-				//Turn motor values into system specific ints
-				int i;
-				m_homingStatus = 0;
-				for(i = 0; i < 3; ++i)
-				{
-					int idx = 1 + (i*4);
-					//We're getting a signed short int off the wire
-					int16_t val =
-						(((*(m_rawOutput+idx) - 0x41) & 0xf)) |
-						(((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
-						(((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
-						(((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
-					//Now convert into full system int since the compiler will
-					//do the sign move for us
-					m_encoderValues[i] = val;
-					//Shift value down a nibble for homing status
-					m_homingStatus |= ((m_rawOutput[13] - 0x41) >> 4) & (1 << i);
-					m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
-				}
-				m_currentOutputIndex = 0;
-				ret_val = true;
-				++m_outputCount;
-			}
-			else if(m_currentOutputIndex == 16)
-			{
-				LOG_WARN("Clearing malformed packet!");
-				m_currentOutputIndex = 0;
-			}
-		}
+			if(m_currentOutputIndex == 0 && m_rawData[i] != '<') continue;
+
+            ++m_currentOutputIndex;
+            if(m_currentOutputIndex == 16 && m_rawData[i] == '>')
+            {
+                memcpy(m_rawOutput, &m_rawData[i-15], 16);
+                //Turn motor values into system specific ints
+                int i;
+                for(i = 0; i < 3; ++i)
+                {
+                    int idx = 1 + (i*4);
+                    //We're getting a signed short int off the wire
+                    int16_t val =
+                    (((*(m_rawOutput+idx) - 0x41) & 0xf)) |
+                    (((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
+                    (((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
+                    (((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
+                    //Now convert into full system int since the compiler will
+                    //do the sign move for us
+                    m_encoderValues[i] = val;
+                }
+                //Shift value down a nibble for homing status
+                m_homingStatus = ((m_rawOutput[13] - 0x41) >> 4) & 7;
+                m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
+                
+                m_currentOutputIndex = 0;
+                ret_val = true;
+                ++m_outputCount;
+            }
+            else if(m_currentOutputIndex == 16 || m_rawData[i] == '>')
+            {
+                LOG_WARN("Clearing malformed packet!");
+                m_currentOutputIndex = 0;
+            }
+        }
 		return ret_val;
 	}
 
