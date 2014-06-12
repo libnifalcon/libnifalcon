@@ -7,7 +7,7 @@
 class FalconWallTest : public FalconTestBase
 {
 public:
-	FalconWallTest(boost::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis);
+	FalconWallTest(std::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis);
 protected:
 	void runFunction();
 

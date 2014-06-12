@@ -7,7 +7,7 @@
 class FalconCubeTest : public FalconTestBase
 {
 public:
-	FalconCubeTest(boost::shared_ptr<libnifalcon::FalconDevice> d);
+	FalconCubeTest(std::shared_ptr<libnifalcon::FalconDevice> d);
 protected:
 	double m_stiffness;
 	gmtl::Vec3f m_cornerA;

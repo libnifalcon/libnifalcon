@@ -3,7 +3,7 @@
 #include "falcon/core/FalconDevice.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconCubeTest::FalconCubeTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+FalconCubeTest::FalconCubeTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 	FalconTestBase(d),
 	m_cornerA(-.030, -.030, .095),
 	m_cornerB(.030, .030, .155 ),

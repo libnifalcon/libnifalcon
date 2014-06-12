@@ -75,7 +75,7 @@ namespace libnifalcon
 		/**
 		 * Internal thread object
 		 */
-		boost::shared_ptr<boost::thread> m_ioThread;
+		std::shared_ptr<boost::thread> m_ioThread;
 
 		/**
 		 * Internal position storage

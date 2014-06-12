@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <deque>
 #include <array>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "falcon/core/FalconComm.h"
 #include "falcon/core/FalconLogger.h"
 
@@ -193,7 +193,7 @@ namespace libnifalcon
 		 *
 		 * @param f Pointer to the communications object
 		 */
-		void setFalconComm(boost::shared_ptr<FalconComm> f) { m_falconComm = f; }
+		void setFalconComm(std::shared_ptr<FalconComm> f) { m_falconComm = f; }
 
 		/**
 		 * Checks to see if firmware is loaded by running IO loop 10 times, returning true on first success
@@ -266,7 +266,7 @@ namespace libnifalcon
 		 */		
 		uint64_t getLoopCount() { return m_loopCount; }
 	protected:
-		boost::shared_ptr<FalconComm> m_falconComm; /**< Communications object for I/O */
+		std::shared_ptr<FalconComm> m_falconComm; /**< Communications object for I/O */
 		std::string m_firmwareFilename; /**< Filename of the firmware to load */
 		bool m_isFirmwareLoaded; /**< True if firmware has been loaded, false otherwise */
 

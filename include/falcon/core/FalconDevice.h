@@ -14,7 +14,6 @@
 
 #include <iostream>
 #include <string>
-#include <boost/shared_ptr.hpp>
 #include <array>
 #include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconCore.h"
@@ -216,28 +215,28 @@ namespace libnifalcon
 		 *
 		 * @return Non-smart pointer to internal falcon communications object
 		 */
-		boost::shared_ptr<FalconComm> getFalconComm() { return m_falconComm; }
+		std::shared_ptr<FalconComm> getFalconComm() { return m_falconComm; }
 
 		/**
 		 * Get firmware behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon firmware object
 		 */
-		boost::shared_ptr<FalconFirmware> getFalconFirmware() { return m_falconFirmware; }
+		std::shared_ptr<FalconFirmware> getFalconFirmware() { return m_falconFirmware; }
 
 		/**
 		 * Get grip behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon grip object
 		 */
-		boost::shared_ptr<FalconGrip> getFalconGrip() { return m_falconGrip; }
+		std::shared_ptr<FalconGrip> getFalconGrip() { return m_falconGrip; }
 
 		/**
 		 * Get kinematic behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon kinematic object
 		 */
-		boost::shared_ptr<FalconKinematic> getFalconKinematic() { return m_falconKinematic; }
+		std::shared_ptr<FalconKinematic> getFalconKinematic() { return m_falconKinematic; }
 
 		/**
 		 * Checks whether the falcon communications are open
@@ -261,10 +260,10 @@ namespace libnifalcon
 		unsigned int getErrorCount() { return m_errorCount; }
 	protected:
 		unsigned int m_errorCount;	/**< Number of errors in I/O loops */
-		boost::shared_ptr<FalconComm> m_falconComm; /**< Falcon communication object */
-		boost::shared_ptr<FalconKinematic> m_falconKinematic; /**<  Falcon kinematics object */
-		boost::shared_ptr<FalconFirmware> m_falconFirmware; /**<  Falcon firmware object */
-		boost::shared_ptr<FalconGrip> m_falconGrip; /**< Falcon grip object */
+		std::shared_ptr<FalconComm> m_falconComm; /**< Falcon communication object */
+		std::shared_ptr<FalconKinematic> m_falconKinematic; /**<  Falcon kinematics object */
+		std::shared_ptr<FalconFirmware> m_falconFirmware; /**<  Falcon firmware object */
+		std::shared_ptr<FalconGrip> m_falconGrip; /**< Falcon grip object */
 		std::array<double, 3> m_position;	/**< Current position in 3D cartesian coordinates */
 		std::array<double, 3> m_forceVec;	/**< Current force in 3D cartesian coordinates */
 	private:

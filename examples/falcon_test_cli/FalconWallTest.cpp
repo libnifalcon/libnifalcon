@@ -4,7 +4,7 @@
 #include "falcon/grip/FalconGripFourButton.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconWallTest::FalconWallTest(boost::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis) :
+FalconWallTest::FalconWallTest(std::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis) :
 	FalconTestBase(d),
 	m_axisBounds(0, 0, .130),
 	m_stiffness(1000),

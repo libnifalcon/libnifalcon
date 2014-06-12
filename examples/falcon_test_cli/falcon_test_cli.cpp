@@ -72,7 +72,7 @@ public:
 
 	bool parseOptions(int argc, char** argv)
 	{
-		boost::scoped_ptr<FalconTestBase> t;
+		std::unique_ptr<FalconTestBase> t;
 		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
 
 		if(m_varMap.count("loop_time_test"))

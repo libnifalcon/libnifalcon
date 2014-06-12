@@ -6,7 +6,7 @@
 class FalconLoopTimeTest : public FalconTestBase
 {
 public:
-	FalconLoopTimeTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+	FalconLoopTimeTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 		FalconTestBase(d)
 	{
 		setPrintOnCount(1000);

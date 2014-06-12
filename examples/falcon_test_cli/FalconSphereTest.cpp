@@ -4,7 +4,7 @@
 #include "falcon/grip/FalconGripFourButton.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconSphereTest::FalconSphereTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+FalconSphereTest::FalconSphereTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 	FalconTestBase(d),
 	m_radius(0.028),
 	m_stiffness(1000.0),

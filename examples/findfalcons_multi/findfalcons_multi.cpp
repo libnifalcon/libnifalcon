@@ -55,7 +55,7 @@ void sigproc(int i)
 
 void runFalconTest()
 {
-	boost::shared_ptr<FalconFirmware> f;
+	std::shared_ptr<FalconFirmware> f;
 	double position[3];
 	unsigned int num_falcons = 0;
 	int status, i;

@@ -7,7 +7,7 @@
 class FalconColorTest : public FalconTestBase
 {
 public:
-	FalconColorTest(boost::shared_ptr<libnifalcon::FalconDevice> d);
+	FalconColorTest(std::shared_ptr<libnifalcon::FalconDevice> d);
 	~FalconColorTest();
 protected:
 	std::array<float, 3> m_posLimit;

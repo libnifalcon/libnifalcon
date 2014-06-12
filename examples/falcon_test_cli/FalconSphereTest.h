@@ -7,7 +7,7 @@
 class FalconSphereTest : public FalconTestBase
 {
 public:
-	FalconSphereTest(boost::shared_ptr<libnifalcon::FalconDevice> d);
+	FalconSphereTest(std::shared_ptr<libnifalcon::FalconDevice> d);
 protected:
 	double m_stiffness;
     double m_radius;

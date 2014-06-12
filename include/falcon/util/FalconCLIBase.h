@@ -59,7 +59,7 @@ namespace libnifalcon
 			FIRMWARE_OPTIONS = 0x4 /**< Allows user to choose firmware type, load firmware, etc... */
 		};
 	protected:
-		boost::shared_ptr<FalconDevice> m_falconDevice; /**< Internal device structure */
+		std::shared_ptr<FalconDevice> m_falconDevice; /**< Internal device structure */
 		boost::program_options::options_description m_progOptions; /**< Structure of options that we'll allow */
 		boost::program_options::variables_map m_varMap; /**< Options passed to us through the command line */
 		bool m_displayCalibrationMessage; /**< String to display with calibration instructions */
