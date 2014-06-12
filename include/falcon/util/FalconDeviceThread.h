@@ -11,8 +11,7 @@
 
 #ifndef FALCONDEVICEBOOSTTHREADS_H
 #define FALCONDEVICEBOOSTTHREADS_H
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
+#include <thread>
 #include "falcon/core/FalconDevice.h"
 
 namespace libnifalcon
@@ -27,18 +26,18 @@ namespace libnifalcon
  * The FalconDeviceBoostThread class is only available if the boost::thread library is available on the system.
  */
 
-	class FalconDeviceBoostThread : public FalconDevice
+	class FalconDeviceThread : public FalconDevice
 	{
 	public:
 		/**
 		 * Constructor
 		 */
-		FalconDeviceBoostThread();
+		FalconDeviceThread();
 
 		/**
 		 * Destructor
 		 */
-		virtual ~FalconDeviceBoostThread();
+		virtual ~FalconDeviceThread();
 
 		/**
 		 * Starts a thread that runs FalconDevice::runIOLoop constantly
@@ -75,7 +74,7 @@ namespace libnifalcon
 		/**
 		 * Internal thread object
 		 */
-		std::shared_ptr<boost::thread> m_ioThread;
+		std::shared_ptr<std::thread> m_ioThread;
 
 		/**
 		 * Internal position storage

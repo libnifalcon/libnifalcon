@@ -18,6 +18,7 @@ INSTALL(DIRECTORY
 INSTALL(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconFirmwareBinaryTest.h
   ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconFirmwareBinaryNvent.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconDeviceThread.h
   DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util
 )
 
@@ -40,6 +41,3 @@ IF(Boost_PROGRAM_OPTIONS_FOUND)
   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconCLIBase.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util)
 ENDIF(Boost_PROGRAM_OPTIONS_FOUND)
 
-IF(Boost_THREAD_FOUND)
-  INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/falcon/util/FalconDeviceBoostThread.h DESTINATION ${INCLUDE_INSTALL_DIR}/falcon/util)
-ENDIF(Boost_THREAD_FOUND)

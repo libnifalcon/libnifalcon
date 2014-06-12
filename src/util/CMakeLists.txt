@@ -28,31 +28,24 @@ IF(Boost_PROGRAM_OPTIONS_FOUND)
 	)
 ENDIF(Boost_PROGRAM_OPTIONS_FOUND)
 
-#Boost thread library
-IF(Boost_THREAD_FOUND)
-  SET(CPP_LINK_LIBS 
-    ${libnifalcon_LIBRARY}
-    ${LIBNIFALCON_REQ_LIBS}
-    ${Boost_THREAD_LIBRARY}	
-    )
 
-  # Boost thread requires system since 1.5x
-  IF(Boost_SYSTEM_FOUND)
-    LIST(APPEND CPP_LINK_LIBS "${Boost_SYSTEM_LIBRARY}")
-  ENDIF()
+SET(CPP_LINK_LIBS
+   ${libnifalcon_LIBRARY}
+   ${LIBNIFALCON_REQ_LIBS}
+)
 
-  SET(SRCS
-	"FalconDeviceBoostThread.cpp" 
-	"${LIBNIFALCON_INCLUDE_DIR}/falcon/util/FalconDeviceBoostThread.h"
-	)
+SET(SRCS
+   "FalconDeviceThread.cpp"
+   "${LIBNIFALCON_INCLUDE_DIR}/falcon/util/FalconDeviceThread.h"
+)
+
   BUILDSYS_BUILD_LIB(
-	NAME nifalcon_device_boost_thread
-	SOURCES "${SRCS}"
-	CXX_FLAGS FALSE 
-	LINK_LIBS "${CPP_LINK_LIBS}" 
-	LINK_FLAGS FALSE 
-	DEPENDS nifalcon_DEPEND
-	SHOULD_INSTALL TRUE
-	VERSION ${LIBNIFALCON_VERSION}
-	)
-ENDIF(Boost_THREAD_FOUND)
+        NAME nifalcon_device_thread
+        SOURCES "${SRCS}"
+        CXX_FLAGS FALSE
+        LINK_LIBS "${CPP_LINK_LIBS}"
+        LINK_FLAGS FALSE
+        DEPENDS nifalcon_DEPEND
+        SHOULD_INSTALL TRUE
+        VERSION ${LIBNIFALCON_VERSION}
+        )

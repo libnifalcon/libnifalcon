@@ -67,7 +67,7 @@ With libnifalcon, you get
 ** Provides device access to the falcon
 * libnifalcon_cli_base (optional, requires boost::program_options library)
 ** Provides base class for small test applications for the falcon
-* libnifalcon_boost_thread (optional, requires boost::thread library)
+* libnifalcon_thread
 ** Provides example of threaded device support for the falcon
 * Example Programs (all require libnifalcon, plus other libraries as specified)
 ** findfalcons - Prints out the number of falcon devices connected, opens each of them (one at a time), runs simple test (changes LED color, runs a few thousand I/O loops). Good for making sure things 'just work'.

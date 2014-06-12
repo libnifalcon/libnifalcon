@@ -13,7 +13,6 @@
 #define FALCONCLIBASE_H
 
 #include <boost/program_options.hpp>
-#include <boost/shared_ptr.hpp>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/core/FalconLogger.h"
 

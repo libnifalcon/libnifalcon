@@ -9,41 +9,40 @@
  *
  */
 
-#include "falcon/util/FalconDeviceBoostThread.h"
-
-#include <boost/bind.hpp>
+#include "falcon/util/FalconDeviceThread.h"
 #include <iostream>
+
 namespace libnifalcon
 {
 
-	FalconDeviceBoostThread::FalconDeviceBoostThread() :
+	FalconDeviceThread::FalconDeviceThread() :
 		m_runThreadLoop(false),
-		m_ioThread((boost::thread*)NULL)
+		m_ioThread((std::thread*)NULL)
 	{
 	}
 
-	FalconDeviceBoostThread::~FalconDeviceBoostThread()
+	FalconDeviceThread::~FalconDeviceThread()
 	{
     stopThread();
 	}
 
-	void FalconDeviceBoostThread::getPosition(std::array<double, 3>& pos)
+	void FalconDeviceThread::getPosition(std::array<double, 3>& pos)
 	{
 		pos[0] = m_position[0];
 		pos[1] = m_position[1];
 		pos[2] = m_position[2];
 	}
 
-	void FalconDeviceBoostThread::startThread()
+	void FalconDeviceThread::startThread()
 	{
 		if(!m_runThreadLoop)
 		{
 			m_runThreadLoop = true;
-			m_ioThread.reset(new boost::thread(boost::bind(&libnifalcon::FalconDeviceBoostThread::runThreadLoop, this)));
+			m_ioThread = std::unique_ptr<std::thread>(new std::thread(&libnifalcon::FalconDeviceThread::runThreadLoop, this));
 		}
 	}
 
-	void FalconDeviceBoostThread::runThreadLoop()
+	void FalconDeviceThread::runThreadLoop()
 	{
 		while(m_runThreadLoop)
 		{
@@ -51,7 +50,7 @@ namespace libnifalcon
 		}
 	}
 
-	void FalconDeviceBoostThread::stopThread()
+	void FalconDeviceThread::stopThread()
 	{
 		m_runThreadLoop = false;
     if(m_ioThread)

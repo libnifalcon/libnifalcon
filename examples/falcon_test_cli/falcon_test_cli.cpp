@@ -17,7 +17,6 @@
 #include <string>
 #include <csignal>
 #include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"

@@ -11,8 +11,6 @@
 
 #include <iostream>
 
-#include <boost/shared_ptr.hpp>
-
 #include "falcon/util/FalconCLIBase.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryTest.h"

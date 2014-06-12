@@ -70,7 +70,7 @@ IF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
 ENDIF(NOT Boost_FOUND)
 
-FIND_PACKAGE(Boost COMPONENTS program_options thread system)
+FIND_PACKAGE(Boost COMPONENTS program_options)
 
 ######################################################################################
 # Project specific globals
@@ -98,7 +98,7 @@ SET(LIBNIFALCON_VERSION ${LIBNIFALCON_MAJOR_VERSION}.${LIBNIFALCON_MINOR_VERSION
 
 CREATE_LIBRARY_LINK_NAME(nifalcon)
 CREATE_LIBRARY_LINK_NAME(nifalcon_cli_base)
-CREATE_LIBRARY_LINK_NAME(nifalcon_device_boost_thread)
+CREATE_LIBRARY_LINK_NAME(nifalcon_device_thread)
 
 SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
