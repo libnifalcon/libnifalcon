@@ -27,7 +27,7 @@ void FalconColorTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	boost::array<double, 3> pos = m_falconDevice->getPosition();
+	std::array<double, 3> pos = m_falconDevice->getPosition();
 
 	for(int i = 0; i < 3; ++i)
 	{

@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include <boost/array.hpp>
+#include <array>
 #include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconComm.h"
@@ -197,14 +197,14 @@ namespace libnifalcon
 		 *
 		 * @return Array of 3 doubles, representing 3D cartesian coordinate
 		 */
-		boost::array<double, 3> getPosition() { return m_position; }
+		std::array<double, 3> getPosition() { return m_position; }
 
 		/**
 		 * Set the instantanious force for the next I/O loop
 		 *
 		 * @param force Force vector, in cartesian coordinates (x,y,z)
 		 */
-		void setForce(boost::array<double, 3> force)
+		void setForce(std::array<double, 3> force)
 		{
 			m_forceVec[0] = force[0];
 			m_forceVec[1] = force[1];
@@ -265,8 +265,8 @@ namespace libnifalcon
 		boost::shared_ptr<FalconKinematic> m_falconKinematic; /**<  Falcon kinematics object */
 		boost::shared_ptr<FalconFirmware> m_falconFirmware; /**<  Falcon firmware object */
 		boost::shared_ptr<FalconGrip> m_falconGrip; /**< Falcon grip object */
-		boost::array<double, 3> m_position;	/**< Current position in 3D cartesian coordinates */
-		boost::array<double, 3> m_forceVec;	/**< Current force in 3D cartesian coordinates */
+		std::array<double, 3> m_position;	/**< Current position in 3D cartesian coordinates */
+		std::array<double, 3> m_forceVec;	/**< Current force in 3D cartesian coordinates */
 	private:
 		DECLARE_LOGGER();
 	};

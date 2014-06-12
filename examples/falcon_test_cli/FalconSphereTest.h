@@ -11,7 +11,7 @@ public:
 protected:
 	double m_stiffness;
     double m_radius;
-    boost::array<double, 3> m_oldpos;
+	std::array<double, 3> m_oldpos;
     bool m_plusButtonDown;
     bool m_minusButtonDown;
     bool m_centerButtonDown;

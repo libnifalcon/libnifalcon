@@ -9,7 +9,7 @@
  *
  */
 
-#include <boost/bind.hpp>
+//#include <boost/bind.hpp>
 #include "falcon/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>

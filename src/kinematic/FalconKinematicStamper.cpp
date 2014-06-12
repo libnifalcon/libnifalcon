@@ -225,7 +225,7 @@ namespace libnifalcon
 
 	}
 
-	bool FalconKinematicStamper::getForces(const boost::array<double, 3> (&position), const boost::array<double, 3> (&cart_force), boost::array<int, 3> (&enc_force))
+	bool FalconKinematicStamper::getForces(const std::array<double, 3> (&position), const std::array<double, 3> (&cart_force), std::array<int, 3> (&enc_force))
 	{
 		gmtl::Vec3d force(cart_force[0], cart_force[1], cart_force[2]);
 		gmtl::Vec3d pos(position[0], position[1], position[2]);
@@ -282,7 +282,7 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconKinematicStamper::getAngles(boost::array<double, 3> (&position), boost::array<double, 3> (&angles))
+	bool FalconKinematicStamper::getAngles(std::array<double, 3> (&position), std::array<double, 3> (&angles))
 	{
 
 		gmtl::Vec3d p(position[0], position[1], position[2]);
@@ -298,7 +298,7 @@ namespace libnifalcon
 		return true;
 	}
 	
-	bool FalconKinematicStamper::getPosition(boost::array<int, 3> (&encoderPos), boost::array<double,3> (&position))
+	bool FalconKinematicStamper::getPosition(std::array<int, 3> (&encoderPos), std::array<double,3> (&position))
 	{
 
 		gmtl::Vec3d encoderAngles;

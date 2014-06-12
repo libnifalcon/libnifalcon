@@ -27,7 +27,7 @@ namespace libnifalcon
     stopThread();
 	}
 
-	void FalconDeviceBoostThread::getPosition(boost::array<double, 3>& pos)
+	void FalconDeviceBoostThread::getPosition(std::array<double, 3>& pos)
 	{
 		pos[0] = m_position[0];
 		pos[1] = m_position[1];

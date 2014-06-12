@@ -131,7 +131,7 @@ namespace libnifalcon
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int, 3> enc_vec;
+			std::array<int, 3> enc_vec;
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
@@ -151,7 +151,7 @@ namespace libnifalcon
 		}
 		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int, 3> p = m_falconFirmware->getEncoderValues();
+			std::array<int, 3> p = m_falconFirmware->getEncoderValues();
 			if(!m_falconKinematic->getPosition(p, m_position))
 			{
 				++m_errorCount;

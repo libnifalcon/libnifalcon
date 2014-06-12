@@ -17,7 +17,7 @@
 #include <string>
 #include <cstdlib>
 #include <deque>
-#include "boost/array.hpp"
+#include <array>
 #include "boost/shared_ptr.hpp"
 #include "falcon/core/FalconComm.h"
 #include "falcon/core/FalconLogger.h"
@@ -134,7 +134,7 @@ namespace libnifalcon
 		 *
 		 * @param force Array of signed 16-bit integers to set force
 		 */
-		void setForces(const boost::array<int, 3> (&force))
+		void setForces(const std::array<int, 3> (&force))
 		{
 			m_forceValues[0] = force[0];
 			m_forceValues[1] = force[1];
@@ -146,7 +146,7 @@ namespace libnifalcon
 		 *
 		 * @return Signed 16-bit integers representing the current encoder values for each motor
 		 */
-		boost::array<int, 3> getEncoderValues() { return m_encoderValues; }
+		std::array<int, 3> getEncoderValues() { return m_encoderValues; }
 
 		/**
 		 * Sets the LEDs to turn on or off at the next I/O loop
@@ -273,10 +273,10 @@ namespace libnifalcon
 		//Values sent to falcon
 		bool m_homingMode;		/**< True if homing mode is on, false for homing mode off */
 		unsigned int m_ledStatus;	/**< Bitfield for LED Status */
-		boost::array<int, 3> m_forceValues; /**< Force values for the next I/O loop */
+		std::array<int, 3> m_forceValues; /**< Force values for the next I/O loop */
 
 		//Values received from falcon
-		boost::array<int, 3> m_encoderValues;	/**< Encoder values from the last I/O loop */
+		std::array<int, 3> m_encoderValues;	/**< Encoder values from the last I/O loop */
 		unsigned int m_homingStatus; /**< Current homing status from the last I/O loop */
 
 		uint64_t m_loopCount; /**< Number of successful loops that have been run by this firmware instance */

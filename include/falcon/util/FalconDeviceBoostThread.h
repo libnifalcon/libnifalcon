@@ -65,7 +65,7 @@ namespace libnifalcon
 		/**
 		 * Thread safe position return
 		 */
-		void getPosition(boost::array<double, 3>& pos);
+		void getPosition(std::array<double, 3>& pos);
 	protected:
 		/**
 		 * Wrapper function for dealing with device communication
@@ -80,7 +80,7 @@ namespace libnifalcon
 		/**
 		 * Internal position storage
 		 */
-		boost::array<double, 3> m_localPosition;
+		std::array<double, 3> m_localPosition;
 
 		bool m_runThreadLoop; /**< Internal thread execution state. Thread loop exits if this is false. */
 	};
