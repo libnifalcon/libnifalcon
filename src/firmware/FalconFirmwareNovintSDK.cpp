@@ -117,7 +117,7 @@ namespace libnifalcon
 	{
 		bool read_successful = false;
 
-		if(m_falconComm == NULL || !m_falconComm->isCommOpen())
+		if(m_falconComm == nullptr || !m_falconComm->isCommOpen())
 		{
 			LOG_ERROR("Cannot run IO on uninitialized/unopened device!");
 			return false;

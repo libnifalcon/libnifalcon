@@ -88,7 +88,7 @@ namespace libnifalcon
 
 	bool FalconFirmware::loadFirmware(bool skip_checksum, const unsigned int& firmware_size, uint8_t* buffer)
 	{
-		if(m_falconComm == NULL)
+		if(m_falconComm == nullptr)
 		{
 			m_errorCode = FALCON_FIRMWARE_NO_COMM_SET;
 			return false;

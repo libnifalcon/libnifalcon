@@ -152,7 +152,7 @@ namespace libnifalcon
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
 		size_t i = 0;
-		int count = 0;
+		unsigned int count = 0;
 
 
 		if ((m_deviceErrorCode = libusb_get_device_list(m_usbContext, &devs)) < 0)
@@ -190,7 +190,7 @@ namespace libnifalcon
 			if (m_deviceErrorCode < 0)
 			{
 				LOG_ERROR("Cannot open device - Device error code " << m_deviceErrorCode);
-				m_falconDevice = NULL;
+				m_falconDevice = nullptr;
 				m_errorCode = FALCON_COMM_DEVICE_ERROR;
 				libusb_free_device_list(devs, 1);
 				return false;
@@ -249,7 +249,7 @@ namespace libnifalcon
 
 		reset();
 		libusb_close(m_falconDevice);
-		m_falconDevice = NULL;
+		m_falconDevice = nullptr;
 		return true;
 	}
 

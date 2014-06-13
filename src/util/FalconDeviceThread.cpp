@@ -1,6 +1,6 @@
 /***
  * @file FalconDeviceBoostThread.cpp
- * @brief Utility class for threading a FalconDevice instance using boost::thread (http://www.boost.org)
+ * @brief Utility class for threading a FalconDevice instance using std::thread
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License

@@ -245,7 +245,7 @@ namespace libnifalcon
 		 */
 		bool isOpen()
 		{
-			if(m_falconComm != NULL)
+			if(m_falconComm != nullptr)
 			{
 				return m_falconComm->isCommOpen();
 			}
@@ -274,7 +274,7 @@ namespace libnifalcon
 	void FalconDevice::setFalconComm()
 	{
 		m_falconComm.reset(new T());
-		if(m_falconFirmware != NULL)
+		if(m_falconFirmware != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
 		}
@@ -284,7 +284,7 @@ namespace libnifalcon
 	void FalconDevice::setFalconFirmware()
 	{
 		m_falconFirmware.reset(new T());
-		if(m_falconComm != NULL)
+		if(m_falconComm != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
 		}

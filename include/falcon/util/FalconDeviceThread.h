@@ -1,6 +1,6 @@
 /***
  * @file FalconDeviceBoostThread.h
- * @brief Utility class for threading a FalconDevice instance using boost::thread (http://www.boost.org)
+ * @brief Utility class for threading a FalconDevice instance using std::thread
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
@@ -17,13 +17,13 @@
 namespace libnifalcon
 {
 /**
- * @class FalconDeviceBoostThread
+ * @class FalconDeviceThread
  * @ingroup UtilityClasses
  *
- * The FalconDeviceBoostThread class is a sample device that uses the boost::thread class to run the
+ * The FalconDeviceThread class is a sample device that uses the std::thread class to run the
  * communications loop to the falcon. 
  *
- * The FalconDeviceBoostThread class is only available if the boost::thread library is available on the system.
+ * The FalconDeviceThread class is only available if the std::thread library is available on the system.
  */
 
 	class FalconDeviceThread : public FalconDevice
