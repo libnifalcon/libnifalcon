@@ -272,8 +272,8 @@ namespace libnifalcon
 
 	template<class T>
 	void FalconDevice::setFalconComm()
-	{
-		m_falconComm.reset(new T());
+	{		
+		m_falconComm = std::make_shared<T>();
 		if(m_falconFirmware != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
@@ -283,7 +283,7 @@ namespace libnifalcon
 	template<class T>
 	void FalconDevice::setFalconFirmware()
 	{
-		m_falconFirmware.reset(new T());
+		m_falconFirmware = std::make_shared<T>();
 		if(m_falconComm != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
@@ -293,13 +293,13 @@ namespace libnifalcon
 	template<class T>
 	void FalconDevice::setFalconGrip()
 	{
-		m_falconGrip.reset(new T());
+		m_falconGrip = std::make_shared<T>();
 	}
 
 	template<class T>
 	void FalconDevice::setFalconKinematic()
 	{
-		m_falconKinematic.reset(new T());
+		m_falconKinematic = std::make_shared<T>();
 	}
 
 }

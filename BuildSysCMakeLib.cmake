@@ -636,7 +636,7 @@ MACRO(OPTION_GPROF DEFAULT)
 ENDMACRO()
 
 ######################################################################################
-# Turn on "extra" compiler warnings (SPAMMY WITH BOOST)
+# Turn on "extra" compiler warnings
 ######################################################################################
 
 MACRO(OPTION_EXTRA_COMPILER_WARNINGS DEFAULT)

@@ -1,5 +1,5 @@
 /***
- * @file FalconDeviceBoostThread.h
+ * @file FalconDeviceThread.h
  * @brief Utility class for threading a FalconDevice instance using std::thread
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef FALCONDEVICEBOOSTTHREADS_H
-#define FALCONDEVICEBOOSTTHREADS_H
+#ifndef FALCONDEVICETHREADS_H
+#define FALCONDEVICETHREADS_H
 #include <thread>
 #include "falcon/core/FalconDevice.h"
 

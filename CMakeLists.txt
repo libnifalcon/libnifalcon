@@ -62,16 +62,6 @@ IF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
   MESSAGE(FATAL_ERROR "Either ftd2xx or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
 ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
 
-#Find boost, used all over the place
-SET(Boost_USE_MULTITHREADED ON)
-
-FIND_PACKAGE(Boost REQUIRED)
-IF(NOT Boost_FOUND)
-  MESSAGE(FATAL_ERROR "libnifalcon requires a minimum of the Boost 1.33 headers to build")
-ENDIF(NOT Boost_FOUND)
-
-FIND_PACKAGE(Boost COMPONENTS program_options)
-
 ######################################################################################
 # Project specific globals
 ######################################################################################
@@ -102,7 +92,7 @@ CREATE_LIBRARY_LINK_NAME(nifalcon_device_thread)
 
 SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
-INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIR})
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
 #If we build libusb staticly on apple, we need the proper frameworks

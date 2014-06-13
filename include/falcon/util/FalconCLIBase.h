@@ -12,7 +12,7 @@
 #ifndef FALCONCLIBASE_H
 #define FALCONCLIBASE_H
 
-#include <boost/program_options.hpp>
+#include <falcon/cpp-optparse/OptionParser.h>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/core/FalconLogger.h"
 
@@ -23,13 +23,12 @@ namespace libnifalcon
  * @ingroup UtilityClasses
  *
  * FalconCLIBase provides an simple framework for building test applications with libnifalcon. It wraps the information needed
- * from the user into a set of boost::program_options, and does the work of parsing command line options for:
+ * from the user into a set of cpp-optparse options, and does the work of parsing command line options for:
  * 
  * - Device counts and connections
  * - Firmware loading
  * - Communications (if more that one comm core is available)
  *
- * The FalconCLIBase class is only available if the boost::program_options library is available on the system.
  *
  * See the falcon_test_cli program for an example of a test suite program built using FalconCLIBase
  */
@@ -59,8 +58,7 @@ namespace libnifalcon
 		};
 	protected:
 		std::shared_ptr<FalconDevice> m_falconDevice; /**< Internal device structure */
-		boost::program_options::options_description m_progOptions; /**< Structure of options that we'll allow */
-		boost::program_options::variables_map m_varMap; /**< Options passed to us through the command line */
+		optparse::OptionParser m_parser; /**< Structure of options that we'll allow */
 		bool m_displayCalibrationMessage; /**< String to display with calibration instructions */
 		
 		/**

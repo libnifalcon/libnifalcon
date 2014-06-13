@@ -7,7 +7,8 @@ SET(LIBRARY_SRCS
   core/FalconDevice.cpp 
   core/FalconFirmware.cpp 
   firmware/FalconFirmwareNovintSDK.cpp 
-  kinematic/FalconKinematicStamper.cpp)
+  kinematic/FalconKinematicStamper.cpp
+  cpp-optparse/OptionParser.cpp)
 
 IF(LIBUSB_1_FOUND)
   LIST(APPEND LIBRARY_SRCS
