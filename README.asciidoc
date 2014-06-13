@@ -31,10 +31,6 @@ http://libnifalcon.nonpolynomial.com
 
 http://www.cmake.org
 
-=== Boost ===
-
-http://www.boost.org/
-
 === ftd2xx (Recommended for Windows) ===
 
 http://www.ftdichip.com/Drivers/D2XX.htm
@@ -65,7 +61,7 @@ With libnifalcon, you get
 
 * libnifalcon
 ** Provides device access to the falcon
-* libnifalcon_cli_base (optional, requires boost::program_options library)
+* libnifalcon_cli_base
 ** Provides base class for small test applications for the falcon
 * libnifalcon_thread
 ** Provides example of threaded device support for the falcon
