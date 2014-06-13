@@ -23,12 +23,12 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/consoleappender.h>
-static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
+static constexpr log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
 
 /**
  * Statically initialize the log4cxx library.
  */
-void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
+void configureLogging(const std::string & logString, const log4cxx::LevelPtr level) {
 	log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
 	log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
 	log4cxx::BasicConfigurator::configure(appender);
