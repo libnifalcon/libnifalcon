@@ -9,9 +9,9 @@ class FalconCubeTest : public FalconTestBase
 public:
 	FalconCubeTest(std::shared_ptr<libnifalcon::FalconDevice> d);
 protected:
-	double m_stiffness;
 	gmtl::Vec3f m_cornerA;
 	gmtl::Vec3f m_cornerB;
+	double m_stiffness;
 	void runFunction();
 	bool m_isInitializing;
 	bool m_hasPrintedInitMsg;

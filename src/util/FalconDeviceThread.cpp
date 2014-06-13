@@ -16,8 +16,8 @@ namespace libnifalcon
 {
 
 	FalconDeviceThread::FalconDeviceThread() :
-		m_runThreadLoop(false),
-		m_ioThread((std::thread*)NULL)
+		m_ioThread(nullptr),
+		m_runThreadLoop(false)
 	{
 	}
 

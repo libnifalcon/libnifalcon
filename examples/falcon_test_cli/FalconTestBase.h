@@ -22,9 +22,9 @@ class FalconTestBase
 public:
 
 	FalconTestBase(std::shared_ptr<libnifalcon::FalconDevice> d) :
-		m_falconDevice(d),
 		m_lastLoopCount(0),
-		m_countLimit(0)
+		m_countLimit(0),
+		m_falconDevice(d)
 	{
 		tinit();
 		tstart();

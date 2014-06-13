@@ -74,9 +74,9 @@ namespace libnifalcon
 		double l23 = P3[2]*P3[2] + P3[0]*P3[0] + 2*libnifalcon::c*P3[0] + 2*libnifalcon::a*P3[0] + libnifalcon::a*libnifalcon::a + libnifalcon::c*libnifalcon::c - libnifalcon::d*libnifalcon::d - libnifalcon::e*libnifalcon::e - libnifalcon::b*libnifalcon::b*sin(angles.theta3[2])*sin(angles.theta3[2]) - 2*libnifalcon::b*libnifalcon::e*sin(angles.theta3[2]) - 2*libnifalcon::b*libnifalcon::d*sin(angles.theta3[2]) - 2*libnifalcon::d*libnifalcon::e + 2*libnifalcon::a*libnifalcon::c;
 	
 
-		double T1a = (-l11 + sqrt( l11*l11 - 4* l01* l21) ) / (2*l21);
+		/*double T1a = (-l11 + sqrt( l11*l11 - 4* l01* l21) ) / (2*l21);
 		double T2a = (-l12 + sqrt( l12*l12 - 4* l02* l22) ) / (2*l22);
-		double T3a = (-l13 + sqrt( l13*l13 - 4* l03* l23) ) / (2*l23);
+		double T3a = (-l13 + sqrt( l13*l13 - 4* l03* l23) ) / (2*l23);*/
 
 		double T1b = (-l11 - sqrt( l11*l11 - 4* l01* l21) ) / (2*l21);
 		double T2b = (-l12 - sqrt( l12*l12 - 4* l02* l22) ) / (2*l22);
@@ -160,7 +160,6 @@ namespace libnifalcon
 		double gradientAdjustment = 0.5;
 		int maxTries = 15;
 
-		bool done = 0;
 		for(int i=0; i<maxTries; i++)
 		{
 
@@ -253,13 +252,13 @@ namespace libnifalcon
 		//Find highest torque:
 		double maxTorque=30.0;	//Rather random choice here, could be higher
 		double largestTorqueValue=0.0;
-		int largestTorqueAxis=-1;
+		//int largestTorqueAxis=-1;
 		for(int i=0; i<3; i++)
 		{
 			if(abs(torque[i])>largestTorqueValue)
 			{
 				largestTorqueValue=abs(torque[i]);
-				largestTorqueAxis=i;
+				//largestTorqueAxis=i;
 			}
 		}
 		//If axis with the largest torque is over the limit, scale them all to
