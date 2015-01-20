@@ -362,11 +362,13 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::setFirmwareMode()
 	{
+    const int receive_buf_size(512);
+		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
 		unsigned char check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
 		unsigned char check_msg_2[1] = {0x41};
-		unsigned char receive_buf[128];
-
+		unsigned char send_buf[128], receive_buf[receive_buf_size];
+		int k;
 		LOG_INFO("Setting firmware communications mode");
 
 		if(!m_isCommOpen)
@@ -468,7 +470,7 @@ namespace libnifalcon
 			}
 
 			//Expect back 5 bytes: 0x00 0xa 0x44 0x2c 0xd
-			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &m_lastBytesRead, 1000)) != 0)
+			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, receive_buf_size, &m_lastBytesRead, 1000)) != 0)
 			{
 				LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 				return false;
