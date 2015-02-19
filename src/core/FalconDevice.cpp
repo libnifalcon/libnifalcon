@@ -26,6 +26,13 @@ namespace libnifalcon
 		m_errorCount(0),
 		INIT_LOGGER("FalconDevice")
 	{
+        m_forceVec[0] = 0.0;
+        m_forceVec[1] = 0.0;
+        m_forceVec[2] = 0.0;
+        m_position[0] = 0.0;
+        m_position[1] = 0.0;
+        m_position[2] = 0.0;
+
 #if defined(LIBNIFALCON_USE_LIBUSB)
 		setFalconComm<FalconCommLibUSB>();
 #elif defined(LIBNIFALCON_USE_LIBFTD2XX)
