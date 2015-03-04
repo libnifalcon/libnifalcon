@@ -146,13 +146,18 @@ namespace libnifalcon
 		return true;
 	}
 
-	bool FalconCommFTD2XX::readBlocking(uint8_t* buffer, unsigned int size)
-	{
-		while(m_bytesAvailable != size)
-		{
-			poll();
-		}
-		return read(buffer, size);
+    bool FalconCommFTD2XX::readBlocking(uint8_t* buffer, unsigned int size)
+    {
+        if (!m_isCommOpen)
+        {
+            m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
+            return false;
+        }
+
+        unsigned long b_read;
+        if ((m_deviceErrorCode = FT_Read(m_falconDevice, buffer, size, &b_read)) != FT_OK) return false;
+        m_lastBytesRead = b_read;
+        return b_read == size;
 	}
 
 	void FalconCommFTD2XX::poll()
@@ -196,17 +201,17 @@ namespace libnifalcon
 		if((m_deviceErrorCode = FT_ClrDtr(m_falconDevice)) != FT_OK) return false;
 		if((m_deviceErrorCode = FT_SetDtr(m_falconDevice)) != FT_OK) return false;
 
-
 		int i;
-		if(!write((uint8_t*)check_msg_1_send, (uint32_t)3)) return false;
-		for(i = 0; i < 100; ++i)
+        for (i = 0; i < 100; ++i)
 		{
 			//Send 3 bytes: 0x0a 0x43 0x0d
+            if (!write((uint8_t*)check_msg_1_send, (uint32_t)3)) return false;
 
 			//Expect 4 bytes back (LibFTDI expects 5. This expects 4. I dunno.)
-			if(!readBlocking(receive_buf, 5)) return false;
+			readBlocking(receive_buf, 4);
+
 			//printf("CHECK 1 OUT %d 0x%x 0x%x 0x%x 0x%x 0x%x\n", m_lastBytesRead, receive_buf[0], receive_buf[1], receive_buf[2], receive_buf[3], receive_buf[4]);
-			if(m_lastBytesRead != 5 || memcmp(receive_buf,check_msg_1_recv, 5))
+			if(m_lastBytesRead != 4 || memcmp(receive_buf,check_msg_1_recv+1, 4))
 			{
 				continue;
 				//return false;
