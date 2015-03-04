@@ -256,7 +256,7 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::setHasBytesAvailable(bool v)
 	{
-		m_hasBytesAvailable = true;
+		m_hasBytesAvailable = v;
 	}
 
 	bool FalconCommLibUSB::read(uint8_t* buffer, unsigned int size)
@@ -268,6 +268,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
+        if (m_isReadAllocated) std::cout << "Ouch!\n";
 		if(m_hasBytesAvailable && m_bytesAvailable == 0)
 		{
 			issueRead();
@@ -277,14 +278,17 @@ namespace libnifalcon
 		}
 		if(size > 0 && size < m_bytesAvailable)
 		{
-			memcpy(buffer, output, size);
-			memcpy(output, output+size, m_bytesAvailable-size);
+            // start from output+2 to skip over modem bytes
+			memcpy(buffer, output+2, size);
+            
+            // never use memcpy() to copy an overlapping region, use memmove() instead
+			memmove(output+2, output+2+size, m_bytesAvailable-size);
 			m_lastBytesRead = size;
 			m_bytesAvailable -= size;
 		}
 		else if (size >= m_bytesAvailable)
 		{
-			memcpy(buffer, output, m_bytesAvailable);
+			memcpy(buffer, output+2, m_bytesAvailable);
 			m_lastBytesRead = m_bytesAvailable;
 			m_bytesAvailable = 0;
 			m_hasBytesAvailable = false;
@@ -617,11 +621,10 @@ namespace libnifalcon
 			return;
 		}
 
+        m_isReadAllocated = true;
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
-		m_isReadAllocated = true;
-
 	}
 
 	void FalconCommLibUSB::setBytesAvailable(uint32_t b)
@@ -629,7 +632,6 @@ namespace libnifalcon
 		//Shift out modem bytes
 		if(b > 2)
 		{
-			memcpy(output, output+2, b - 2);
 			FalconComm::setBytesAvailable(b - 2);
 			return;
 		}
