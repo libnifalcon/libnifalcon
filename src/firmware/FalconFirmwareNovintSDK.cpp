@@ -19,6 +19,7 @@ namespace libnifalcon
 
 	FalconFirmwareNovintSDK::FalconFirmwareNovintSDK() :
 		m_currentOutputIndex(0),
+		m_rawDataSize(0),
 		INIT_LOGGER("FalconFirmwareNovintSDK")
 	{
 		//Make sure we're pretty much always safe to print these
@@ -36,53 +37,40 @@ namespace libnifalcon
 		return (char*)m_rawOutput;
 	}
 	
-	bool FalconFirmwareNovintSDK::formatOutput()
-	{
-		bool ret_val = false;
-		//m_rawData[m_rawDataSize] = 0;
-        m_currentOutputIndex = 0;
-		for(int i = 0; i < m_rawDataSize; ++i)
-		{
-			ret_val = false;
-			//Skip up to the next valid packet if need be
-			if(m_currentOutputIndex == 0 && m_rawData[i] != '<') continue;
-
-            ++m_currentOutputIndex;
-            if(m_currentOutputIndex == 16 && m_rawData[i] == '>')
+    bool FalconFirmwareNovintSDK::formatOutput()
+    {
+        uint8_t* data(m_rawData + m_currentOutputIndex);
+        if (data[0] == '<' && data[15] == '>')
+        {
+            memcpy(m_rawOutput, data, 16);
+            //Turn motor values into system specific ints
+            for(int i(0); i < 3; ++i)
             {
-                memcpy(m_rawOutput, &m_rawData[i-15], 16);
-                //Turn motor values into system specific ints
-                int i;
-                for(i = 0; i < 3; ++i)
-                {
-                    int idx = 1 + (i*4);
-                    //We're getting a signed short int off the wire
-                    int16_t val =
-                    (((*(m_rawOutput+idx) - 0x41) & 0xf)) |
-                    (((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
-                    (((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
-                    (((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
-                    //Now convert into full system int since the compiler will
-                    //do the sign move for us
-                    m_encoderValues[i] = val;
-                }
-                //Shift value down a nibble for homing status
-                m_homingStatus = ((m_rawOutput[13] - 0x41) >> 4) & 7;
-                m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
-                
-                m_currentOutputIndex = 0;
-                ret_val = true;
-                ++m_outputCount;
+                int idx = 1 + (i*4);
+                //We're getting a signed short int off the wire
+                int16_t val =
+                (((*(m_rawOutput+idx) - 0x41) & 0xf)) |
+                (((*(m_rawOutput+idx+1) - 0x41) & 0xf) << 4) |
+                (((*(m_rawOutput+idx+2) - 0x41) & 0xf) << 8) |
+                (((*(m_rawOutput+idx+3) - 0x41) & 0xf) << 12);
+                //Now convert into full system int since the compiler will
+                //do the sign move for us
+                m_encoderValues[i] = val;
             }
-            else if(m_currentOutputIndex == 16 || m_rawData[i] == '>')
-            {
-                LOG_WARN("Clearing malformed packet!");
-                m_currentOutputIndex = 0;
-            }
+            //Shift value down a nibble for homing status
+            m_homingStatus = ((m_rawOutput[13] - 0x41) >> 4) & 7;
+            m_gripInfo = (m_rawOutput[13] - 0x41) & 0x0f;
+            
+            ++m_outputCount;
+            return true;
         }
-		return ret_val;
-	}
-
+        else
+        {
+            LOG_WARN("Clearing malformed packet!");
+            return false;
+        }
+    }
+    
 	void FalconFirmwareNovintSDK::formatInput()
 	{
 		//Turn system-specific ints into motor values
@@ -109,8 +97,6 @@ namespace libnifalcon
 		}
 	}
 
-
-
 	bool FalconFirmwareNovintSDK::runIOLoop()
 	{
 		bool read_successful = false;
@@ -126,31 +112,38 @@ namespace libnifalcon
 		//Receive information from the falcon
 		if(m_hasWritten && m_falconComm->hasBytesAvailable())
 		{
-			m_rawDataSize = m_falconComm->getBytesAvailable();
-
-			//We somehow just got modem bytes back. Kick out another read.
-			if(m_rawDataSize == 0)
-			{
-				m_falconComm->read((uint8_t*)m_rawData, (uint32_t)m_rawDataSize);
-				return false;
-			}
-			if(m_falconComm->read((uint8_t*)m_rawData, m_rawDataSize))
-			{
-				formatOutput();
-				m_hasWritten = false;
-				if(m_rawDataSize <= 0) read_successful = false;
-				else read_successful = true;
-				++m_loopCount;
-			}
-			else
-			{
-				LOG_DEBUG("Couldn't read! " << m_falconComm->getErrorCode());
-				return false;
-			}
-		}
-		else if(m_hasWritten && !m_falconComm->hasBytesAvailable())
-		{
-			return false;
+			uint32_t bytes( m_falconComm->getBytesAvailable() );
+            if(bytes == 0)
+            {
+                //We somehow just got modem bytes back. Kick out another read.
+                m_falconComm->read((uint8_t*)m_rawData + m_rawDataSize, bytes);
+                return false;
+            }
+            else if(m_falconComm->read((uint8_t*)m_rawData + m_rawDataSize, bytes))
+            {
+                m_rawDataSize += m_falconComm->getLastBytesRead();
+                m_currentOutputIndex = 0;
+                while (m_currentOutputIndex+16 <= m_rawDataSize)
+                {
+                    read_successful = formatOutput();
+                    m_hasWritten = false;
+                    ++m_loopCount;
+                    m_currentOutputIndex += 16;
+                }
+                
+                // Preserve the unprocessed tail of the data for the next cycle
+                m_rawDataSize -= m_currentOutputIndex;
+                if (m_rawDataSize > 0) memcpy(m_rawData, m_rawData + m_currentOutputIndex, m_rawDataSize);
+            }
+            else
+            {
+                LOG_DEBUG("Couldn't read! " << m_falconComm->getErrorCode());
+                return false;
+            }
+        }
+        else if(m_hasWritten && !m_falconComm->hasBytesAvailable())
+        {
+            return false;
 		}
 		//Send information to the falcon
 		formatInput();
