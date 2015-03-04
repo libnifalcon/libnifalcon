@@ -256,7 +256,7 @@ namespace libnifalcon
 
 	void FalconCommLibUSB::setHasBytesAvailable(bool v)
 	{
-		m_hasBytesAvailable = true;
+		m_hasBytesAvailable = v;
 	}
 
 	bool FalconCommLibUSB::read(uint8_t* buffer, unsigned int size)
@@ -268,6 +268,7 @@ namespace libnifalcon
 			m_errorCode = FALCON_COMM_DEVICE_NOT_VALID_ERROR;
 			return false;
 		}
+        if (m_isReadAllocated) std::cout << "Ouch!\n";
 		if(m_hasBytesAvailable && m_bytesAvailable == 0)
 		{
 			issueRead();
@@ -277,14 +278,17 @@ namespace libnifalcon
 		}
 		if(size > 0 && size < m_bytesAvailable)
 		{
-			memcpy(buffer, output, size);
-			memcpy(output, output+size, m_bytesAvailable-size);
+            // start from output+2 to skip over modem bytes
+			memcpy(buffer, output+2, size);
+            
+            // never use memcpy() to copy an overlapping region, use memmove() instead
+			memmove(output+2, output+2+size, m_bytesAvailable-size);
 			m_lastBytesRead = size;
 			m_bytesAvailable -= size;
 		}
 		else if (size >= m_bytesAvailable)
 		{
-			memcpy(buffer, output, m_bytesAvailable);
+			memcpy(buffer, output+2, m_bytesAvailable);
 			m_lastBytesRead = m_bytesAvailable;
 			m_bytesAvailable = 0;
 			m_hasBytesAvailable = false;
@@ -363,11 +367,12 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::setFirmwareMode()
 	{
+        const int receive_buf_size(512);
 		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
 		unsigned char check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
 		unsigned char check_msg_2[1] = {0x41};
-		unsigned char send_buf[128], receive_buf[128];
+		unsigned char send_buf[128], receive_buf[receive_buf_size];
 		int k;
 		LOG_INFO("Setting firmware communications mode");
 
@@ -470,7 +475,7 @@ namespace libnifalcon
 			}
 
 			//Expect back 5 bytes: 0x00 0xa 0x44 0x2c 0xd
-			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, 7, &m_lastBytesRead, 1000)) != 0)
+			if((m_deviceErrorCode = libusb_bulk_transfer(m_falconDevice, 0x81, receive_buf, receive_buf_size, &m_lastBytesRead, 1000)) != 0)
 			{
 				LOG_ERROR("Cannot read check values (1) - Device error " << m_deviceErrorCode);
 				return false;
@@ -616,11 +621,10 @@ namespace libnifalcon
 			return;
 		}
 
+        m_isReadAllocated = true;
 		libusb_fill_bulk_transfer(out_transfer, m_falconDevice, 0x81, output,
 								  64, FalconCommLibUSB::cb_out, this, 1000);
 		libusb_submit_transfer(out_transfer);
-		m_isReadAllocated = true;
-
 	}
 
 	void FalconCommLibUSB::setBytesAvailable(uint32_t b)
@@ -628,7 +632,6 @@ namespace libnifalcon
 		//Shift out modem bytes
 		if(b > 2)
 		{
-			memcpy(output, output+2, b - 2);
 			FalconComm::setBytesAvailable(b - 2);
 			return;
 		}
