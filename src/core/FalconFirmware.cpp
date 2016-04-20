@@ -17,11 +17,11 @@
 namespace libnifalcon
 {
 	FalconFirmware::FalconFirmware() :
-		m_homingMode(false),
 		m_isFirmwareLoaded(false),
-		m_hasWritten(false),
+		m_homingMode(false),
 		m_loopCount(0),
 		m_outputCount(0),
+		m_hasWritten(false),
 		INIT_LOGGER("FalconFirmware")
 		//m_packetBufferSize(1)
 	{
@@ -88,7 +88,7 @@ namespace libnifalcon
 
 	bool FalconFirmware::loadFirmware(bool skip_checksum, const unsigned int& firmware_size, uint8_t* buffer)
 	{
-		if(m_falconComm == NULL)
+		if(m_falconComm == nullptr)
 		{
 			m_errorCode = FALCON_FIRMWARE_NO_COMM_SET;
 			return false;
@@ -103,7 +103,7 @@ namespace libnifalcon
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
-		uint8_t send_buf[128], receive_buf[128];
+		uint8_t receive_buf[128];
 		int bytes_read, total_read = 0;
 
 		//58 is an odd number to use for this, isn't it?
@@ -114,10 +114,10 @@ namespace libnifalcon
 
 		const int READ_SIZE = 62;
 
-		while(total_read != firmware_size)
+		while(total_read != (int)firmware_size)
 		{
 
-			if(total_read + READ_SIZE > firmware_size)
+			if(total_read + READ_SIZE > (int)firmware_size)
 			{
 				bytes_read = firmware_size-total_read;
 				//bytes_read = READ_SIZE;
@@ -132,7 +132,6 @@ namespace libnifalcon
 				return false;
 			}
 			int bytes_check = 0;
-			int bytes_current = 0;
 			while(bytes_check < bytes_read)
 			{
 				if(!m_falconComm->readBlocking(receive_buf, bytes_read))

@@ -4,7 +4,7 @@
 #include "falcon/grip/FalconGripFourButton.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconWallTest::FalconWallTest(boost::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis) :
+FalconWallTest::FalconWallTest(std::shared_ptr<libnifalcon::FalconDevice> d, unsigned int axis) :
 	FalconTestBase(d),
 	m_axisBounds(0, 0, .130),
 	m_stiffness(1000),
@@ -24,7 +24,7 @@ void FalconWallTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	boost::array<double, 3> pos = m_falconDevice->getPosition();
+	std::array<double, 3> pos = m_falconDevice->getPosition();
 
 	if(m_isInitializing)
 	{
@@ -58,7 +58,7 @@ void FalconWallTest::runFunction()
 		return;
 	}
 
-	boost::array<double, 3> force = {0,0,0};
+	std::array<double, 3> force = {0,0,0};
 
 	double dist = 10000;
 	int closest = -1, outside=3;

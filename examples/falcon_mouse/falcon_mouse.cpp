@@ -16,7 +16,6 @@
 #include <string>
 #include <csignal>
 #include <ctime>
-#include <boost/program_options.hpp>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
@@ -25,7 +24,6 @@
 #include "falcon_mouse.h"
 
 using namespace libnifalcon;
-namespace po = boost::program_options;
 
 bool run_app = true;
 

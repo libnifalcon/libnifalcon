@@ -3,7 +3,7 @@
 #include "falcon/core/FalconDevice.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconCubeTest::FalconCubeTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+FalconCubeTest::FalconCubeTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 	FalconTestBase(d),
 	m_cornerA(-.030, -.030, .095),
 	m_cornerB(.030, .030, .155 ),
@@ -20,7 +20,7 @@ void FalconCubeTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	boost::array<double, 3> pos = m_falconDevice->getPosition();
+	std::array<double, 3> pos = m_falconDevice->getPosition();
 
 	if(m_isInitializing)
 	{
@@ -39,7 +39,7 @@ void FalconCubeTest::runFunction()
 		return;
 	}
 
-	boost::array<double, 3> force;
+	std::array<double, 3> force;
 
 	double dist = 10000;
 	int closest = -1, outside=3, axis;

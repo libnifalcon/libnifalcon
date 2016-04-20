@@ -11,8 +11,6 @@
 
 #include <iostream>
 
-#include <boost/shared_ptr.hpp>
-
 #include "falcon/util/FalconCLIBase.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/util/FalconFirmwareBinaryTest.h"
@@ -25,12 +23,12 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/consoleappender.h>
-static const log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
+static constexpr log4cxx::LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%-5p [%c] - %m%n"));
 
 /**
  * Statically initialize the log4cxx library.
  */
-void configureLogging(const std::string logString, const log4cxx::LevelPtr level) {
+void configureLogging(const std::string & logString, const log4cxx::LevelPtr level) {
 	log4cxx::LayoutPtr layout(new log4cxx::PatternLayout(logString));
 	log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
 	log4cxx::BasicConfigurator::configure(appender);
@@ -41,88 +39,58 @@ void configureLogging(const std::string logString, const log4cxx::LevelPtr level
 
 namespace libnifalcon
 {
-	namespace po = boost::program_options;
-
 	FalconCLIBase::FalconCLIBase() :
-		m_falconDevice(new FalconDevice()),
+		m_falconDevice(std::make_shared<FalconDevice>()),
 		m_displayCalibrationMessage(true),
 		INIT_LOGGER("FalconCLIBase")
 	{
-		po::options_description program("Program Options");
-		program.add_options()
-			("help", "show this help message");
-		m_progOptions.add(program);
+		m_parser = optparse::OptionParser().description("Program Options");
 	}
 
 	void FalconCLIBase::addOptions(int value)
 	{
 		if(value & DEVICE_OPTIONS)
 		{
-			po::options_description device("Device options");
-			device.add_options()
-				("device_count", "Print the number of devices currently connected and return")
-				("device_index", po::value<int>(), "Opens device of given index (starts at 0)")
-				;
-
-			m_progOptions.add(device);
+			m_parser.add_option("--device_count").help("Print the number of devices currently connected and return")
+					.action("store_true");
+			m_parser.add_option("--device_index").help("Opens device of given index (starts at 0)")
+					.action("store").type("int");
 		}
 
 		if(value & FIRMWARE_OPTIONS)
 		{
-			po::options_description firmware("Firmware Options");
-			firmware.add_options()
-				("nvent_firmware", "Use 'nVent' firmware (Recommended)")
-				("test_firmware", "Use test firmware")
-				("firmware_file", po::value<std::string>(), "Specify external firmware file (instead of nvent or test)")
-				("force_firmware", "Force firmware download, even if already loaded")
-				("skip_checksum", "Ignore checksum errors when loading firmware (useful for FTD2XX on non-windows platforms)")
-				;
-			m_progOptions.add(firmware);
+			m_parser.add_option("--nvent_firmware").help("Use 'nVent' firmware (Recommended)")
+					.action("store_true");
+			m_parser.add_option("--test_firmware").help("Use test firmware")
+					.action("store_true");
+			m_parser.add_option("--firmware_file").help("Specify external firmware file (instead of nvent or test)")
+					.metavar("FILE");
+			m_parser.add_option("--force_firmware").help("Force firmware download, even if already loaded")
+					.action("store_true");
+			m_parser.add_option("--skip_checksum").help("Ignore checksum errors when loading firmware (useful for FTD2XX on non-windows platforms)")
+					.action("store_true");
 		}
 
 #ifdef ENABLE_LOGGING
-		po::options_description debug("Debug Message Options");
-		debug.add_options()
-			("debug_level", po::value<std::string>(), "Level of debug messages to print (FATAL, ERROR, WARN, INFO, DEBUG) (Default: FATAL)")
-			;
-//		("output_file", po::value<std::string>(), "File to output debug messages to (outputs to stdout otherwise")
-		m_progOptions.add(debug);
+		m_parser.add_option("--debug_level").help("Level of debug messages to print (FATAL, ERROR, WARN, INFO, DEBUG) (Default: FATAL)"));
 #endif
 	}
 
 	void FalconCLIBase::outputProgramOptions()
 	{
-		std::cout << "Usage: falcon_test_cli [args]" << std::endl;
-		std::cout << m_progOptions << std::endl;
+		m_parser.print_help();
 	}
 
 	bool FalconCLIBase::parseOptions(int argc, char** argv)
 	{
-		try
-		{
-			po::store(po::parse_command_line(argc, argv, m_progOptions), m_varMap);
-			po::notify(m_varMap);
-		}
-		catch(...)
-		{
-			std::cout << "Invalid Arguments. Please try again." << std::endl << std::endl;
-			outputProgramOptions();
-			return false;
-		}
-
-		if (m_varMap.count("help")) {
-			outputProgramOptions();
-			return false;
-		}
+		optparse::Values options = m_parser.parse_args(argc, argv);
 
 #ifdef ENABLE_LOGGING
 		std::string logPattern(TTCC_CONVERSION_PATTERN);
 		log4cxx::LevelPtr logLevel = log4cxx::Level::toLevel("FATAL");
 
-		if(m_varMap.count("debug_level"))
-		{
-			logLevel = log4cxx::Level::toLevel(m_varMap["debug_level"].as<std::string>());
-		}
+		if(options.is_set("debug_level"))
+			logLevel = log4cxx::Level::toLevel((string)options.get("debug_level"));
 
 		configureLogging(logPattern, logLevel);
 #endif
@@ -130,25 +98,25 @@ namespace libnifalcon
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 
 		//First off, see if we have a communication method
-		if(m_varMap.count("libusb") &&  m_varMap.count("ftd2xx"))
+		if(options.get("libusb") && options.get("ftd2xx"))
 		{
 			std::cout << "Error: can only use one comm method. Choose either libusb or ftd2xx, depending on which is available." << std::endl;
 			return false;
 		}
 
 		//Device count check
-		if(m_varMap.count("device_count"))
+		if(options.get("device_count"))
 		{
 			unsigned int count;
 			m_falconDevice->getDeviceCount(count);
 			std::cout << "Connected Device Count: " << count << std::endl;
 			return false;
 		}
-		else if(m_varMap.count("device_index"))
+		else if(options.is_set("device_index"))
 		{
-			if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
+			if(!m_falconDevice->open((int)options.get("device_index")))
 			{
-				std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
+				std::cout << "Cannot open falcon device index " << (int)options.get("device_index") << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 				return false;
 			}
 		}
@@ -166,7 +134,7 @@ namespace libnifalcon
 		m_falconDevice->setFalconFirmware<FalconFirmwareNovintSDK>();
 		//See if we have firmware
 		bool firmware_loaded = false;
-		if(!m_varMap.count("force_firmware"))
+		if(!options.is_set("force_firmware"))
 			firmware_loaded = m_falconDevice->isFirmwareLoaded();
 		if(!firmware_loaded)
 		{
@@ -174,10 +142,10 @@ namespace libnifalcon
 			uint8_t* firmware_block;
 			long firmware_size;
 			//First, see if we're trying to load a custom firmware file
-			if(m_varMap.count("firmware"))
+			if(options.is_set("firmware_file"))
 			{
 				//Check for existence of firmware file
-				std::string firmware_file = m_varMap["firmware"].as<std::string>();
+				std::string firmware_file = (std::string)options.get("firmware_file");
 				if(!m_falconDevice->setFirmwareFile(firmware_file))
 				{
 					std::cout << "Cannot find firmware file - " << firmware_file << std::endl;
@@ -185,7 +153,7 @@ namespace libnifalcon
 				}
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!m_falconDevice->loadFirmware(m_varMap.count("skip_checksum") > 0))
+					if(!m_falconDevice->loadFirmware((bool)options.get("skip_checksum")))
 					{
 						std::cout << "Cannot load firmware to device" << std::endl;
 						std::cout << "Error Code: " << m_falconDevice->getErrorCode() << std::endl;
@@ -194,9 +162,9 @@ namespace libnifalcon
 							std::cout << "Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 						}
 						m_falconDevice->close();
-						if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
+						if(!m_falconDevice->open((int)options.get("device_index")))
 						{
-							std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
+							std::cout << "Cannot open falcon device index " << (int)options.get("device_index") << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 							return false;
 						}
 					}
@@ -209,26 +177,26 @@ namespace libnifalcon
 			}
 			else
 			{
-				if(m_varMap.count("nvent_firmware"))
+				if(options.get("nvent_firmware"))
 				{
 					firmware_block = const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE);
 					firmware_size = NOVINT_FALCON_NVENT_FIRMWARE_SIZE;
 				}
-				else if(m_varMap.count("test_firmware"))
+				else if(options.get("test_firmware"))
 				{
 					firmware_block = const_cast<uint8_t*>(NOVINT_FALCON_TEST_FIRMWARE);
 					firmware_size = NOVINT_FALCON_TEST_FIRMWARE_SIZE;
 				}
 				for(int i = 0; i < 10; ++i)
 				{
-					if(!m_falconDevice->getFalconFirmware()->loadFirmware(m_varMap.count("skip_checksum") > 0, NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
+					if(!m_falconDevice->getFalconFirmware()->loadFirmware((bool)options.get("skip_checksum"), NOVINT_FALCON_NVENT_FIRMWARE_SIZE, const_cast<uint8_t*>(NOVINT_FALCON_NVENT_FIRMWARE)))
 					{
 						LOG_ERROR("Firmware loading try failed");
 						//Completely close and reopen
 						m_falconDevice->close();
-						if(!m_falconDevice->open(m_varMap["device_index"].as<int>()))
+						if(!m_falconDevice->open((int)options.get("device_index")))
 						{
-							std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
+							std::cout << "Cannot open falcon device index " << (int)options.get("device_index") << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
 							return false;
 						}
 					}

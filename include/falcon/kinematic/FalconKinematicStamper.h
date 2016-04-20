@@ -66,7 +66,7 @@ namespace libnifalcon
 		 *
 		 * @return true if forces are generated, false otherwise.
 		 */
-		virtual bool getForces(const boost::array<double, 3> (&position), const boost::array<double, 3> (&cart_force), boost::array<int, 3> (&enc_force));
+		virtual bool getForces(const std::array<double, 3> (&position), const std::array<double, 3> (&cart_force), std::array<int, 3> (&enc_force));
 
 		/**
 		 * Given a caretesian position (in meters), return the angle of the legs requires to achieve the positions
@@ -76,7 +76,7 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getAngles(boost::array<double, 3> (&position), boost::array<double,3> (&angles));
+		virtual bool getAngles(std::array<double, 3> (&position), std::array<double,3> (&angles));
 
 		/**
 		 * Given a set of encoder values, return the cartesian position (in meters) of the end effector in relation to the origin.
@@ -88,14 +88,14 @@ namespace libnifalcon
 		 *
 		 * @return true if angles are found, false otherwise (i.e. position out of workspace range)
 		 */
-		virtual bool getPosition(boost::array<int, 3> (&angles), boost::array<double, 3> (&position));
+		virtual bool getPosition(std::array<int, 3> (&angles), std::array<double, 3> (&position));
 
 		/**
 		 * Returns the center point of the workspace. May not always be [0,0,0].
 		 *
 		 * @param origin Array to store values in
 		 */
-		virtual void getWorkspaceOrigin(boost::array<double, 3> (&origin))
+		virtual void getWorkspaceOrigin(std::array<double, 3> (&origin))
 		{
 			origin[0] = 0.0;
 			origin[1] = 0.0;

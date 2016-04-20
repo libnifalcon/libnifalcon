@@ -1,6 +1,6 @@
 /***
- * @file FalconDeviceBoostThread.h
- * @brief Utility class for threading a FalconDevice instance using boost::thread (http://www.boost.org)
+ * @file FalconDeviceThread.h
+ * @brief Utility class for threading a FalconDevice instance using std::thread
  * @author Kyle Machulis (kyle@nonpolynomial.com)
  * @copyright (c) 2007-2009 Nonpolynomial Labs/Kyle Machulis
  * @license BSD License
@@ -9,36 +9,35 @@
  *
  */
 
-#ifndef FALCONDEVICEBOOSTTHREADS_H
-#define FALCONDEVICEBOOSTTHREADS_H
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
+#ifndef FALCONDEVICETHREADS_H
+#define FALCONDEVICETHREADS_H
+#include <thread>
 #include "falcon/core/FalconDevice.h"
 
 namespace libnifalcon
 {
 /**
- * @class FalconDeviceBoostThread
+ * @class FalconDeviceThread
  * @ingroup UtilityClasses
  *
- * The FalconDeviceBoostThread class is a sample device that uses the boost::thread class to run the
+ * The FalconDeviceThread class is a sample device that uses the std::thread class to run the
  * communications loop to the falcon. 
  *
- * The FalconDeviceBoostThread class is only available if the boost::thread library is available on the system.
+ * The FalconDeviceThread class is only available if the std::thread library is available on the system.
  */
 
-	class FalconDeviceBoostThread : public FalconDevice
+	class FalconDeviceThread : public FalconDevice
 	{
 	public:
 		/**
 		 * Constructor
 		 */
-		FalconDeviceBoostThread();
+		FalconDeviceThread();
 
 		/**
 		 * Destructor
 		 */
-		virtual ~FalconDeviceBoostThread();
+		virtual ~FalconDeviceThread();
 
 		/**
 		 * Starts a thread that runs FalconDevice::runIOLoop constantly
@@ -65,7 +64,7 @@ namespace libnifalcon
 		/**
 		 * Thread safe position return
 		 */
-		void getPosition(boost::array<double, 3>& pos);
+		void getPosition(std::array<double, 3>& pos);
 	protected:
 		/**
 		 * Wrapper function for dealing with device communication
@@ -75,12 +74,12 @@ namespace libnifalcon
 		/**
 		 * Internal thread object
 		 */
-		boost::shared_ptr<boost::thread> m_ioThread;
+		std::shared_ptr<std::thread> m_ioThread;
 
 		/**
 		 * Internal position storage
 		 */
-		boost::array<double, 3> m_localPosition;
+		std::array<double, 3> m_localPosition;
 
 		bool m_runThreadLoop; /**< Internal thread execution state. Thread loop exits if this is false. */
 	};

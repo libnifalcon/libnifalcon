@@ -16,8 +16,6 @@
 #include <iostream>
 #include <string>
 #include <csignal>
-#include <boost/program_options.hpp>
-#include <boost/scoped_ptr.hpp>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
@@ -29,7 +27,6 @@
 #include "FalconColorTest.h"
 
 using namespace libnifalcon;
-namespace po = boost::program_options;
 
 bool stop = false;
 
@@ -55,62 +52,66 @@ public:
 	void addOptions(int value)
 	{
 		FalconCLIBase::addOptions(value);
-		po::options_description tests("Tests");
-		tests.add_options()
 #ifdef FTC_USE_TIME
-			("loop_time_test", "Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible)")
+			m_parser.add_option("--loop_time_test").help("Loops infinitely, printing time every 1000 I/O loops (should be as near 1.0 as possible")
+				.action("store_true");
 #endif
-			("cube_test", "Presents a cube-shaped surface to touch")
-			("sphere_test", "Presents a sphere-shaped surface to touch")
-			("color_test", "Fades LEDs based on the position of the end effector")
-			("x_wall_test", "Presents a wall surface to touch (force along x axis)")
-			("y_wall_test", "Presents a wall surface to touch (force along y axis)")
-			("z_wall_test", "Presents a wall surface to touch (force along z axis)")
-			;
-		m_progOptions.add(tests);
+			m_parser.add_option("--cube_test").help("Presents a cube-shaped surface to touch")
+					.action("store_true");
+			m_parser.add_option("--sphere_test").help("Presents a sphere-shaped surface to touch")
+					.action("store_true");
+			m_parser.add_option("--color_test").help("Fades LEDs based on the position of the end effector")
+					.action("store_true");
+			m_parser.add_option("--x_wall_test").help("Presents a wall surface to touch (force along x axis)")
+					.action("store_true");
+			m_parser.add_option("--y_wall_test").help("Presents a wall surface to touch (force along y axis)")
+					.action("store_true");
+			m_parser.add_option("--z_wall_test").help("Presents a wall surface to touch (force along z axis)")
+					.action("store_true");
 	}
 
 	bool parseOptions(int argc, char** argv)
 	{
-		boost::scoped_ptr<FalconTestBase> t;
+		std::unique_ptr<FalconTestBase> t;
 		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
+		optparse::Values options = m_parser.parse_args(argc, argv);
 
-		if(m_varMap.count("loop_time_test"))
+		if(options.get("loop_time_test"))
 		{
 			std::cout << "Running loop timing test" << std::endl;
 			t.reset(new FalconLoopTimeTest(m_falconDevice));
 		}
-		else if(m_varMap.count("cube_test"))
+		else if(options.get("cube_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running cube test" << std::endl;
 			t.reset(new FalconCubeTest(m_falconDevice));
 		}
-		else if(m_varMap.count("sphere_test"))
+		else if(options.get("sphere_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running sphere test" << std::endl;
 			t.reset(new FalconSphereTest(m_falconDevice));
 		}
-		else if(m_varMap.count("color_test"))
+		else if(options.get("color_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running color test" << std::endl;
 			t.reset(new FalconColorTest(m_falconDevice));
 		}
-		else if(m_varMap.count("x_wall_test"))
+		else if(options.get("x_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running x axis wall test" << std::endl;
 			t.reset(new FalconWallTest(m_falconDevice, 0));
 		}
-		else if(m_varMap.count("y_wall_test"))
+		else if(options.get("y_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running y axis wall test" << std::endl;
 			t.reset(new FalconWallTest(m_falconDevice, 1));
 		}
-		else if(m_varMap.count("z_wall_test"))
+		else if(options.get("z_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running z axis wall test" << std::endl;

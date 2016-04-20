@@ -15,13 +15,11 @@
 #include <iostream>
 #include <string>
 #include <csignal>
-#include <boost/program_options.hpp>
 #include "falcon/core/FalconDevice.h"
 #include "falcon/util/FalconCLIBase.h"
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 
 using namespace libnifalcon;
-namespace po = boost::program_options;
 
 bool stop = true;
 
@@ -42,29 +40,31 @@ public:
 	void addOptions(int value)
 	{
 		FalconCLIBase::addOptions(value);
-		po::options_description led("LED Status");
-		led.add_options()
-			("led_red", "Turn on Red LED")
-			("led_green", "Turn on Green LED")
-			("led_blue", "Turn on Blue LED");
-		m_progOptions.add(led);
+		m_parser.add_option("--led_red").help("Turn on Red LED")
+				.action("store_true");
+		m_parser.add_option("--led_green").help("Turn on Green LED")
+				.action("store_true");
+		m_parser.add_option("--led_blue").help("Turn on Blue LED")
+				.action("store_true");
 	}
 
 	bool parseOptions(int argc, char** argv)
 	{
 		if(!FalconCLIBase::parseOptions(argc, argv)) return false;
+		optparse::Values options = m_parser.parse_args(argc, argv);
+
 		int led = 0;
-		if(m_varMap.count("led_red"))
+		if(options.get("led_red"))
 		{
 			std::cout << "Turning on RED LED" << std::endl;
 			led |= FalconFirmware::RED_LED;
 		}
-		if(m_varMap.count("led_green"))
+		if(options.get("led_green"))
 		{
 			std::cout << "Turning on GREEN LED" << std::endl;
 			led |= FalconFirmware::GREEN_LED;
 		}
-		if(m_varMap.count("led_blue"))
+		if(options.get("led_blue"))
 		{
 			std::cout << "Turning on BLUE LED" << std::endl;			
 			led |= FalconFirmware::BLUE_LED;

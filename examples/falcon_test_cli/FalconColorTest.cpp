@@ -2,7 +2,7 @@
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "FalconColorTest.h"
 
-FalconColorTest::FalconColorTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+FalconColorTest::FalconColorTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 	FalconTestBase(d),
 	m_tickLimit(20)
 {
@@ -27,7 +27,7 @@ void FalconColorTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	boost::array<double, 3> pos = m_falconDevice->getPosition();
+	std::array<double, 3> pos = m_falconDevice->getPosition();
 
 	for(int i = 0; i < 3; ++i)
 	{

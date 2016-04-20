@@ -40,7 +40,7 @@ namespace libnifalcon
 
     bool FalconDevice::getDeviceCount(unsigned int& count)
 	{
-		if(m_falconComm == NULL)
+		if(m_falconComm == nullptr)
 		{
 			LOG_ERROR("Cannot get device count - Communications not established");
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
@@ -51,7 +51,7 @@ namespace libnifalcon
 
     bool FalconDevice::open(unsigned int index)
 	{
-		if(m_falconComm == NULL)
+		if(m_falconComm == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return false;
@@ -61,7 +61,7 @@ namespace libnifalcon
 			m_errorCode = m_falconComm->getErrorCode();
 			return false;
 		}
-		if(m_falconFirmware != NULL)
+		if(m_falconFirmware != nullptr)
 		{
 			m_falconFirmware->resetFirmwareState();
 		}
@@ -70,13 +70,13 @@ namespace libnifalcon
 
 	void FalconDevice::close()
     {
-		if(m_falconComm == NULL)
+		if(m_falconComm == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_COMM_SET;
 			return;
 		}
 		m_falconComm->close();
-		if(m_falconFirmware != NULL)
+		if(m_falconFirmware != nullptr)
 		{
 			m_falconFirmware->resetFirmwareState();
 		}
@@ -84,7 +84,7 @@ namespace libnifalcon
 
 	bool FalconDevice::setFirmwareFile(const std::string& filename)
     {
-		if(m_falconFirmware == NULL)
+		if(m_falconFirmware == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
@@ -94,7 +94,7 @@ namespace libnifalcon
 
 	bool FalconDevice::loadFirmware(unsigned int retries, bool skip_checksum)
 	{
-		if(m_falconFirmware == NULL)
+		if(m_falconFirmware == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
@@ -104,7 +104,7 @@ namespace libnifalcon
 
 	bool FalconDevice::loadFirmware(bool skip_checksum)
 	{
-		if(m_falconFirmware == NULL)
+		if(m_falconFirmware == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
@@ -114,7 +114,7 @@ namespace libnifalcon
 
 	bool FalconDevice::isFirmwareLoaded()
 	{
-		if(m_falconFirmware == NULL)
+		if(m_falconFirmware == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
@@ -124,14 +124,14 @@ namespace libnifalcon
 
 	bool FalconDevice::runIOLoop(unsigned int exe_flags)
 	{
-		if(m_falconFirmware == NULL)
+		if(m_falconFirmware == nullptr)
 		{
 			m_errorCode = FALCON_DEVICE_NO_FIRMWARE_SET;
 			return false;
 		}
-		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
+		if(m_falconKinematic != nullptr && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int, 3> enc_vec;
+			std::array<int, 3> enc_vec;
 			m_falconKinematic->getForces(m_position, m_forceVec, enc_vec);
 			m_falconFirmware->setForces(enc_vec);
 		}
@@ -141,7 +141,7 @@ namespace libnifalcon
 			m_errorCode = m_falconFirmware->getErrorCode();
 			return false;
 		}
-		if(m_falconGrip != NULL && (exe_flags & FALCON_LOOP_GRIP))
+		if(m_falconGrip != nullptr && (exe_flags & FALCON_LOOP_GRIP))
 		{
 			if(!m_falconGrip->runGripLoop(m_falconFirmware->getGripInfoSize(), m_falconFirmware->getGripInfo()))
 			{
@@ -149,9 +149,9 @@ namespace libnifalcon
 				return false;
 			}
 		}
-		if(m_falconKinematic != NULL && (exe_flags & FALCON_LOOP_KINEMATIC))
+		if(m_falconKinematic != nullptr && (exe_flags & FALCON_LOOP_KINEMATIC))
 		{
-			boost::array<int, 3> p = m_falconFirmware->getEncoderValues();
+			std::array<int, 3> p = m_falconFirmware->getEncoderValues();
 			if(!m_falconKinematic->getPosition(p, m_position))
 			{
 				++m_errorCount;

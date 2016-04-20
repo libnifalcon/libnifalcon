@@ -341,7 +341,7 @@ int main(int argc, char* argv[])
 		
 		//////////////////////////////////////////////
 		//Request the current encoder positions:
-		boost::array<int, 3> encoderPos;
+		std::array<int, 3> encoderPos;
 		encoderPos = falcon.getFalconFirmware()->getEncoderValues();
 		gmtl::Vec3d encoderAngles;
 		encoderAngles[0] = falcon.getFalconKinematic()->getTheta(encoderPos[0]);
@@ -483,7 +483,7 @@ int main(int argc, char* argv[])
 
 		//Convert torque to motor voltages:
 		torque *= 10000.0;
-		boost::array<int, 3> enc_vec;
+		std::array<int, 3> enc_vec;
 		enc_vec[0] = -torque[0];
 		enc_vec[1] = -torque[1];
 		enc_vec[2] = -torque[2];

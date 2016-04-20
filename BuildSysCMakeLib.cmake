@@ -87,7 +87,7 @@ MACRO(INITIALIZE_BUILD)
   ENDIF()
 
   FOREACH(DEFINE ${BUILDSYS_GLOBAL_DEFINES})
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEFINE}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEFINE} -std=c++0x")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DEFINE}")
   ENDFOREACH(DEFINE ${BUILDSYS_GLOBAL_DEFINES})	
 
@@ -636,7 +636,7 @@ MACRO(OPTION_GPROF DEFAULT)
 ENDMACRO()
 
 ######################################################################################
-# Turn on "extra" compiler warnings (SPAMMY WITH BOOST)
+# Turn on "extra" compiler warnings
 ######################################################################################
 
 MACRO(OPTION_EXTRA_COMPILER_WARNINGS DEFAULT)

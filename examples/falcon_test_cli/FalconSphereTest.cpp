@@ -4,7 +4,7 @@
 #include "falcon/grip/FalconGripFourButton.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 
-FalconSphereTest::FalconSphereTest(boost::shared_ptr<libnifalcon::FalconDevice> d) :
+FalconSphereTest::FalconSphereTest(std::shared_ptr<libnifalcon::FalconDevice> d) :
 	FalconTestBase(d),
 	m_radius(0.028),
 	m_stiffness(1000.0),
@@ -26,7 +26,7 @@ void FalconSphereTest::runFunction()
 	if(!m_falconDevice->runIOLoop())
 		return;
 
-	boost::array<double, 3> pos = m_falconDevice->getPosition();
+	std::array<double, 3> pos = m_falconDevice->getPosition();
 
 	if(m_isInitializing)
 	{
@@ -107,7 +107,7 @@ void FalconSphereTest::runFunction()
 	}
 
 
-	boost::array<double, 3> force;
+	std::array<double, 3> force;
 	force[0] = 0.0;
 	force[1] = 0.0;
 	force[2] = 0.0;

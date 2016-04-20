@@ -14,8 +14,7 @@
 
 #include <iostream>
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include <boost/array.hpp>
+#include <array>
 #include "falcon/core/FalconLogger.h"
 #include "falcon/core/FalconCore.h"
 #include "falcon/core/FalconComm.h"
@@ -197,14 +196,14 @@ namespace libnifalcon
 		 *
 		 * @return Array of 3 doubles, representing 3D cartesian coordinate
 		 */
-		boost::array<double, 3> getPosition() { return m_position; }
+		std::array<double, 3> getPosition() { return m_position; }
 
 		/**
 		 * Set the instantanious force for the next I/O loop
 		 *
 		 * @param force Force vector, in cartesian coordinates (x,y,z)
 		 */
-		void setForce(boost::array<double, 3> force)
+		void setForce(std::array<double, 3> force)
 		{
 			m_forceVec[0] = force[0];
 			m_forceVec[1] = force[1];
@@ -216,28 +215,28 @@ namespace libnifalcon
 		 *
 		 * @return Non-smart pointer to internal falcon communications object
 		 */
-		boost::shared_ptr<FalconComm> getFalconComm() { return m_falconComm; }
+		std::shared_ptr<FalconComm> getFalconComm() { return m_falconComm; }
 
 		/**
 		 * Get firmware behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon firmware object
 		 */
-		boost::shared_ptr<FalconFirmware> getFalconFirmware() { return m_falconFirmware; }
+		std::shared_ptr<FalconFirmware> getFalconFirmware() { return m_falconFirmware; }
 
 		/**
 		 * Get grip behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon grip object
 		 */
-		boost::shared_ptr<FalconGrip> getFalconGrip() { return m_falconGrip; }
+		std::shared_ptr<FalconGrip> getFalconGrip() { return m_falconGrip; }
 
 		/**
 		 * Get kinematic behavior object pointer
 		 *
 		 * @return Non-smart pointer to internal falcon kinematic object
 		 */
-		boost::shared_ptr<FalconKinematic> getFalconKinematic() { return m_falconKinematic; }
+		std::shared_ptr<FalconKinematic> getFalconKinematic() { return m_falconKinematic; }
 
 		/**
 		 * Checks whether the falcon communications are open
@@ -246,7 +245,7 @@ namespace libnifalcon
 		 */
 		bool isOpen()
 		{
-			if(m_falconComm != NULL)
+			if(m_falconComm != nullptr)
 			{
 				return m_falconComm->isCommOpen();
 			}
@@ -261,21 +260,21 @@ namespace libnifalcon
 		unsigned int getErrorCount() { return m_errorCount; }
 	protected:
 		unsigned int m_errorCount;	/**< Number of errors in I/O loops */
-		boost::shared_ptr<FalconComm> m_falconComm; /**< Falcon communication object */
-		boost::shared_ptr<FalconKinematic> m_falconKinematic; /**<  Falcon kinematics object */
-		boost::shared_ptr<FalconFirmware> m_falconFirmware; /**<  Falcon firmware object */
-		boost::shared_ptr<FalconGrip> m_falconGrip; /**< Falcon grip object */
-		boost::array<double, 3> m_position;	/**< Current position in 3D cartesian coordinates */
-		boost::array<double, 3> m_forceVec;	/**< Current force in 3D cartesian coordinates */
+		std::shared_ptr<FalconComm> m_falconComm; /**< Falcon communication object */
+		std::shared_ptr<FalconKinematic> m_falconKinematic; /**<  Falcon kinematics object */
+		std::shared_ptr<FalconFirmware> m_falconFirmware; /**<  Falcon firmware object */
+		std::shared_ptr<FalconGrip> m_falconGrip; /**< Falcon grip object */
+		std::array<double, 3> m_position;	/**< Current position in 3D cartesian coordinates */
+		std::array<double, 3> m_forceVec;	/**< Current force in 3D cartesian coordinates */
 	private:
 		DECLARE_LOGGER();
 	};
 
 	template<class T>
 	void FalconDevice::setFalconComm()
-	{
-		m_falconComm.reset(new T());
-		if(m_falconFirmware != NULL)
+	{		
+		m_falconComm = std::make_shared<T>();
+		if(m_falconFirmware != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
 		}
@@ -284,8 +283,8 @@ namespace libnifalcon
 	template<class T>
 	void FalconDevice::setFalconFirmware()
 	{
-		m_falconFirmware.reset(new T());
-		if(m_falconComm != NULL)
+		m_falconFirmware = std::make_shared<T>();
+		if(m_falconComm != nullptr)
 		{
 			m_falconFirmware->setFalconComm(m_falconComm);
 		}
@@ -294,13 +293,13 @@ namespace libnifalcon
 	template<class T>
 	void FalconDevice::setFalconGrip()
 	{
-		m_falconGrip.reset(new T());
+		m_falconGrip = std::make_shared<T>();
 	}
 
 	template<class T>
 	void FalconDevice::setFalconKinematic()
 	{
-		m_falconKinematic.reset(new T());
+		m_falconKinematic = std::make_shared<T>();
 	}
 
 }

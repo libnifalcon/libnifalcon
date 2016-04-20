@@ -9,7 +9,6 @@
  *
  */
 
-#include <boost/bind.hpp>
 #include "falcon/comm/FalconCommLibUSB.h"
 #include <iostream>
 #include <cstdio>
@@ -108,6 +107,7 @@ namespace libnifalcon
 		LOG_INFO("Setting libusb debug level to 0");
 		libusb_set_debug(m_usbContext, 0);
 #endif
+		return true;
 	}
 
 	//Ripped out of libusb_open_device_with_vid_pid
@@ -115,7 +115,6 @@ namespace libnifalcon
 	{
 		LOG_INFO("Getting device count");
 		struct libusb_device **devs;
-		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
 		size_t i = 0;
 		count = 0;
@@ -153,7 +152,7 @@ namespace libnifalcon
 		struct libusb_device *found = NULL;
 		struct libusb_device *dev;
 		size_t i = 0;
-		int count = 0;
+		unsigned int count = 0;
 
 
 		if ((m_deviceErrorCode = libusb_get_device_list(m_usbContext, &devs)) < 0)
@@ -191,7 +190,7 @@ namespace libnifalcon
 			if (m_deviceErrorCode < 0)
 			{
 				LOG_ERROR("Cannot open device - Device error code " << m_deviceErrorCode);
-				m_falconDevice = NULL;
+				m_falconDevice = nullptr;
 				m_errorCode = FALCON_COMM_DEVICE_ERROR;
 				libusb_free_device_list(devs, 1);
 				return false;
@@ -250,7 +249,7 @@ namespace libnifalcon
 
 		reset();
 		libusb_close(m_falconDevice);
-		m_falconDevice = NULL;
+		m_falconDevice = nullptr;
 		return true;
 	}
 
@@ -363,12 +362,11 @@ namespace libnifalcon
 
 	bool FalconCommLibUSB::setFirmwareMode()
 	{
-		unsigned int bytes_written, bytes_read;
 		unsigned char check_msg_1_send[3] = {0x0a, 0x43, 0x0d};
 		unsigned char check_msg_1_recv[5] = {0x00, 0x0a, 0x44, 0x2c, 0x0d};
 		unsigned char check_msg_2[1] = {0x41};
-		unsigned char send_buf[128], receive_buf[128];
-		int k;
+		unsigned char receive_buf[128];
+
 		LOG_INFO("Setting firmware communications mode");
 
 		if(!m_isCommOpen)

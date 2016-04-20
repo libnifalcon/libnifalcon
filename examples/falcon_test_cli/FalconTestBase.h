@@ -15,17 +15,16 @@
 #include <windows.h>
 #endif
 
-#include "boost/shared_ptr.hpp"
 #include "falcon/core/FalconDevice.h"
 
 class FalconTestBase
 {
 public:
 
-	FalconTestBase(boost::shared_ptr<libnifalcon::FalconDevice> d) :
-		m_falconDevice(d),
+	FalconTestBase(std::shared_ptr<libnifalcon::FalconDevice> d) :
 		m_lastLoopCount(0),
-		m_countLimit(0)
+		m_countLimit(0),
+		m_falconDevice(d)
 	{
 		tinit();
 		tstart();
@@ -38,7 +37,7 @@ public:
 protected:
 	uint64_t m_lastLoopCount;
 	uint64_t m_countLimit;
-	boost::shared_ptr<libnifalcon::FalconDevice> m_falconDevice;
+	std::shared_ptr<libnifalcon::FalconDevice> m_falconDevice;
 	virtual void runFunction() = 0;
 
 #ifdef FTC_USE_TIME

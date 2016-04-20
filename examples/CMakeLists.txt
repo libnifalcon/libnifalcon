@@ -5,8 +5,6 @@
 SET(LIBNIFALCON_EXE_PO_LINK_LIBS
   ${libnifalcon_cli_base_LIBRARY}
   ${LIBNIFALCON_EXE_LINK_LIBS} 
-  ${Boost_PROGRAM_OPTIONS_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}
   )
 
 ######################################################################################
@@ -65,15 +63,11 @@ BUILDSYS_BUILD_EXE(
 # Build function for falcon_led
 ######################################################################################
 
-#Can't compile without program options
-IF(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  MESSAGE("Cannot compile falcon_led - Missing Boost Program Options")
-ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  SET(SRCS 
-    falcon_led/falcon_led.cpp
-    )
+SET(SRCS
+  falcon_led/falcon_led.cpp
+)
   
-  BUILDSYS_BUILD_EXE(
+BUILDSYS_BUILD_EXE(
     NAME falcon_led
     SOURCES "${SRCS}" 
     CXX_FLAGS FALSE
@@ -81,18 +75,14 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     LINK_FLAGS FALSE 
     DEPENDS nifalcon_cli_base_DEPEND
     SHOULD_INSTALL TRUE
-    )
-ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
+)
+
 
 ######################################################################################
 # Build function for falcon_test_cli
 ######################################################################################
 
-#Can't compile without program options
-IF(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  MESSAGE("Cannot compile falcon_test_cli - Missing Boost Program Options")
-ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  SET(SRCS 
+SET(SRCS
     falcon_test_cli/falcon_test_cli.cpp 
     falcon_test_cli/FalconTestBase.cpp 
     falcon_test_cli/FalconLoopTimeTest.cpp 
@@ -100,9 +90,9 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     falcon_test_cli/FalconSphereTest.cpp 
     falcon_test_cli/FalconWallTest.cpp 
     falcon_test_cli/FalconColorTest.cpp
-    )
+)
 
-  BUILDSYS_BUILD_EXE(
+BUILDSYS_BUILD_EXE(
     NAME falcon_test_cli
     SOURCES "${SRCS}" 
     CXX_FLAGS FALSE
@@ -110,16 +100,12 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
     LINK_FLAGS FALSE 
     DEPENDS nifalcon_cli_base_DEPEND
     SHOULD_INSTALL TRUE
-    )
-ENDIF(NOT Boost_PROGRAM_OPTIONS_FOUND)
+)
 
 ######################################################################################
 # Build function for falcon_mouse
 ######################################################################################
 
-IF(NOT Boost_PROGRAM_OPTIONS_FOUND)
-  MESSAGE("Cannot compile falcon_mouse - Missing Boost Program Options")
-ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
   IF(WIN32)
 	SET(MOUSE_SRCS falcon_mouse/falcon_mouse.cpp falcon_mouse/falcon_mouse_win.cpp)
 	SET(MOUSE_LINK_LIBS ${LIBNIFALCON_EXE_PO_LINK_LIBS})
@@ -148,4 +134,3 @@ ELSE(NOT Boost_PROGRAM_OPTIONS_FOUND)
       SHOULD_INSTALL TRUE
 	  )
   ENDIF(MOUSE_SRCS)
-ENDIF()

@@ -115,7 +115,7 @@ namespace libnifalcon
 		 *
 		 * @return Value of analog input requested, (0 if index is out of range)
 		 */
-		int getAnalogInput(int index)
+		int getAnalogInput(unsigned int index)
 		{
 			if(index > m_numAnalogInputs)
 			{
