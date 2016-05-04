@@ -2,10 +2,7 @@
 # Build function for examples
 ######################################################################################
 
-SET(LIBNIFALCON_EXE_PO_LINK_LIBS
-  ${libnifalcon_cli_base_LIBRARY}
-  ${LIBNIFALCON_EXE_LINK_LIBS} 
-  )
+SET(LIBNIFALCON_EXE_PO_LINK_LIBS ${LIBNIFALCON_EXE_LINK_LIBS} nifalcon_cli_base)
 
 ######################################################################################
 # Build function for barrow_mechanics

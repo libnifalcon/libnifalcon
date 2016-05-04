@@ -60,10 +60,66 @@ MACRO(INITIALIZE_BUILD)
   SET(CMAKE_INSTALL_RPATH "${LIBRARY_INSTALL_DIR}")
   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-  # We always want to output our binaries and libraries to the same place, set that here
-  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-  SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-  SET(DOC_OUTPUT_PATH ${CMAKE_BINARY_DIR}/doc)
+  # Set output directory variables
+  if(NOT BIN_DIR)
+    set(BIN_DIR "bin")
+  endif(NOT BIN_DIR)
+
+  if(NOT LIB_DIR)
+    set(LIB_DIR "lib")
+  endif(NOT LIB_DIR)
+
+  # Output directories - this is where built library and executable
+  # files will be placed after building but prior to install.  The
+  # necessary variables change between single and multi configuration
+  # build systems, so it is necessary to handle both cases on a
+  # conditional basis.
+  if(NOT CMAKE_CONFIGURATION_TYPES)
+    # If we're not doing multi-configuration, just set the three main
+    # variables to the correct values.
+    if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_DIR})
+    endif()
+    if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_DIR})
+    endif()
+    if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${BIN_DIR})
+    endif()
+    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_LIBRARY_PATH})
+    set(CMAKE_LIBRARY_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} ${CMAKE_LIBRARY_PATH})
+  else()
+
+    # Multi-configuration is more difficult.  Not only do we need to
+    # properly set the output directories, but we also need to
+    # identify the "toplevel" directory for each configuration so
+    # we can place files, documentation, etc. in the correct
+    # relative positions.  Because files may be placed by CMake
+    # without a build target to put them in their proper relative build
+    # directory position using these paths, we must fully qualify them
+    # without using CMAKE_CFG_INTDIR.
+    #
+    # We define directories that may not be quite "standard"
+    # for a particular build tool - for example, native VS2010 projects use
+    # another directory to denote CPU type being compiled for - but CMake only
+    # supports multi-configuration setups having multiple configurations,
+    # not multiple compilers.
+    foreach(CFG_TYPE ${CMAKE_CONFIGURATION_TYPES})
+      set(CFG_ROOT ${CMAKE_BINARY_DIR}/${CFG_TYPE})
+      string(TOUPPER "${CFG_TYPE}" CFG_TYPE_UPPER)
+      if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${LIB_DIR})
+      endif()
+      if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${LIB_DIR})
+      endif()
+      if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${BIN_DIR})
+      endif()
+      set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER}} ${CMAKE_LIBRARY_PATH})
+      set(CMAKE_LIBRARY_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER}} ${CMAKE_LIBRARY_PATH})
+    endforeach()
+  endif()
 
   #Always assume we want to build threadsafe mingw binaries
   IF(MINGW)
@@ -95,34 +151,6 @@ MACRO(INITIALIZE_BUILD)
   #Handy visual studio functions
   #Assuming /MP to always be on though
   IF(MSVC)
-
-    # Fun with MSVC2010 linking 
-    # 
-    # As of VS2010, the "setting PREFIX to ../" hack no longer works
-    # to avoid VS's injection of build types into the library output
-    # path. Therefore, we have to set everything ourselves here.  I
-    # pulled this block from the OutDir test in the cmake source code,
-    # because it's not really documented otherwise.
-    # 
-    # Good times.
-
-    if(CMAKE_CONFIGURATION_TYPES)
-      foreach(config ${CMAKE_CONFIGURATION_TYPES})
-        string(TOUPPER "${config}" CONFIG)
-        list(APPEND configs "${CONFIG}")
-      endforeach()
-      set(CMAKE_BUILD_TYPE)
-    elseif(NOT CMAKE_BUILD_TYPE)
-      set(CMAKE_BUILD_TYPE Debug)
-    endif()
-
-    # Now that we've gathered the configurations we're using, set them
-    # all to the paths without the configuration type
-    FOREACH(config ${configs})
-      SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${LIBRARY_OUTPUT_PATH}")
-      SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${LIBRARY_OUTPUT_PATH}")
-      SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${EXECUTABLE_OUTPUT_PATH}")
-    ENDFOREACH()
 
     # Check to see if we're using nmake. If so, set the NMAKE variable
     IF(CMAKE_MAKE_PROGRAM STREQUAL "nmake")
@@ -277,6 +305,7 @@ FUNCTION(BUILDSYS_BUILD_LIB)
     ELSE()
       ADD_LIBRARY (${CURRENT_LIB} ${TARGET_LIB_TYPE} ${BUILDSYS_LIB_SOURCES})      
     ENDIF()
+    ADD_LIBRARY (${BUILDSYS_LIB_NAME} ALIAS ${CURRENT_LIB})
 
     # Add this library to the list of all libraries we're building
     LIST(APPEND LIB_DEPEND_LIST ${CURRENT_LIB})
@@ -498,27 +527,6 @@ MACRO(MACRO_ENSURE_OUT_OF_SOURCE_BUILD)
   ENDIF()
 ENDMACRO()
 
-######################################################################################
-# Create a library name that fits our platform
-######################################################################################
-
-MACRO(CREATE_LIBRARY_LINK_NAME LIBNAME)
-  if(BUILD_STATIC AND NOT BUILD_SHARED)
-    IF(NOT MSVC)
-      SET(LIB_STATIC_PRE "lib")
-      SET(LIB_STATIC_EXT ".a")
-    ELSE(NOT MSVC)
-      SET(LIB_STATIC_PRE "")
-      SET(LIB_STATIC_EXT ".lib")
-    ENDIF(NOT MSVC)
-    SET(LIB_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH}/)
-  ELSE(BUILD_STATIC AND NOT BUILD_SHARED)
-    SET(LIB_STATIC_PRE)
-    SET(LIB_STATIC_EXT)
-    SET(LIB_OUTPUT_PATH)
-  ENDIF(BUILD_STATIC AND NOT BUILD_SHARED)
-  SET(lib${LIBNAME}_LIBRARY ${LIB_OUTPUT_PATH}${LIB_STATIC_PRE}${LIBNAME}${LIB_STATIC_EXT})  
-ENDMACRO(CREATE_LIBRARY_LINK_NAME)
 
 ######################################################################################
 # Library Build Type Options

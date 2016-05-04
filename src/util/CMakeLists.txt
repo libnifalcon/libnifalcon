@@ -2,13 +2,7 @@
 # Build function for utilities libraries
 ######################################################################################
 
-LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
-
-#Command Line Base Utility
-SET(CPP_LINK_LIBS
-    ${libnifalcon_LIBRARY}
-    ${LIBNIFALCON_REQ_LIBS}
-)
+SET(CPP_LINK_LIBS ${LIBNIFALCON_REQ_LIBS} nifalcon)
 
 SET(SRCS
 	"FalconCLIBase.cpp" 
