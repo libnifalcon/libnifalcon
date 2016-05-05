@@ -20,7 +20,6 @@
 #include "falcon/firmware/FalconFirmwareNovintSDK.h"
 #include "falcon/kinematic/FalconKinematicStamper.h"
 #include "falcon/util/FalconCLIBase.h"
-#include "falcon/util/FalconDeviceBoostThread.h"
 #include "falcon_mouse.h"
 
 using namespace libnifalcon;
@@ -56,7 +55,7 @@ public:
 	{
 		m_falconDevice->setFalconKinematic<FalconKinematicStamper>();
 		//m_falconDevice.startThread();
-		boost::array<double, 3> d;
+		std::array<double, 3> d;
 		int i = 0, j = 0;
 		int old_x = 0, old_y = 0, x = 0, y = 0;
 		int width = getDisplayWidth();
