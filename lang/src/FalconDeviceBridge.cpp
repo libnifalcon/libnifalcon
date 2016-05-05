@@ -109,7 +109,7 @@ using namespace libnifalcon;
 
 	void FalconDeviceBridge::setForces(FalconVec3d v)
 	{
-		boost::array<double, 3> j;
+                std::array<double, 3> j;
 		j[0] = v.x;
 		j[1] = v.y;
 		j[2] = v.z;
@@ -118,7 +118,7 @@ using namespace libnifalcon;
 
 	FalconVec3d FalconDeviceBridge::getPosition()
 	{
-		boost::array<double, 3> j = FalconDevice::getPosition();
+                std::array<double, 3> j = FalconDevice::getPosition();
 		FalconVec3d v;
 		v.x = j[0];
 		v.y = j[1];
