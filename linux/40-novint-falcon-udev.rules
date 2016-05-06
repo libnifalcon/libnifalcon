@@ -1,2 +1,2 @@
-SYSFS{idVendor}=="0403", SYSFS{idProduct}=="cb48", MODE="0666", SYMLINK+="novint_falcon_%k", GROUP="plugdev"
-SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", SYSFS{idVendor}=="0403", SYSFS{idProduct}=="cb48", MODE="0664", GROUP="plugdev"
+ATTR{idVendor}=="0403", ATTR{idProduct}=="cb48", MODE="0666", SYMLINK+="novint_falcon_%k", GROUP="plugdev"
+SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="0403", ATTR{idProduct}=="cb48", MODE="0664", GROUP="plugdev"
