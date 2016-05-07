@@ -85,8 +85,15 @@ With libnifalcon, you get
 
 === Linux ===
 
-* If you are using the falcon on Linux, make sure it's plugged in through a powered USB hub. For some reason, plugging it directly into a Linux Box causes it to work erractically.
-* Programs built with libnifalcon (including example programs that come with the library) requires either root access (i.e. running under sudo) or correct udev based USB permissions to run as non-root. There's a sample udev file in the "linux" directory of the distribution that can help.
+* If you are using the falcon on Linux with an older kernel
+  (pre-v3.14, though earlier may work), make sure it's plugged in
+  through a powered USB hub. For some reason, plugging it directly
+  into a Linux Box causes it to work erractically.
+* Programs built with libnifalcon (including example programs that
+  come with the library) requires either root access (i.e. running
+  under sudo) or correct udev based USB permissions to run as
+  non-root. There's a sample udev file in the "linux" directory of the
+  distribution that can help.
 
 === OS X ===
 
