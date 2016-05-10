@@ -60,66 +60,25 @@ MACRO(INITIALIZE_BUILD)
   SET(CMAKE_INSTALL_RPATH "${LIBRARY_INSTALL_DIR}")
   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-  # Set output directory variables
-  if(NOT BIN_DIR)
-    set(BIN_DIR "bin")
-  endif(NOT BIN_DIR)
-
-  if(NOT LIB_DIR)
-    set(LIB_DIR "lib")
-  endif(NOT LIB_DIR)
-
-  # Output directories - this is where built library and executable
-  # files will be placed after building but prior to install.  The
-  # necessary variables change between single and multi configuration
-  # build systems, so it is necessary to handle both cases on a
-  # conditional basis.
-  if(NOT CMAKE_CONFIGURATION_TYPES)
-    # If we're not doing multi-configuration, just set the three main
-    # variables to the correct values.
-    if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_DIR})
-    endif()
-    if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_DIR})
-    endif()
-    if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${BIN_DIR})
-    endif()
-    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_LIBRARY_PATH})
-    set(CMAKE_LIBRARY_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} ${CMAKE_LIBRARY_PATH})
-  else()
-
-    # Multi-configuration is more difficult.  Not only do we need to
-    # properly set the output directories, but we also need to
-    # identify the "toplevel" directory for each configuration so
-    # we can place files, documentation, etc. in the correct
-    # relative positions.  Because files may be placed by CMake
-    # without a build target to put them in their proper relative build
-    # directory position using these paths, we must fully qualify them
-    # without using CMAKE_CFG_INTDIR.
-    #
-    # We define directories that may not be quite "standard"
-    # for a particular build tool - for example, native VS2010 projects use
-    # another directory to denote CPU type being compiled for - but CMake only
-    # supports multi-configuration setups having multiple configurations,
-    # not multiple compilers.
-    foreach(CFG_TYPE ${CMAKE_CONFIGURATION_TYPES})
-      set(CFG_ROOT ${CMAKE_BINARY_DIR}/${CFG_TYPE})
-      string(TOUPPER "${CFG_TYPE}" CFG_TYPE_UPPER)
-      if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${LIB_DIR})
-      endif()
-      if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${LIB_DIR})
-      endif()
-      if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER})
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER} ${CFG_ROOT}/${BIN_DIR})
-      endif()
-      set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER}} ${CMAKE_LIBRARY_PATH})
-      set(CMAKE_LIBRARY_PATH ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CFG_TYPE_UPPER}} ${CMAKE_LIBRARY_PATH})
-    endforeach()
+  # Set build output directories
+  if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
   endif()
+  if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  endif()
+  if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+  endif()
+
+  # Set search directories (for find_library and find_program)
+  list(APPEND CMAKE_LIBRARY_PATH
+    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    )
+  list(APPEND CMAKE_PROGRAM_PATH
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    )
 
   #Always assume we want to build threadsafe mingw binaries
   IF(MINGW)
