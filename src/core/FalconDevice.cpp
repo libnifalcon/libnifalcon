@@ -10,12 +10,12 @@
  */
 
 #include "falcon/core/FalconDevice.h"
-#if defined(LIBNIFALCON_USE_LIBUSB)
-#include "falcon/comm/FalconCommLibUSB.h"
+#if defined(LIBNIFALCON_USE_LIBUSB1)
+  #include "falcon/comm/FalconCommLibUSB.h"
 #elif defined(LIBNIFALCON_USE_LIBFTD2XX)
-#include "falcon/comm/FalconCommFTD2XX.h"
+  #include "falcon/comm/FalconCommFTD2XX.h"
 #else
-#error "Cannot build FalconDevice class without default comm core"
+  #error "Cannot build FalconDevice class without default comm core"
 #endif
 #include <iostream>
 
@@ -26,14 +26,10 @@ namespace libnifalcon
 		m_errorCount(0),
 		INIT_LOGGER("FalconDevice")
 	{
-        m_forceVec[0] = 0.0;
-        m_forceVec[1] = 0.0;
-        m_forceVec[2] = 0.0;
-        m_position[0] = 0.0;
-        m_position[1] = 0.0;
-        m_position[2] = 0.0;
+        m_forceVec.fill(0.0);
+        m_position.fill(0.0);
 
-#if defined(LIBNIFALCON_USE_LIBUSB)
+#if defined(LIBNIFALCON_USE_LIBUSB1)
 		setFalconComm<FalconCommLibUSB>();
 #elif defined(LIBNIFALCON_USE_LIBFTD2XX)
 		setFalconComm<FalconCommFTD2XX>();
