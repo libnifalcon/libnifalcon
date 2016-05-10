@@ -18,15 +18,13 @@ ENDIF(COMMAND cmake_policy)
 ######################################################################################
 
 #Project declaration
-
 PROJECT(LIBNIFALCON)
 INITIALIZE_BUILD()
 
 #Common Options
-
 OPTION_LIBRARY_BUILD_STATIC(ON)
-#We can't build shared on MSVC yet
 IF(NOT MSVC)
+  #We can't build shared on MSVC yet
   OPTION_LIBRARY_BUILD_SHARED(ON)
 ENDIF(NOT MSVC)
 OPTION_GPROF(OFF)
