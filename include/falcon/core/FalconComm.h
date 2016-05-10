@@ -258,9 +258,9 @@ namespace libnifalcon
 		virtual void poll() {}
 		
 	protected:
-		constexpr static unsigned int MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */
-		constexpr static unsigned int FALCON_VENDOR_ID = 0x0403; /**< USB Vendor ID for the Falcon */
-		constexpr static unsigned int FALCON_PRODUCT_ID = 0xCB48; /**< USB Product ID from the Falcon */
+		const static unsigned int MAX_DEVICES = 128; /**< Maximum number of devices to store in count buffers */
+		const static unsigned int FALCON_VENDOR_ID = 0x0403; /**< USB Vendor ID for the Falcon */
+		const static unsigned int FALCON_PRODUCT_ID = 0xCB48; /**< USB Product ID from the Falcon */
 		int m_deviceErrorCode;	/**< Communications policy specific error code */
 		int m_lastBytesRead;	/**< Number of bytes read in last read operation */
 		int m_lastBytesWritten; /**< Number of bytes written in the last write operation */
