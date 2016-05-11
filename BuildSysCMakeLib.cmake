@@ -60,10 +60,25 @@ MACRO(INITIALIZE_BUILD)
   SET(CMAKE_INSTALL_RPATH "${LIBRARY_INSTALL_DIR}")
   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-  # We always want to output our binaries and libraries to the same place, set that here
-  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-  SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-  SET(DOC_OUTPUT_PATH ${CMAKE_BINARY_DIR}/doc)
+  # Set build output directories
+  if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  endif()
+  if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  endif()
+  if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+  endif()
+
+  # Set search directories (for find_library and find_program)
+  list(APPEND CMAKE_LIBRARY_PATH
+    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    )
+  list(APPEND CMAKE_PROGRAM_PATH
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}
+    )
 
   #Always assume we want to build threadsafe mingw binaries
   IF(MINGW)
@@ -95,34 +110,6 @@ MACRO(INITIALIZE_BUILD)
   #Handy visual studio functions
   #Assuming /MP to always be on though
   IF(MSVC)
-
-    # Fun with MSVC2010 linking 
-    # 
-    # As of VS2010, the "setting PREFIX to ../" hack no longer works
-    # to avoid VS's injection of build types into the library output
-    # path. Therefore, we have to set everything ourselves here.  I
-    # pulled this block from the OutDir test in the cmake source code,
-    # because it's not really documented otherwise.
-    # 
-    # Good times.
-
-    if(CMAKE_CONFIGURATION_TYPES)
-      foreach(config ${CMAKE_CONFIGURATION_TYPES})
-        string(TOUPPER "${config}" CONFIG)
-        list(APPEND configs "${CONFIG}")
-      endforeach()
-      set(CMAKE_BUILD_TYPE)
-    elseif(NOT CMAKE_BUILD_TYPE)
-      set(CMAKE_BUILD_TYPE Debug)
-    endif()
-
-    # Now that we've gathered the configurations we're using, set them
-    # all to the paths without the configuration type
-    FOREACH(config ${configs})
-      SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${LIBRARY_OUTPUT_PATH}")
-      SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${LIBRARY_OUTPUT_PATH}")
-      SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${EXECUTABLE_OUTPUT_PATH}")
-    ENDFOREACH()
 
     # Check to see if we're using nmake. If so, set the NMAKE variable
     IF(CMAKE_MAKE_PROGRAM STREQUAL "nmake")
@@ -277,6 +264,7 @@ FUNCTION(BUILDSYS_BUILD_LIB)
     ELSE()
       ADD_LIBRARY (${CURRENT_LIB} ${TARGET_LIB_TYPE} ${BUILDSYS_LIB_SOURCES})      
     ENDIF()
+    ADD_LIBRARY (${BUILDSYS_LIB_NAME} ALIAS ${CURRENT_LIB})
 
     # Add this library to the list of all libraries we're building
     LIST(APPEND LIB_DEPEND_LIST ${CURRENT_LIB})
@@ -348,14 +336,11 @@ FUNCTION(BUILDSYS_BUILD_LIB)
 
   ENDFOREACH()
 
-  # Build the dependency name for ourselves and set up the target for it
-  SET(DEPEND_NAME "${BUILDSYS_LIB_NAME}_DEPEND")
-  ADD_CUSTOM_TARGET(${DEPEND_NAME} DEPENDS ${LIB_DEPEND_LIST})
-
+  # If the library is part of a group, add it to it
   IF(BUILDSYS_LIB_GROUP)
     IF(NOT TARGET ${BUILDSYS_LIB_GROUP})
       MESSAGE(STATUS "Creating build group ${BUILDSYS_LIB_GROUP}")
-      ADD_CUSTOM_TARGET(${BUILDSYS_LIB_GROUP} DEPENDS ${DEPEND_NAME})
+      ADD_CUSTOM_TARGET(${BUILDSYS_LIB_GROUP} DEPENDS ${BUILDSYS_LIB_NAME})
     ELSE()
       ADD_DEPENDENCIES(${BUILDSYS_LIB_GROUP} ${DEPEND_NAME})
     ENDIF()
@@ -498,27 +483,6 @@ MACRO(MACRO_ENSURE_OUT_OF_SOURCE_BUILD)
   ENDIF()
 ENDMACRO()
 
-######################################################################################
-# Create a library name that fits our platform
-######################################################################################
-
-MACRO(CREATE_LIBRARY_LINK_NAME LIBNAME)
-  if(BUILD_STATIC AND NOT BUILD_SHARED)
-    IF(NOT MSVC)
-      SET(LIB_STATIC_PRE "lib")
-      SET(LIB_STATIC_EXT ".a")
-    ELSE(NOT MSVC)
-      SET(LIB_STATIC_PRE "")
-      SET(LIB_STATIC_EXT ".lib")
-    ENDIF(NOT MSVC)
-    SET(LIB_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH}/)
-  ELSE(BUILD_STATIC AND NOT BUILD_SHARED)
-    SET(LIB_STATIC_PRE)
-    SET(LIB_STATIC_EXT)
-    SET(LIB_OUTPUT_PATH)
-  ENDIF(BUILD_STATIC AND NOT BUILD_SHARED)
-  SET(lib${LIBNAME}_LIBRARY ${LIB_OUTPUT_PATH}${LIB_STATIC_PRE}${LIBNAME}${LIB_STATIC_EXT})  
-ENDMACRO(CREATE_LIBRARY_LINK_NAME)
 
 ######################################################################################
 # Library Build Type Options

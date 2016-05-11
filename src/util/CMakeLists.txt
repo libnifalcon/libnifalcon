@@ -2,13 +2,7 @@
 # Build function for utilities libraries
 ######################################################################################
 
-LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
-
-#Command Line Base Utility
-SET(CPP_LINK_LIBS
-    ${libnifalcon_LIBRARY}
-    ${LIBNIFALCON_REQ_LIBS}
-)
+SET(CPP_LINK_LIBS ${LIBNIFALCON_REQ_LIBS} nifalcon)
 
 SET(SRCS
 	"FalconCLIBase.cpp" 
@@ -21,7 +15,7 @@ BUILDSYS_BUILD_LIB(
 	CXX_FLAGS "${BUILDSYS_EXE_CPP_DEFINES}" 
 	LINK_LIBS "${CPP_LINK_LIBS}" 
 	LINK_FLAGS FALSE 
-	DEPENDS nifalcon_DEPEND
+	DEPENDS nifalcon
 	SHOULD_INSTALL TRUE
 	VERSION ${LIBNIFALCON_VERSION}
 	)
@@ -37,7 +31,7 @@ BUILDSYS_BUILD_LIB(
     CXX_FLAGS FALSE
     LINK_LIBS "${CPP_LINK_LIBS}"
     LINK_FLAGS FALSE
-    DEPENDS nifalcon_DEPEND
+    DEPENDS nifalcon
     SHOULD_INSTALL TRUE
     VERSION ${LIBNIFALCON_VERSION}
 )

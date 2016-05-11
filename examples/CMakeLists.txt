@@ -2,10 +2,7 @@
 # Build function for examples
 ######################################################################################
 
-SET(LIBNIFALCON_EXE_PO_LINK_LIBS
-  ${libnifalcon_cli_base_LIBRARY}
-  ${LIBNIFALCON_EXE_LINK_LIBS} 
-  )
+SET(LIBNIFALCON_EXE_PO_LINK_LIBS ${LIBNIFALCON_EXE_LINK_LIBS} nifalcon_cli_base)
 
 ######################################################################################
 # Build function for barrow_mechanics
@@ -19,7 +16,7 @@ BUILDSYS_BUILD_EXE(
   CXX_FLAGS "${DEFINE}" 
   LINK_LIBS "${LIBNIFALCON_EXE_LINK_LIBS}" 
   LINK_FLAGS FALSE 
-  DEPENDS nifalcon_DEPEND
+  DEPENDS nifalcon
   SHOULD_INSTALL TRUE
   )
 
@@ -37,7 +34,7 @@ BUILDSYS_BUILD_EXE(
   CXX_FLAGS "${DEFINE}" 
   LINK_LIBS "${LIBNIFALCON_EXE_LINK_LIBS}" 
   LINK_FLAGS FALSE 
-  DEPENDS nifalcon_DEPEND
+  DEPENDS nifalcon
   SHOULD_INSTALL TRUE
   )
 
@@ -55,7 +52,7 @@ BUILDSYS_BUILD_EXE(
   CXX_FLAGS "${DEFINE}" 
   LINK_LIBS "${LIBNIFALCON_EXE_LINK_LIBS}" 
   LINK_FLAGS FALSE 
-  DEPENDS nifalcon_DEPEND
+  DEPENDS nifalcon
   SHOULD_INSTALL TRUE
   )
 
@@ -73,7 +70,7 @@ BUILDSYS_BUILD_EXE(
     CXX_FLAGS FALSE
     LINK_LIBS "${LIBNIFALCON_EXE_PO_LINK_LIBS}" 
     LINK_FLAGS FALSE 
-    DEPENDS nifalcon_cli_base_DEPEND
+    DEPENDS nifalcon_cli_base
     SHOULD_INSTALL TRUE
 )
 
@@ -98,7 +95,7 @@ BUILDSYS_BUILD_EXE(
     CXX_FLAGS FALSE
     LINK_LIBS "${LIBNIFALCON_EXE_PO_LINK_LIBS}" 
     LINK_FLAGS FALSE 
-    DEPENDS nifalcon_cli_base_DEPEND
+    DEPENDS nifalcon_cli_base
     SHOULD_INSTALL TRUE
 )
 
@@ -130,7 +127,9 @@ BUILDSYS_BUILD_EXE(
       LINK_LIBS "${MOUSE_LINK_LIBS}" 
       LINK_FLAGS "${MOUSE_LINK_FLAGS}" 
       CXX_FLAGS FALSE
-      DEPENDS nifalcon_DEPEND
-      SHOULD_INSTALL TRUE
 	  )
   ENDIF(MOUSE_SRCS)
+        DEPENDS nifalcon
+        SHOULD_INSTALL TRUE
+      )
+  endif(MOUSE_SRCS)
