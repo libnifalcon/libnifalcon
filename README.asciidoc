@@ -45,7 +45,7 @@ http://www.ftdichip.com/Drivers/D2XX.htm
 
 === libusb 1.0 (Recommended for Linux or Mac) ===
 
-http://www.libusb.org/
+http://www.libusb.info
 
 == ftd2xx versus libusb 1.0 ==
 
