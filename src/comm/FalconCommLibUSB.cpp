@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
-#include "libusb-1.0/libusb.h"
+#include "libusb.h"
 
 // Taken from LibFTDI
 // http://www.intra2net.com/en/developer/libftdi/

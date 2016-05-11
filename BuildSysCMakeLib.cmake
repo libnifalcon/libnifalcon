@@ -271,11 +271,11 @@ FUNCTION(BUILDSYS_BUILD_LIB)
 
     # This allows use to build static/shared libraries of the same name.
     # See http://www.itk.org/Wiki/CMake_FAQ#How_do_I_make_my_shared_and_static_libraries_have_the_same_root_name.2C_but_different_suffixes.3F
-	IF(USE_STATIC_SUFFIX AND LIB_TYPE STREQUAL "STATIC")
+	  IF(USE_STATIC_SUFFIX AND LIB_TYPE STREQUAL "STATIC")
       SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES OUTPUT_NAME ${BUILDSYS_LIB_NAME}_s)
-	ELSE()
+	  ELSE()
       SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES OUTPUT_NAME ${BUILDSYS_LIB_NAME})	  
-	ENDIF()
+	  ENDIF()
     SET_TARGET_PROPERTIES (${CURRENT_LIB} PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
     # Add version, if we're given one
@@ -300,7 +300,7 @@ FUNCTION(BUILDSYS_BUILD_LIB)
 
     # Libraries we should link again
     IF(BUILDSYS_LIB_LINK_LIBS)
-	  TARGET_LINK_LIBRARIES(${CURRENT_LIB} ${BUILDSYS_LIB_LINK_LIBS})
+	    TARGET_LINK_LIBRARIES(${CURRENT_LIB} ${BUILDSYS_LIB_LINK_LIBS})
     ENDIF()
 
     # Defines and compiler flags, if any
@@ -447,12 +447,12 @@ FUNCTION(BUILDSYS_BUILD_EXE)
     INSTALL(FILES ${EXE_OUTPUT_NAME} RUNTIME DESTINATION ${RUNTIME_INSTALL_DIR} OPTIONAL)
   ENDIF()
 
-
   # If the executable depends on anything, set up dependency
   IF(BUILDSYS_EXE_DEPENDS)
     ADD_DEPENDENCIES(${BUILDSYS_EXE_NAME} ${BUILDSYS_EXE_DEPENDS})
   ENDIF()
 
+  # If the executable is part of a group, add it to it
   IF(BUILDSYS_EXE_GROUP)
     IF(NOT TARGET ${BUILDSYS_EXE_GROUP})
       MESSAGE(STATUS "Creating build group ${BUILDSYS_EXE_GROUP}")

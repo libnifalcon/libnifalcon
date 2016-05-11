@@ -18,23 +18,20 @@ ENDIF(COMMAND cmake_policy)
 ######################################################################################
 
 #Project declaration
-
 PROJECT(LIBNIFALCON)
 INITIALIZE_BUILD()
 
 #Common Options
-
 OPTION_LIBRARY_BUILD_STATIC(ON)
-#We can't build shared on MSVC yet
 IF(NOT MSVC)
+  #We can't build shared on MSVC yet
   OPTION_LIBRARY_BUILD_SHARED(ON)
 ENDIF(NOT MSVC)
 OPTION_GPROF(OFF)
 #OPTION_CREATE_VERSION_FILE(ON "${CMAKE_CURRENT_SOURCE_DIR}/src/version.cc")
 
 #Project specific options
-
-OPTION(FORCE_FTD2XX_BUILD "Force building FTD2XX libraries on non-windows platforms" OFF)
+OPTION(FORCE_FTD2XX_BUILD "Force building against FTD2XX libraries instead of the default libusb1" OFF)
 OPTION(STATIC_LINK_SUFFIXES "Add a symbolic link with [library_name]_s on static libraries (for ease in building staticly linked binaries under gcc)" OFF)
 OPTION(BUILD_SWIG_BINDINGS "Build Java/Python bindings for libnifalcon" OFF)
 OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
@@ -44,23 +41,29 @@ OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 ######################################################################################
 
 #Find communications libraries
-IF(WIN32 OR FORCE_FTD2XX_BUILD)
-  FIND_PACKAGE(libftd2xx REQUIRED)
-  IF(LIBFTD2XX_FOUND)
-    INCLUDE_DIRECTORIES(${LIBFTD2XX_INCLUDE_DIRS})
-    SET(LIBNIFALCON_REQ_LIBS ${LIBFTD2XX_LIBRARIES})
-  ENDIF(LIBFTD2XX_FOUND)
-ELSEIF(UNIX)
-  FIND_PACKAGE(libusb-1.0 REQUIRED)
-  IF(LIBUSB_1_FOUND)
-    INCLUDE_DIRECTORIES(${LIBUSB_1_INCLUDE_DIRS})
-    SET(LIBNIFALCON_REQ_LIBS ${LIBUSB_1_LIBRARIES})
-  ENDIF(LIBUSB_1_FOUND)
-ENDIF()
-
-IF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
-  MESSAGE(FATAL_ERROR "Either ftd2xx or libusb-1.0 is required to build libnifalcon. Check the README file for info.")
-ENDIF(NOT LIBFTD2XX_FOUND AND NOT LIBUSB_1_FOUND)
+if(FORCE_FTD2XX_BUILD)
+  find_package(libftd2xx REQUIRED)
+  if(LIBFTD2XX_FOUND)
+    message(STATUS "Found libftd2xx:")
+    message(STATUS " - Includes: ${LIBFTD2XX_INCLUDE_DIRS}")
+    message(STATUS " - Libraries: ${LIBFTD2XX_LIBRARIES}")
+    include_directories(${LIBFTD2XX_INCLUDE_DIRS})
+    set(LIBNIFALCON_REQ_LIBS ${LIBFTD2XX_LIBRARIES})
+  else()
+    message(FATAL_ERROR "libftd2xx is required to build libnifalcon. Check the README file for info.")
+  endif()
+else()
+  find_package(libusb-1.0 REQUIRED)
+  if(LIBUSB1_FOUND)
+    message(STATUS "Found libusb-1.0:")
+    message(STATUS " - Includes: ${LIBUSB1_INCLUDE_DIRS}")
+    message(STATUS " - Libraries: ${LIBUSB1_LIBRARIES}")
+    include_directories(${LIBUSB1_INCLUDE_DIRS})
+    set(LIBNIFALCON_REQ_LIBS ${LIBUSB1_LIBRARIES})
+  else()
+    message(FATAL_ERROR "libusb-1.0 is required to build libnifalcon. Check the README file for info.")
+  endif()
+endif()
 
 ######################################################################################
 # Project specific globals
