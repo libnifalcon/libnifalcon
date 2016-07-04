@@ -79,43 +79,43 @@ public:
 		if(options.get("loop_time_test"))
 		{
 			std::cout << "Running loop timing test" << std::endl;
-			t.reset(new FalconLoopTimeTest(m_falconDevice));
+			t.reset(new FalconLoopTimeTest(std::move(m_falconDevice)));
 		}
 		else if(options.get("cube_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running cube test" << std::endl;
-			t.reset(new FalconCubeTest(m_falconDevice));
+			t.reset(new FalconCubeTest(std::move(m_falconDevice)));
 		}
 		else if(options.get("sphere_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running sphere test" << std::endl;
-			t.reset(new FalconSphereTest(m_falconDevice));
+			t.reset(new FalconSphereTest(std::move(m_falconDevice)));
 		}
 		else if(options.get("color_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running color test" << std::endl;
-			t.reset(new FalconColorTest(m_falconDevice));
+			t.reset(new FalconColorTest(std::move(m_falconDevice)));
 		}
 		else if(options.get("x_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running x axis wall test" << std::endl;
-			t.reset(new FalconWallTest(m_falconDevice, 0));
+			t.reset(new FalconWallTest(std::move(m_falconDevice), 0));
 		}
 		else if(options.get("y_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running y axis wall test" << std::endl;
-			t.reset(new FalconWallTest(m_falconDevice, 1));
+			t.reset(new FalconWallTest(std::move(m_falconDevice), 1));
 		}
 		else if(options.get("z_wall_test"))
 		{
 			while(!calibrateDevice() && !stop);
 			std::cout << "Running z axis wall test" << std::endl;
-			t.reset(new FalconWallTest(m_falconDevice, 2));
+			t.reset(new FalconWallTest(std::move(m_falconDevice), 2));
 		}
 		else
 		{

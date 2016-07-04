@@ -74,7 +74,7 @@ namespace libnifalcon
 		/**
 		 * Internal thread object
 		 */
-		std::shared_ptr<std::thread> m_ioThread;
+		std::unique_ptr<std::thread> m_ioThread;
 
 		/**
 		 * Internal position storage

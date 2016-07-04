@@ -40,7 +40,7 @@ void configureLogging(const std::string & logString, const log4cxx::LevelPtr lev
 namespace libnifalcon
 {
 	FalconCLIBase::FalconCLIBase() :
-		m_falconDevice(std::make_shared<FalconDevice>()),
+		m_falconDevice(std::unique_ptr<FalconDevice>(new FalconDevice)),
 		m_displayCalibrationMessage(true),
 		INIT_LOGGER("FalconCLIBase")
 	{
