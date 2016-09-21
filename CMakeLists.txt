@@ -41,7 +41,7 @@ OPTION(BUILD_EXAMPLES "Build libnifalcon examples" ON)
 ######################################################################################
 
 #Find communications libraries
-if(FORCE_FTD2XX_BUILD)
+if(WIN32 OR FORCE_FTD2XX_BUILD)
   find_package(libftd2xx REQUIRED)
   if(LIBFTD2XX_FOUND)
     message(STATUS "Found libftd2xx:")
