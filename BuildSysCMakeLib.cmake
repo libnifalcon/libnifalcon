@@ -3,7 +3,7 @@
 ######################################################################################
 
 # Add our repository cmake_modules directory
-LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake_modules)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 
 ######################################################################################
 # Project Setup
@@ -293,7 +293,7 @@ FUNCTION(BUILDSYS_BUILD_LIB)
       MESSAGE(STATUS ${OUT_DIR})
       ADD_CUSTOM_TARGET(${CURRENT_LIB}_FRAMEWORK_HEADER_COPY
         COMMAND "${CMAKE_COMMAND}" "-E" "make_directory" "${OUT_DIR}/Headers"
-        COMMAND "${CMAKE_COMMAND}" "-E" "copy_directory" "${CMAKE_SOURCE_DIR}/include" "${OUT_DIR}/Headers"
+        COMMAND "${CMAKE_COMMAND}" "-E" "copy_directory" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${OUT_DIR}/Headers"
         COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" "Versions/Current/Headers" "${OUT_DIR}/../../Headers")
       ADD_DEPENDENCIES(${CURRENT_LIB} ${CURRENT_LIB}_FRAMEWORK_HEADER_COPY)
     ENDIF()
@@ -570,7 +570,7 @@ MACRO(OPTION_CREATE_VERSION_FILE DEFAULT OUTPUT_FILES)
 	MESSAGE(STATUS "Generating git information for ${CMAKE_PROJECT_NAME}")	
 	FOREACH(VERSION_FILE ${OUTPUT_FILES})
 	  MESSAGE(STATUS "- Generating to ${VERSION_FILE}")	
-      SET(COMMAND_LIST "python" "${BUILDSYS_CMAKE_DIR}/../python/get_version.py" "-f" "${VERSION_FILE}" "-d" "${CMAKE_SOURCE_DIR}")
+      SET(COMMAND_LIST "python" "${BUILDSYS_CMAKE_DIR}/../python/get_version.py" "-f" "${VERSION_FILE}" "-d" "${CMAKE_CURRENT_SOURCE_DIR}")
  	  EXECUTE_PROCESS(COMMAND ${COMMAND_LIST})
 	ENDFOREACH(VERSION_FILE ${OUTPUT_FILES})
   ELSE()
