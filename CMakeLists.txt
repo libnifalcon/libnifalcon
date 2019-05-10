@@ -4,8 +4,9 @@
 
 #Require 2.6 or higher. 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 
-INCLUDE( ${CMAKE_SOURCE_DIR}/BuildSysCMakeLib.cmake )
+INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/BuildSysCMakeLib.cmake )
 
 #setting link directory policy
 
@@ -73,7 +74,7 @@ SET(LIBNIFALCON_BUILD_VERSION 2)
 SET(LIBNIFALCON_VERSION ${LIBNIFALCON_MAJOR_VERSION}.${LIBNIFALCON_MINOR_VERSION}.${LIBNIFALCON_BUILD_VERSION})
 
 # LibNiFalcon Include directory
-SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+SET(LIBNIFALCON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 INCLUDE_DIRECTORIES(${LIBNIFALCON_INCLUDE_DIR})
 
 # LibNiFalcon link libraries
@@ -127,7 +128,7 @@ IF(UNIX)
       )
     MESSAGE("-- Generating ${PC_CONFIGURED_FILE}")
     configure_file(
-      ${CMAKE_SOURCE_DIR}/libnifalcon.pc.cmake
+      ${CMAKE_CURRENT_SOURCE_DIR}/libnifalcon.pc.cmake
       ${PC_CONFIGURED_FILE}
       @ONLY
       )
