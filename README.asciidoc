@@ -126,6 +126,18 @@ With libnifalcon, you get
   non-root. There's a sample udev file in the "linux" directory of the
   distribution that can help.
 
+#### Setup udev-based USB permissions
+
+To set udev-based USB permissions to run programs built with libnifalcon as non-root:
+
+* Setup udev permissions (tested with Ubuntu 19.04):
+....
+sudo cp linux/40-novint-falcon-udev.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+....
+* Re-plug your device
+
 === OS X ===
 
 * If you are using the falcon on OS X, make sure it's plugged in
