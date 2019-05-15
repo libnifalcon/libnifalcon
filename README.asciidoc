@@ -52,11 +52,13 @@ http://www.libusb.info
 libnifalcon can use two different libraries to access the falcon:
 
 FTD2XX - Library distributed by FTDI themselves
+
 * Windows: OK - RECOMMENDED
 * Linux: Untested
 * OS X: Untested
 
 libusb-1.0 (use whatever the latest version is. As of this writing, 1.0.2):
+
 * Windows: Not Available for Windows
 * Linux: OK - RECOMMENDED
 * OS X: OK - RECOMMENDED
@@ -124,6 +126,18 @@ With libnifalcon, you get
   non-root. There's a sample udev file in the "linux" directory of the
   distribution that can help.
 
+#### Setup udev-based USB permissions
+
+To set udev-based USB permissions to run programs built with libnifalcon as non-root:
+
+* Setup udev permissions (tested with Ubuntu 19.04):
+....
+sudo cp linux/40-novint-falcon-udev.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+....
+* Re-plug your device
+
 === OS X ===
 
 * If you are using the falcon on OS X, make sure it's plugged in
@@ -139,6 +153,7 @@ Labs - http://www.nonpolynomial.com
 Kinematics development by Kevin Ouellet and Alastair Barrow
 
 Contributions by 
+
 * Jared Allen
 * Alastair Barrow
 * Niall Begley
