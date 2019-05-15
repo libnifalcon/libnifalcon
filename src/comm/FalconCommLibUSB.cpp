@@ -102,10 +102,18 @@ namespace libnifalcon
 		//Spam libusb messages
 		//Between 0-3 for libusb 1.0
 		LOG_INFO("Setting libusb debug level to 3");
+		#if defined(LIBUSB_API_VERSION) // testing for libusb >= 1.x, LIBUSB_API_VERSION defined since libusb 1.0.13
+		libusb_set_option(m_usbContext, LIBUSB_OPTION_LOG_LEVEL, 3);
+		#else
 		libusb_set_debug(m_usbContext, 3);
+		#endif
 #else
 		LOG_INFO("Setting libusb debug level to 0");
+		#if defined(LIBUSB_API_VERSION) // testing for libusb >= 1.x, LIBUSB_API_VERSION defined since libusb 1.0.13
+		libusb_set_option(m_usbContext, LIBUSB_OPTION_LOG_LEVEL, 0);
+		#else
 		libusb_set_debug(m_usbContext, 0);
+		#endif
 #endif
 		return true;
 	}
