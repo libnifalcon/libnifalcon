@@ -52,11 +52,13 @@ http://www.libusb.info
 libnifalcon can use two different libraries to access the falcon:
 
 FTD2XX - Library distributed by FTDI themselves
+
 * Windows: OK - RECOMMENDED
 * Linux: Untested
 * OS X: Untested
 
 libusb-1.0 (use whatever the latest version is. As of this writing, 1.0.2):
+
 * Windows: Not Available for Windows
 * Linux: OK - RECOMMENDED
 * OS X: OK - RECOMMENDED
@@ -139,6 +141,7 @@ Labs - http://www.nonpolynomial.com
 Kinematics development by Kevin Ouellet and Alastair Barrow
 
 Contributions by 
+
 * Jared Allen
 * Alastair Barrow
 * Niall Begley
